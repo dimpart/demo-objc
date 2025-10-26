@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,17 +28,21 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMMetaC.h
+//  DIMCommonLoaders.h
 //  DIMClient
 //
-//  Created by Albert Moky on 2023/12/11.
+//  Created by Albert Moky on 2025/10/25.
 //
 
 #import <DIMPlugins/DIMPlugins.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCompatibleMetaFactory : DIMMetaFactory
+@interface DIMCommonExtensionLoader : DIMExtensionLoader
+
+@end
+
+@interface DIMCommonPluginLoader : DIMPluginLoader
 
 @end
 

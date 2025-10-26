@@ -36,33 +36,31 @@
 //
 
 #import "DIMNetworkID.h"
-#import "DIMAddressBTC.h"
+#import "DIMAddressC.h"
 
 #import "DIMEntityID.h"
 
-@interface EntityID : MKMID
 
-@end
 
-@implementation EntityID
+@implementation DIMEntityID
 
 // Override
 - (MKMEntityType)type {
+    NSString *text = [self name];
+    if ([text length] == 0) {
+        // all ID without 'name' field must be a user
+        // e.g.: BTC address
+        return MKMEntityType_User;
+    }
     id<MKMAddress> address = [self address];
-    MKMNetworkID network = [address type];
+    MKMNetworkID network = [address network];
     // compatible with MKM 0.9.*
     return MKMEntityTypeFromNetworkID(network);
 }
 
 @end
 
-#pragma mark -
-
-@interface EntityIDFactory : DIMIDFactory
-
-@end
-
-@implementation EntityIDFactory
+@implementation DIMEntityIDFactory
 
 // Override
 - (id<MKMID>)newID:(NSString *)identifier
@@ -70,87 +68,41 @@
            address:(id<MKMAddress>)main
           terminal:(nullable NSString *)loc {
     // override for customized ID
-    return [[EntityID alloc] initWithString:identifier
-                                       name:seed
-                                    address:main
-                                   terminal:loc];
+    return [[DIMEntityID alloc] initWithString:identifier
+                                          name:seed
+                                       address:main
+                                      terminal:loc];
 }
 
 // Override
 - (nullable id<MKMID>)parse:(NSString *)identifier {
     NSComparisonResult res;
     NSUInteger len = [identifier length];
-    if (len == 15) {
+    if (len < 4 || len > 64) {
+        NSAssert(false, @"ID empty");
+        return nil;
+    } else if (len == 15) {
         // "anyone@anywhere"
-        res = [MKMAnyone().string caseInsensitiveCompare:identifier];
+        res = [MKMAnyone.string caseInsensitiveCompare:identifier];
         if (res == NSOrderedSame) {
-            return MKMAnyone();
+            return MKMAnyone;
         }
     } else if (len == 19) {
         // "everyone@everywhere"
         // "stations@everywhere"
-        res = [MKMEveryone().string caseInsensitiveCompare:identifier];
+        res = [MKMEveryone.string caseInsensitiveCompare:identifier];
         if (res == NSOrderedSame) {
-            return MKMEveryone();
+            return MKMEveryone;
         }
     } else if (len == 13) {
         // "moky@anywhere"
-        res = [MKMFounder().string caseInsensitiveCompare:identifier];
+        res = [MKMFounder.string caseInsensitiveCompare:identifier];
         if (res == NSOrderedSame) {
-            return MKMFounder();
+            return MKMFounder;
         }
     }
+    // normal ID
     return [super parse:identifier];
 }
 
 @end
-
-#pragma mark -
-
-@interface CompatibleAddressFactory : DIMAddressFactory
-
-@end
-
-@implementation CompatibleAddressFactory
-
-- (id<MKMAddress>)createAddress:(NSString *)address {
-    NSComparisonResult res;
-    NSUInteger len = [address length];
-    if (len == 8) {
-        // "anywhere"
-        res = [MKMAnywhere().string caseInsensitiveCompare:address];
-        if (res == NSOrderedSame) {
-            return MKMAnywhere();
-        }
-    } else if (len == 10) {
-        // "everywhere"
-        res = [MKMEverywhere().string caseInsensitiveCompare:address];
-        if (res == NSOrderedSame) {
-            return MKMEverywhere();
-        }
-    }
-    id<MKMAddress> addr;
-    if (len == 42) {
-        // ETH address
-        addr = [MKMAddressETH parse:address];
-    } else if (26 <= len && len <= 35) {
-        // try BTC address
-        addr = [DIMAddressBTC parse:address];
-    }
-    NSAssert(addr, @"invalid address: %@", address);
-    return addr;
-}
-
-@end
-
-#pragma mark -
-
-void DIMRegisterEntityIDFactory(void) {
-    EntityIDFactory *factory = [[EntityIDFactory alloc] init];
-    MKMIDSetFactory(factory);
-}
-
-void DIMRegisterCompatibleAddressFactory(void) {
-    CompatibleAddressFactory *factory = [[CompatibleAddressFactory alloc] init];
-    MKMAddressSetFactory(factory);
-}

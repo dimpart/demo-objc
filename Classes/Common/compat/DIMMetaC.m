@@ -34,201 +34,34 @@
 //  Created by Albert Moky on 2023/12/11.
 //
 
-#import "DIMNetworkID.h"
-#import "DIMAddressBTC.h"
-
 #import "DIMMetaC.h"
 
-@interface DefaultMeta : DIMMeta {
-    
-    // caches
-    NSMutableDictionary<NSNumber *, DIMAddressBTC *> *_cachedAddresses;
-}
+@implementation DIMCompatibleMetaFactory
 
-@end
-
-@implementation DefaultMeta
-
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        _cachedAddresses = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
-
-/* designated initializer */
-- (instancetype)initWithType:(MKMMetaType)version
-                         key:(id<MKMVerifyKey>)publicKey
-                        seed:(NSString *)seed
-                 fingerprint:(id<MKMTransportableData>)CT {
-    if (self = [super initWithType:version
-                               key:publicKey
-                              seed:seed
-                       fingerprint:CT]) {
-        _cachedAddresses = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
-
-- (id<MKMAddress>)generateAddress:(MKMEntityType)network {
-    NSAssert(self.type == MKMMetaType_MKM, @"meta version error: %d", self.type);
-    // check caches
-    DIMAddressBTC *address = [_cachedAddresses objectForKey:@(network)];
-    if (!address) {
-        // generate and cache it
-        address = [DIMAddressBTC generate:self.fingerprint type:network];
-        [_cachedAddresses setObject:address forKey:@(network)];
-    }
-    return address;
-}
-
-@end
-
-#pragma mark -
-
-@interface BTCMeta : DIMMeta {
-    
-    // cache
-    DIMAddressBTC *_cachedAddress;
-}
-
-@end
-
-@implementation BTCMeta
-
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        _cachedAddress = nil;
-    }
-    return self;
-}
-
-/* designated initializer */
-- (instancetype)initWithType:(MKMMetaType)version
-                         key:(id<MKMVerifyKey>)publicKey
-                        seed:(NSString *)seed
-                 fingerprint:(id<MKMTransportableData>)CT {
-    if (self = [super initWithType:version
-                               key:publicKey
-                              seed:seed
-                       fingerprint:CT]) {
-        _cachedAddress = nil;
-    }
-    return self;
-}
-
-- (id<MKMAddress>)generateAddress:(MKMEntityType)network {
-    NSAssert(self.type == MKMMetaType_BTC || self.type == MKMMetaType_ExBTC,
-             @"meta version error: %d", self.type);
-    DIMAddressBTC *address = _cachedAddress;
-    if (!address || [address type] != network) {
-        // TODO: compress public key?
-        NSData *data = [self.publicKey data];
-        // generate and cache it
-        _cachedAddress = address = [DIMAddressBTC generate:data type:network];
-    }
-    return address;
-}
-
-@end
-
-#pragma mark -
-
-@interface CompatibleMetaFactory : NSObject <MKMMetaFactory>
-
-@property (readonly, nonatomic) MKMMetaType type;
-
-- (instancetype)initWithType:(MKMMetaType)version;
-
-@end
-
-@implementation CompatibleMetaFactory
-
-- (instancetype)initWithType:(MKMMetaType)version {
-    if (self = [super init]) {
-        _type = version;
-    }
-    return self;
-}
-
-- (id<MKMMeta>)createMetaWithKey:(id<MKMVerifyKey>)PK
-                            seed:(nullable NSString *)name
-                     fingerprint:(nullable id<MKMTransportableData>)CT {
-    id<MKMMeta> meta;
-    switch (_type) {
-        case MKMMetaType_MKM:
-            meta = [[DefaultMeta alloc] initWithType:_type key:PK seed:name fingerprint:CT];
-            break;
-            
-        case MKMMetaType_BTC:
-        case MKMMetaType_ExBTC:
-            meta = [[BTCMeta alloc] initWithType:_type key:PK seed:name fingerprint:CT];
-            break;
-                
-        case MKMMetaType_ETH:
-        case MKMMetaType_ExETH:
-            meta = [[MKMMetaETH alloc] initWithType:_type key:PK seed:name fingerprint:CT];
-            break;
-
-        default:
-            NSAssert(false, @"meta type not supported: %d", _type);
-            meta = nil;
-            break;
-    }
-    return meta;
-}
-
-- (id<MKMMeta>)generateMetaWithKey:(id<MKMSignKey>)SK
-                              seed:(nullable NSString *)name {
-    id<MKMTransportableData> CT;
-    if (name.length > 0) {
-        NSData *sig = [SK sign:MKMUTF8Encode(name)];
-        CT = MKMTransportableDataCreate(sig, nil);
-    } else {
-        CT = nil;
-    }
-    id<MKMPublicKey> PK = [(id<MKMPrivateKey>)SK publicKey];
-    return [self createMetaWithKey:PK seed:name fingerprint:CT];
-}
-
+// Override
 - (nullable id<MKMMeta>)parseMeta:(NSDictionary *)info {
     id<MKMMeta> meta = nil;
-    MKMFactoryManager *man = [MKMFactoryManager sharedManager];
-    MKMMetaType version = [man.generalFactory metaType:info
-                                          defaultValue:0];
-    switch (version) {
-        case MKMMetaType_MKM:
-            meta = [[DefaultMeta alloc] initWithDictionary:info];
-            break;
-            
-        case MKMMetaType_BTC:
-        case MKMMetaType_ExBTC:
-            meta = [[BTCMeta alloc] initWithDictionary:info];
-            break;
-            
-        case MKMMetaType_ETH:
-        case MKMMetaType_ExETH:
-            meta = [[MKMMetaETH alloc] initWithDictionary:info];
-            break;
-            
-        default:
-            NSAssert(false, @"meta type not supported: %d", version);
-            break;
+    MKMSharedAccountExtensions *ext = [MKMSharedAccountExtensions sharedInstance];
+    NSString *version = [ext.helper getMetaType:info defaultValue:nil];
+    if ([version length] == 0) {
+        NSAssert(false, @"meta type error: %@", info);
+    } else if ([version isEqualToString:@"MKM"] ||
+               [version isEqualToString:@"mkm"] ||
+               [version isEqualToString:@"1"]) {
+        meta = [[DIMDefaultMeta alloc] initWithDictionary:info];
+    } else if ([version isEqualToString:@"BTC"] ||
+               [version isEqualToString:@"btc"] ||
+               [version isEqualToString:@"2"]) {
+        meta = [[DIMBTCMeta alloc] initWithDictionary:info];
+    } else if ([version isEqualToString:@"ETH"] ||
+               [version isEqualToString:@"eth"] ||
+               [version isEqualToString:@"4"]) {
+        meta = [[DIMETHMeta alloc] initWithDictionary:info];
+    } else {
+        // TODO: other types of meta
+        NSAssert(false, @"meta type not supported: %@", version);
     }
     return [meta isValid] ? meta : nil;
 }
 
 @end
-
-#pragma mark -
-
-void DIMRegisterCompatibleMetaFactory(void) {
-    MKMMetaSetFactory(MKMMetaType_MKM,
-                      [[CompatibleMetaFactory alloc] initWithType:MKMMetaType_MKM]);
-    MKMMetaSetFactory(MKMMetaType_BTC,
-                      [[CompatibleMetaFactory alloc] initWithType:MKMMetaType_BTC]);
-    MKMMetaSetFactory(MKMMetaType_ExBTC,
-                      [[CompatibleMetaFactory alloc] initWithType:MKMMetaType_ExBTC]);
-}

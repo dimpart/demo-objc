@@ -28,18 +28,53 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMMetaC.h
+//  DIMMetaVersion.m
 //  DIMClient
 //
 //  Created by Albert Moky on 2023/12/11.
 //
 
-#import <DIMPlugins/DIMPlugins.h>
+#import "DIMAddressC.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import "DIMMetaVersion.h"
 
-@interface DIMCompatibleMetaFactory : DIMMetaFactory
+NSString * _Nullable DIMMetaVersionParseString(id type) {
+    if ([type isKindOfClass:[NSString class]]) {
+        return type;
+    } else if ([type isKindOfClass:[NSNumber class]]) {
+        return [type stringValue];
+    } else {
+        assert(type == nil);
+        return nil;
+    }
+}
 
-@end
+BOOL DIMMetaVersionHasSeed(id type) {
+    UInt8 version = DIMMetaVersionParseInt(type, 0);
+    return 0 < version && (version & DIMMetaVersion_MKM) == DIMMetaVersion_MKM;
+}
 
-NS_ASSUME_NONNULL_END
+UInt8 DIMMetaVersionParseInt(id type, UInt8 defaultValue) {
+    if (!type) {
+        return defaultValue;
+    } else if ([type isKindOfClass:[NSNumber class]]) {
+        return [type unsignedCharValue];
+    } else if ([type isKindOfClass:[NSString class]]) {
+        // fixed values
+        if ([type isEqualToString:@"MKM"] || [type isEqualToString:@"mkm"]) {
+            return DIMMetaVersion_MKM;
+        } else if ([type isEqualToString:@"BTC"] || [type isEqualToString:@"btc"]) {
+            return DIMMetaVersion_BTC;
+        } else if ([type isEqualToString:@"ExBTC"]) {
+            return DIMMetaVersion_ExBTC;
+        } else if ([type isEqualToString:@"ETH"] || [type isEqualToString:@"eth"]) {
+            return DIMMetaVersion_ETH;
+        } else if ([type isEqualToString:@"ExETH"]) {
+            return DIMMetaVersion_ExETH;
+        }
+        // TODO: other algorithms
+    } else {
+        return -1;
+    }
+    return [type intValue];
+}

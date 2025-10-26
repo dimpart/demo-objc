@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,18 +28,56 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMMetaC.h
+//  DIMCache.m
 //  DIMClient
 //
-//  Created by Albert Moky on 2023/12/11.
+//  Created by Albert Moky on 2025/10/25.
 //
 
-#import <DIMPlugins/DIMPlugins.h>
+#import "DIMCache.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface DIMCompatibleMetaFactory : DIMMetaFactory
+@interface DIMThanosCache () {
+    
+    NSMutableDictionary *_caches;
+}
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation DIMThanosCache
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _caches = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
+- (nullable id)objectForKey:(NSString *)aKey {
+    return [_caches objectForKey:aKey];
+}
+
+- (void)setObject:(id)anObject forKey:(NSString *)aKey {
+    [_caches setObject:anObject forKey:aKey];
+}
+
+- (NSUInteger)reduceMemory {
+    NSUInteger snap = 0;
+    snap = DIMThanos(_caches, snap);
+    return snap;
+}
+
+@end
+
+NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger) {
+    NSArray *people = [planet allKeys];
+    // if ++finger is odd, remove it,
+    // else, let it go
+    for (id key in people) {
+        if ((++finger & 1) == 1) {
+            // kill it
+            [planet removeObjectForKey:key];
+        }
+        // let it go
+    }
+    return finger;
+}

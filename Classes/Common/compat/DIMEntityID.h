@@ -35,20 +35,28 @@
 //  Copyright © 2020 Albert Moky. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <DIMPlugins/DIMPlugins.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+@interface DIMEntityID : MKMID
 
-void DIMRegisterEntityIDFactory(void);
+@end
 
-void DIMRegisterCompatibleAddressFactory(void);
+@interface DIMEntityIDFactory : DIMIDFactory
 
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
+@end
+
+@interface DIMEntityIDFactory (thanos)
+
+/**
+ * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
+ * this will remove 50% of cached objects
+ *
+ * @return number of survivors
+ */
+- (NSInteger)reduceMemory;
+
+@end
 
 NS_ASSUME_NONNULL_END

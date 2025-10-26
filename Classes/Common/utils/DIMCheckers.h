@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2020 by Moky <albert.moky@gmail.com>
+//                               Written in 2023 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 Albert Moky
+// Copyright (c) 2023 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,49 +28,38 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMAddressBTC.h
-//  DIMPlugins
+//  DIMCheckers.h
+//  DIMSDK
 //
-//  Created by Albert Moky on 2020/12/12.
-//  Copyright © 2020 Albert Moky. All rights reserved.
+//  Created by Albert Moky on 2023/12/10.
+//  Copyright © 2023 Albert Moky. All rights reserved.
 //
 
-#import <DIMPlugins/DIMPlugins.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Address like BitCoin
- *
- *      data format: "network+digest+code"
- *          network    --  1 byte
- *          digest     -- 20 bytes
- *          code       --  4 bytes
- *
- *      algorithm:
- *          fingerprint = sign(seed, SK);  // public key data
- *          digest      = ripemd160(sha256(fingerprint));
- *          code        = sha256(sha256(network + digest)).prefix(4);
- *          address     = base58_encode(network + digest + code);
+/**
+ *  Frequency checker for duplicated queries
  */
-@interface DIMAddressBTC : MKMAddressBTC
+@interface DIMFrequencyChecker <K> : NSObject
+
+- (instancetype)initWithDuration:(NSTimeInterval)lifeSpan
+NS_DESIGNATED_INITIALIZER;
+
+- (BOOL)isExpired:(K)key time:(nullable NSDate *)current force:(BOOL)update;
+- (BOOL)isExpired:(K)key time:(nullable NSDate *)current;
+
+@end
 
 /**
- *  Generate address with fingerprint and network ID
- *
- * @param fingerprint = meta.fingerprint or key.data
- * @param network - address type
- * @return Address object
+ *  Recent time checker for querying
  */
-+ (instancetype)generate:(NSData *)fingerprint type:(MKMEntityType)network;
+@interface DIMRecentTimeChecker <K> : NSObject
 
-/**
- *  Parse a string for BTC address
- *
- * @param string - address string
- * @return null on error
- */
-+ (instancetype)parse:(NSString *)string;
+- (BOOL)setLastTime:(NSDate *)time forKey:(K)key;
+
+- (BOOL)isExpired:(NSDate *)time forKey:(K)key;
 
 @end
 
