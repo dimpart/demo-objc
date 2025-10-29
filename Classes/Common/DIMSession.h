@@ -83,17 +83,17 @@ typedef OKPair<id<DKDInstantMessage>, id<DKDReliableMessage>> DIMTransmitterResu
 
 @protocol DIMSession <DIMTransmitter>
 
-@property(nonatomic, readonly) id<DIMSessionDBI> database;
+@property (readonly, nonatomic) id<DIMSessionDBI> database;
 
 /**
  *  Get remote socket address
  *
  * @return host & port
  */
-@property(nonatomic, readonly) id<NIOSocketAddress> remoteAddress;
+@property (readonly, nonatomic) id<NIOSocketAddress> remoteAddress;
 
 // session key
-- (NSString *)key;
+- (nullable NSString *)sessionKey;
 
 /**
  *  Update user ID

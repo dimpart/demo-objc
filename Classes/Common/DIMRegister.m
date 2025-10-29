@@ -36,7 +36,7 @@
 //
 
 #import <ObjectKey/ObjectKey.h>
-#import <DIMPlugins/MKMPlugins.h>
+#import <DIMPlugins/DIMPlugins.h>
 
 #import "DIMHandshakeCommand.h"
 #import "DIMReceiptCommand.h"
@@ -53,9 +53,9 @@
 
 static inline id<MKMVisa> create_visa(id<MKMID> ID,
                                       NSString *nickname,
-                                      _Nullable id<MKMPortableNetworkFile> avatarUrl,
-                                      id<MKMEncryptKey> visaKey,
-                                      id<MKMSignKey> idKey) {
+                                      _Nullable id<MKPortableNetworkFile> avatarUrl,
+                                      id<MKEncryptKey> visaKey,
+                                      id<MKSignKey> idKey) {
     assert([ID isUser]);
     id<MKMVisa> visa = [[DIMVisa alloc] initWithID:ID];
     // App ID
@@ -76,7 +76,7 @@ static inline id<MKMVisa> create_visa(id<MKMID> ID,
 
 static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
                                               NSString *title,
-                                              id<MKMSignKey> sKey,
+                                              id<MKSignKey> sKey,
                                               id<MKMID> founder) {
     assert([ID isGroup]);
     id<MKMBulletin> doc = [[DIMBulletin alloc] initWithID:ID];
@@ -114,11 +114,11 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
 }
 
 - (id<MKMID>)createUserWithName:(NSString *)nickname
-                         avatar:(nullable id<MKMPortableNetworkFile>)url {
+                         avatar:(nullable id<MKPortableNetworkFile>)url {
     //
     //  Step 1: generate private key (with asymmetric algorithm)
     //
-    id<MKMPrivateKey> idKey = MKMPrivateKeyGenerate(MKMAlgorithm_ECC);
+    id<MKPrivateKey> idKey = MKPrivateKeyGenerate(MKAsymmetricAlgorithm_ECC);
     //
     //  Step 2: generate meta with private key (and meta seed)
     //
@@ -130,8 +130,8 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
     //
     //  Step 4: generate visa with ID and sign with private key
     //
-    id<MKMPrivateKey> msgKey = MKMPrivateKeyGenerate(MKMAlgorithm_RSA);
-    id<MKMEncryptKey> visaKey = (id<MKMEncryptKey>)[msgKey publicKey];
+    id<MKPrivateKey> msgKey = MKPrivateKeyGenerate(MKAsymmetricAlgorithm_RSA);
+    id<MKEncryptKey> visaKey = (id<MKEncryptKey>)[msgKey publicKey];
     id<MKMVisa> visa = create_visa(ID, nickname, url, visaKey, idKey);
     //
     //  Step 5: save private key, meta & visa in local storage
@@ -156,7 +156,7 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
     //
     //  Step 1: get private key of founder
     //
-    id<MKMSignKey> sKey = [_database privateKeyForVisaSignature:founder];
+    id<MKSignKey> sKey = [_database privateKeyForVisaSignature:founder];
     //
     //  Step 2: generate meta with private key (and meta seed)
     //
@@ -181,38 +181,6 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
     [_database saveMembers:@[founder] group:ID];
     // OK
     return ID;
-}
-
-@end
-
-@implementation DIMRegister (Plugins)
-
-+ (void)prepare {
-    OKSingletonDispatchOnce(^{
-
-        // load plugins
-        [MKMPlugins loadPlugins];
-        DIMRegisterEntityIDFactory();
-        DIMRegisterCompatibleAddressFactory();
-        DIMRegisterCompatibleMetaFactory();
-        
-        // load message/content factories
-        DIMRegisterAllFactories();  // core factories
-        
-        // Handshake
-        DIMCommandRegisterClass(DIMCommand_Handshake, DIMHandshakeCommand);
-        // Login
-        DIMCommandRegisterClass(DIMCommand_Login, DIMLoginCommand);
-        // Report
-        DIMCommandRegisterClass(DIMCommand_Report, DIMReportCommand);
-        // Mute
-        DIMCommandRegisterClass(DIMCommand_Mute, DIMMuteCommand);
-        // Block
-        DIMCommandRegisterClass(DIMCommand_Block, DIMBlockCommand);
-        // ANS
-        DIMCommandRegisterClass(DIMCommand_ANS, DIMAnsCommand);
-
-    });
 }
 
 @end

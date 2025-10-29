@@ -44,7 +44,7 @@ id<MKMID> DIMGSP(void) {
     dispatch_once(&onceToken, ^{
         s_gsp = [[MKMID alloc] initWithString:@"gsp@everywhere"
                                          name:@"gsp"
-                                      address:MKMAnywhere()
+                                      address:MKMAnywhere
                                      terminal:nil];
     });
     return s_gsp;
@@ -76,7 +76,7 @@ id<MKMID> DIMGSP(void) {
     NSInteger chosen;
     for (NSDictionary *info in array) {
         PID = MKMIDParse([info objectForKey:@"ID"]);
-        chosen = MKMConverterGetInteger([info objectForKey:@"chosen"], 0);
+        chosen = MKConvertInteger([info objectForKey:@"chosen"], 0);
         if (!PID) {
             // SP ID error
             NSAssert(false, @"provider ID error: %@", info);
@@ -145,9 +145,9 @@ id<MKMID> DIMGSP(void) {
     id<MKMID> PID;
     for (NSDictionary *info in array) {
         SID = MKMIDParse([info objectForKey:@"ID"]);
-        chosen = MKMConverterGetInteger([info objectForKey:@"chosen"], 0);
-        IP = MKMConverterGetString([info objectForKey:@"host"], nil);
-        port = MKMConverterGetUnsignedShort([info objectForKey:@"port"], 0);
+        chosen = MKConvertInteger([info objectForKey:@"chosen"], 0);
+        IP = MKConvertString([info objectForKey:@"host"], nil);
+        port = MKConvertUnsignedShort([info objectForKey:@"port"], 0);
         PID = MKMIDParse([info objectForKey:@"provider"]);
         if (!IP || port == 0/* || !PID*/) {
             // SP ID error

@@ -40,7 +40,33 @@
 
 @implementation DIMCommonPacker
 
+// Override
 - (id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
+    // make sure visa.key exists before encrypting message
+
+    //
+    //  Check FileContent
+    //  ~~~~~~~~~~~~~~~~~
+    //  You must upload file data before packing message.
+    //
+    __kindof id<DKDContent> content = [iMsg content];
+    if ([content conformsToProtocol:@protocol(DKDFileContent)]) {
+        id<DKDFileContent> file = content;
+        NSData *data = [file data];
+        if ([data length] > 0) {
+            NSAssert(false, @"You should upload file data before calling sendInstantMessage: %@ -> %@ (%@)",
+                     [iMsg sender], [iMsg receiver], [iMsg group]);
+            return nil;
+        }
+    }
+
+    // the intermediate node(s) can only get the message's signature,
+    // but cannot know the 'sn' because it cannot decrypt the content,
+    // this is usually not a problem;
+    // but sometimes we want to respond a receipt with original sn,
+    // so I suggest to expose 'sn' here.
+    [iMsg setObject:@(content.sn) forKey:@"sn"];
+
     // 1. check contact info
     // 2. check group members info
     if ([self checkReceiverInInstantMessage:iMsg]) {
@@ -52,51 +78,26 @@
     return [super encryptMessage:iMsg];
 }
 
+// Override
 - (id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
-    // 1. check sender's meta
+    // 1. check receiver/group with local user
+    // 2. check sender's visa info
     if ([self checkSenderInReliableMessage:rMsg]) {
         // sender is ready
     } else {
         NSLog(@"sender not ready: %@", rMsg.sender);
         return nil;
     }
-    // 2. check receiver/group with local user
-    if ([self checkReceiverInReliableMessage:rMsg]) {
-        // receiver is ready
-    } else {
-        // receiver (group) not ready
-        NSLog(@"receiver not ready: %@", rMsg.receiver);
-        return nil;
-    }
     return [super verifyMessage:rMsg];
 }
 
+// Override
 - (id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg {
     if ([sMsg conformsToProtocol:@protocol(DKDReliableMessage)]) {
         // already signed
         return (id<DKDReliableMessage>)sMsg;
     }
     return [super signMessage:sMsg];
-}
-
-- (id<DKDReliableMessage>)deserializeMessage:(NSData *)data {
-    if ([data length] <= 4) {
-        // message data error
-        return nil;
-    // } else if (data.first != '{'.codeUnitAt(0) || data.last != '}'.codeUnitAt(0)) {
-    //   // only support JsON format now
-    //   return null;
-    }
-    id<DKDReliableMessage> rMsg = [super deserializeMessage:data];
-    if (rMsg) {
-        [DIMCompatible fixMetaAttachment:rMsg];
-    }
-    return rMsg;
-}
-
-- (NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg {
-    [DIMCompatible fixMetaAttachment:rMsg];
-    return [super serializeMessage:rMsg];
 }
 
 @end
@@ -117,14 +118,10 @@
 
 @implementation DIMCommonPacker (Checking)
 
-- (nullable id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user {
+- (nullable id<MKEncryptKey>)getVisaKey:(id<MKMID>)user {
     NSAssert([user isUser], @"user ID error: %@", user);
-    return [self.facebook publicKeyForEncryption:user];
-}
-
-- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
-    NSAssert([group isGroup], @"group ID error: %@", group);
-    return [self.facebook membersOfGroup:group];
+    DIMFacebook *facebook = [self facebook];
+    return [facebook getPublicKeyForEncryption:user];
 }
 
 - (BOOL)checkSenderInReliableMessage:(id<DKDReliableMessage>)rMsg {
@@ -134,9 +131,9 @@
     id<MKMVisa> visa = DIMMessageGetVisa(rMsg);
     if (visa) {
         // first handshake?
-        NSAssert([visa.ID isEqual:sender], @"visa ID not match: %@", sender);
-        return [visa.ID isEqual:sender];
-    } else if ([self visaKeyForID:sender]) {
+        NSAssert([visa.identifier isEqual:sender], @"visa ID not match: %@", sender);
+        return [visa.identifier isEqual:sender];
+    } else if ([self getVisaKey:sender]) {
         // sender is OK
         return YES;
     }
@@ -149,40 +146,40 @@
     return NO;
 }
 
-- (BOOL)checkReceiverInReliableMessage:(id<DKDReliableMessage>)sMsg {
-    id<MKMID> receiver = [sMsg receiver];
-    // check group
-    id<MKMID> group = MKMIDParse([sMsg objectForKey:@"group"]);
-    if (!group && [receiver isGroup]) {
-        /// Transform:
-        ///     (B) => (J)
-        ///     (D) => (G)
-        group = receiver;
-    }
-    if (!group || [group isBroadcast]) {
-        /// A, C - personal message (or hidden group message)
-        //      the packer will call the facebook to select a user from local
-        //      for this receiver, if no user matched (private key not found),
-        //      this message will be ignored;
-        /// E, F, G - broadcast group message
-        //      broadcast message is not encrypted, so it can be read by anyone.
-        return YES;
-    }
-    /// H, J, K - group message
-    //      check for received group message
-    NSArray<id<MKMID>> *members = [self membersOfGroup:group];
-    if ([members count] > 0) {
-        // group is ready
-        return YES;
-    }
-    // group not ready, suspend message for waiting members
-    NSDictionary *error = @{
-        @"message": @"group not ready",
-        @"group": group.string,
-    };
-    [self suspendReliableMessage:sMsg error:error];  // rMsg.put("error", error);
-    return NO;
-}
+//- (BOOL)checkReceiverInReliableMessage:(id<DKDReliableMessage>)sMsg {
+//    id<MKMID> receiver = [sMsg receiver];
+//    // check group
+//    id<MKMID> group = MKMIDParse([sMsg objectForKey:@"group"]);
+//    if (!group && [receiver isGroup]) {
+//        /// Transform:
+//        ///     (B) => (J)
+//        ///     (D) => (G)
+//        group = receiver;
+//    }
+//    if (!group || [group isBroadcast]) {
+//        /// A, C - personal message (or hidden group message)
+//        //      the packer will call the facebook to select a user from local
+//        //      for this receiver, if no user matched (private key not found),
+//        //      this message will be ignored;
+//        /// E, F, G - broadcast group message
+//        //      broadcast message is not encrypted, so it can be read by anyone.
+//        return YES;
+//    }
+//    /// H, J, K - group message
+//    //      check for received group message
+//    NSArray<id<MKMID>> *members = [self membersOfGroup:group];
+//    if ([members count] > 0) {
+//        // group is ready
+//        return YES;
+//    }
+//    // group not ready, suspend message for waiting members
+//    NSDictionary *error = @{
+//        @"message": @"group not ready",
+//        @"group": group.string,
+//    };
+//    [self suspendReliableMessage:sMsg error:error];  // rMsg.put("error", error);
+//    return NO;
+//}
 
 - (BOOL)checkReceiverInInstantMessage:(id<DKDInstantMessage>)iMsg {
     id<MKMID> receiver = [iMsg receiver];
@@ -196,7 +193,7 @@
         //         that should be sent to a group bot first,
         //         and the bot will split it for all members.
         return NO;
-    } else if ([self visaKeyForID:receiver]) {
+    } else if ([self getVisaKey:receiver]) {
         // receiver is OK
         return YES;
     }

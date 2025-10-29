@@ -47,14 +47,14 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
     }
     return self;
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    if (self = [self initWithCommandName:DIMCommand_Login]) {
+    if (self = [self initWithCMD:DIMCommand_Login]) {
         // ID
         if (ID) {
             [self setObject:[ID string] forKey:@"ID"];
@@ -113,7 +113,7 @@
     }
 }
 - (void)copyStationInfo:(DIMStation *)station {
-    id<MKMID> ID = station.ID;
+    id<MKMID> ID = [station identifier];
     NSString *host = station.host;
     UInt32 port = station.port;
     if (!ID || [host length] == 0) {
@@ -141,7 +141,7 @@
     }
 }
 - (void)copyProviderInfo:(DIMServiceProvider *)provider {
-    id<MKMID> ID = provider.ID;
+    id<MKMID> ID = [provider identifier];
     if (!ID) {
         NSAssert(!provider, @"SP error: %@", provider);
         return;

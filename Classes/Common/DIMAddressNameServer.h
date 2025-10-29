@@ -39,6 +39,34 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol DIMAddressNameService <NSObject>
+
+/**
+ *  Check whether the alias is available
+ *
+ * @param name - alias (short name)
+ * @return true on reserved
+ */
+- (BOOL)isReserved:(NSString *)name;
+
+/**
+ *  Get ID for alias
+ *
+ * @param name - alias (short name)
+ * @return ID
+ */
+- (nullable id<MKMID>)getID:(NSString *)name;
+
+/**
+ *  Get all short names with the same ID
+ *
+ * @param ID - user ID
+ * @return short name list
+ */
+- (NSArray<NSString *> *)getNames:(id<MKMID>)ID;
+
+@end
+
 @interface DIMAddressNameServer : NSObject <DIMAddressNameService>
 
 // protected

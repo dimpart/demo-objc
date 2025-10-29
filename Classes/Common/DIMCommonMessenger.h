@@ -46,16 +46,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface DIMCommonMessenger : DIMMessenger <DIMTransmitter>
 
-@property (strong, nonatomic, readonly) __kindof DIMCommonFacebook *facebook;
-@property (strong, nonatomic, readonly) __kindof id<DIMSession> session;
-
-@property (strong, nonatomic) id<DIMPacker> packer;
-@property (strong, nonatomic) id<DIMProcessor> processor;
+@property (readonly, strong, nonatomic) __kindof id<DIMSession> session;
+@property (readonly, strong, nonatomic) id<DIMCipherKeyDelegate> database;
 
 - (instancetype)initWithFacebook:(DIMCommonFacebook *)barrack
                          session:(id<DIMSession>)session
                         database:(id<DIMCipherKeyDelegate>)db
 NS_DESIGNATED_INITIALIZER;
+
+- (void)setPacker:(id<DIMPacker>)messagePacker;
+
+- (void)setProcessor:(id<DIMProcessor>)messageProcessor;
 
 @end
 

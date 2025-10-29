@@ -110,6 +110,10 @@
 		E9A7F50B29CD955B00CDC41E /* DIMClientMessagePacker.h in Headers */ = {isa = PBXBuildFile; fileRef = E9A7F49E29CD955B00CDC41E /* DIMClientMessagePacker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9A7F50C29CD955B00CDC41E /* DIMClientMessageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = E9A7F49F29CD955B00CDC41E /* DIMClientMessageProcessor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9A7F50D29CD955B00CDC41E /* DIMClientSession+State.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7F4A029CD955B00CDC41E /* DIMClientSession+State.m */; };
+		E9AA44F52EB11AFD00945599 /* DIMEntityChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = E9AA44F32EB11AFD00945599 /* DIMEntityChecker.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9AA44F62EB11AFD00945599 /* DIMEntityChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AA44F42EB11AFD00945599 /* DIMEntityChecker.m */; };
+		E9AA44F92EB11BB500945599 /* DIMCommonProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = E9AA44F72EB11BB500945599 /* DIMCommonProcessor.h */; };
+		E9AA44FA2EB11BB500945599 /* DIMCommonProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AA44F82EB11BB500945599 /* DIMCommonProcessor.m */; };
 		E9B01B612B32B9C200AF0D21 /* DIMPrivateKeyStore.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B01B5F2B32B9C200AF0D21 /* DIMPrivateKeyStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9B01B622B32B9C200AF0D21 /* DIMPrivateKeyStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B01B602B32B9C200AF0D21 /* DIMPrivateKeyStore.m */; };
 		E9B1083B2B2B6849009A127D /* DIMCommonPacker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B108392B2B6849009A127D /* DIMCommonPacker.m */; };
@@ -272,6 +276,10 @@
 		E9A7F49E29CD955B00CDC41E /* DIMClientMessagePacker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMClientMessagePacker.h; sourceTree = "<group>"; };
 		E9A7F49F29CD955B00CDC41E /* DIMClientMessageProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMClientMessageProcessor.h; sourceTree = "<group>"; };
 		E9A7F4A029CD955B00CDC41E /* DIMClientSession+State.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DIMClientSession+State.m"; sourceTree = "<group>"; };
+		E9AA44F32EB11AFD00945599 /* DIMEntityChecker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMEntityChecker.h; sourceTree = "<group>"; };
+		E9AA44F42EB11AFD00945599 /* DIMEntityChecker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMEntityChecker.m; sourceTree = "<group>"; };
+		E9AA44F72EB11BB500945599 /* DIMCommonProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMCommonProcessor.h; sourceTree = "<group>"; };
+		E9AA44F82EB11BB500945599 /* DIMCommonProcessor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMCommonProcessor.m; sourceTree = "<group>"; };
 		E9B01B5F2B32B9C200AF0D21 /* DIMPrivateKeyStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMPrivateKeyStore.h; sourceTree = "<group>"; };
 		E9B01B602B32B9C200AF0D21 /* DIMPrivateKeyStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMPrivateKeyStore.m; sourceTree = "<group>"; };
 		E9B108392B2B6849009A127D /* DIMCommonPacker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMCommonPacker.m; sourceTree = "<group>"; };
@@ -477,6 +485,8 @@
 				E9A7F47629CD955B00CDC41E /* DIMRegister.m */,
 				E9A7F46529CD955B00CDC41E /* DIMAddressNameServer.h */,
 				E9A7F45629CD955B00CDC41E /* DIMAddressNameServer.m */,
+				E9AA44F32EB11AFD00945599 /* DIMEntityChecker.h */,
+				E9AA44F42EB11AFD00945599 /* DIMEntityChecker.m */,
 				E9E8B0022B29D6C100F17DBE /* DIMCommonArchivist.h */,
 				E9E8AFFF2B29D6C100F17DBE /* DIMCommonArchivist.m */,
 				E9A7F46429CD955B00CDC41E /* DIMCommonFacebook.h */,
@@ -484,6 +494,8 @@
 				E9A7F45729CD955B00CDC41E /* DIMSession.h */,
 				E9B1083A2B2B6849009A127D /* DIMCommonPacker.h */,
 				E9B108392B2B6849009A127D /* DIMCommonPacker.m */,
+				E9AA44F72EB11BB500945599 /* DIMCommonProcessor.h */,
+				E9AA44F82EB11BB500945599 /* DIMCommonProcessor.m */,
 				E9A7F47529CD955B00CDC41E /* DIMCommonMessenger.h */,
 				E9A7F45929CD955B00CDC41E /* DIMCommonMessenger.m */,
 			);
@@ -671,6 +683,7 @@
 				E9A7F4A629CD955B00CDC41E /* NSDate+Extension.h in Headers */,
 				E9A7F4EB29CD955B00CDC41E /* DIMClientMessenger.h in Headers */,
 				E9A7F4A529CD955B00CDC41E /* NSDictionary+Binary.h in Headers */,
+				E9AA44F92EB11BB500945599 /* DIMCommonProcessor.h in Headers */,
 				E9A7F4CE29CD955B00CDC41E /* DIMMessageDBI.h in Headers */,
 				E9A7F4F629CD955B00CDC41E /* DIMQueryCommandProcessor.h in Headers */,
 				E9A7F4D529CD955B00CDC41E /* DIMCommonFacebook.h in Headers */,
@@ -693,6 +706,7 @@
 				E9A7F50229CD955B00CDC41E /* DIMAnsCommandProcessor.h in Headers */,
 				E9A7F4FF29CD955B00CDC41E /* DIMHistoryProcessor.h in Headers */,
 				E9A7F4B629CD955B00CDC41E /* STStreamChannel.h in Headers */,
+				E9AA44F52EB11AFD00945599 /* DIMEntityChecker.h in Headers */,
 				E9FE74512EAD0A4D007F704D /* DIMCommonLoaders.h in Headers */,
 				E9A7F4B929CD955B00CDC41E /* DIMHttpClient.h in Headers */,
 				E9FE74432EAD080A007F704D /* DIMCheckers.h in Headers */,
@@ -820,6 +834,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9AA44F62EB11AFD00945599 /* DIMEntityChecker.m in Sources */,
 				E9A7F4C229CD955B00CDC41E /* DIMGateKeeper.m in Sources */,
 				E9E8B0212B29D71500F17DBE /* DIMGroupDelegate.m in Sources */,
 				E9A7F50D29CD955B00CDC41E /* DIMClientSession+State.m in Sources */,
@@ -853,6 +868,7 @@
 				E9A7F4F829CD955B00CDC41E /* DIMExpelCommandProcessor.m in Sources */,
 				E9A7F4D729CD955B00CDC41E /* DIMHandshakeCommand.m in Sources */,
 				E9A7F50729CD955B00CDC41E /* DIMClientMessageProcessor.m in Sources */,
+				E9AA44FA2EB11BB500945599 /* DIMCommonProcessor.m in Sources */,
 				E9A7F4CC29CD955B00CDC41E /* DIMCommonMessenger.m in Sources */,
 				E9A7F4B529CD955B00CDC41E /* STStreamDocker.m in Sources */,
 				E9A7F4C429CD955B00CDC41E /* DIMBaseSession.m in Sources */,

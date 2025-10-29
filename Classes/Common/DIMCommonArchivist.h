@@ -36,26 +36,51 @@
 
 #import <DIMSDK/DIMSDK.h>
 #import <DIMClient/DIMAccountDBI.h>
+#import <DIMClient/DIMCache.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCommonArchivist : DIMArchivist <MKMUserDataSource, MKMGroupDataSource>
+@interface DIMCommonArchivist : DIMBarrack <DIMArchivist>
 
-@property (strong, nonatomic, readonly) id<DIMAccountDBI> database;
+// protected
+@property (readonly, weak, nonatomic, nullable) __kindof DIMFacebook *facebook;
 
-- (instancetype)initWithDatabase:(id<DIMAccountDBI>)db;
+@property (readonly, strong, nonatomic) id<DIMAccountDBI> database;
 
-- (NSArray<id<MKMID>> *)localUsers;
+- (instancetype)initWithFacebook:(DIMFacebook *)facebook
+                        database:(id<DIMAccountDBI>)db
+NS_DESIGNATED_INITIALIZER;
 
-//
-//  Organization Structure
-//
+@end
 
-- (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group;
+@interface DIMCommonArchivist (Cache)
 
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;
+- (id<DIMMemoryCache>)createUserCache;
+- (id<DIMMemoryCache>)createGroupCache;
 
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
+/**
+ * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
+ * this will remove 50% of cached objects
+ *
+ * @return number of survivors
+ */
+- (NSUInteger)reduceMemory;
+
+@end
+
+@interface DIMCommonArchivist (Checking)
+
+// protected
+- (BOOL)checkMeta:(id<MKMMeta>)meta forID:(id<MKMID>)ID;
+
+// protected
+- (BOOL)checkDocumentValid:(id<MKMDocument>)doc;
+
+// protected
+- (BOOL)verifyDocument:(id<MKMDocument>)doc;
+
+// protected
+- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc;
 
 @end
 

@@ -87,9 +87,9 @@
         };
         
         // DIM founder
-        id<MKMID> founder = MKMFounder();
-        id<MKMID> anyone = MKMAnyone();
-        id<MKMID> everyone = MKMEveryone();
+        id<MKMID> founder = MKMFounder;
+        id<MKMID> anyone = MKMAnyone;
+        id<MKMID> everyone = MKMEveryone;
         
         _caches = [[NSMutableDictionary alloc] init];
         
@@ -113,14 +113,17 @@
     return self;
 }
 
+// Override
 - (BOOL)isReserved:(NSString *)name {
     return [_reserved objectForKey:name];
 }
 
+// Override
 - (nullable id<MKMID>)getID:(NSString *)name {
     return [_caches objectForKey:name];
 }
 
+// Override
 - (NSArray<NSString *> *)getNames:(id<MKMID>)ID {
     return [_caches allKeysForObject:ID];
 }

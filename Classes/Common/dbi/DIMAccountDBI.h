@@ -48,13 +48,13 @@ extern "C" {
 //  Conveniences
 //
 
-NSArray<id<MKMDecryptKey>> *DIMConvertDecryptKeys(NSArray<id<MKMPrivateKey>> *privateKeys);
-NSArray<id<MKMPrivateKey>> *DIMConvertPrivateKeys(NSArray<id<MKMDecryptKey>> *decryptKeys);
+NSArray<id<MKDecryptKey>> *DIMConvertDecryptKeys(NSArray<id<MKPrivateKey>> *privateKeys);
+NSArray<id<MKPrivateKey>> *DIMConvertPrivateKeys(NSArray<id<MKDecryptKey>> *decryptKeys);
 
-NSArray<NSDictionary<NSString *, id> *> *DIMRevertPrivateKeys(NSArray<id<MKMPrivateKey>> *privateKeys);
+NSArray<NSDictionary<NSString *, id> *> *DIMRevertPrivateKeys(NSArray<id<MKPrivateKey>> *privateKeys);
 
-NSArray<id<MKMPrivateKey>> *DIMUnshiftPrivateKey(id<MKMPrivateKey> key, NSMutableArray<id<MKMPrivateKey>> *privateKeys);
-NSInteger DIMFindPrivateKey(id<MKMPrivateKey> key, NSArray<id<MKMPrivateKey>> *privateKeys);
+NSArray<id<MKPrivateKey>> *DIMUnshiftPrivateKey(id<MKPrivateKey> key, NSMutableArray<id<MKPrivateKey>> *privateKeys);
+NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *privateKeys);
 
 #ifdef __cplusplus
 } /* end of extern "C" */
@@ -73,7 +73,7 @@ NSInteger DIMFindPrivateKey(id<MKMPrivateKey> key, NSArray<id<MKMPrivateKey>> *p
  * @param type - 'M' for matching meta.key; or 'P' for matching profile.key
  * @return false on error
  */
-- (BOOL)savePrivateKey:(id<MKMPrivateKey>)key withType:(NSString *)type forUser:(id<MKMID>)user;
+- (BOOL)savePrivateKey:(id<MKPrivateKey>)key withType:(NSString *)type forUser:(id<MKMID>)user;
 
 /**
  *  Get private keys for user
@@ -81,7 +81,7 @@ NSInteger DIMFindPrivateKey(id<MKMPrivateKey> key, NSArray<id<MKMPrivateKey>> *p
  * @param user - user ID
  * @return all keys marked for decryption
  */
-- (NSArray<id<MKMDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user;
+- (NSArray<id<MKDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user;
 
 /**
  *  Get private key for user
@@ -89,7 +89,7 @@ NSInteger DIMFindPrivateKey(id<MKMPrivateKey> key, NSArray<id<MKMPrivateKey>> *p
  * @param user - user ID
  * @return first key marked for signature
  */
-- (nullable id<MKMPrivateKey>)privateKeyForSignature:(id<MKMID>)user;
+- (nullable id<MKPrivateKey>)privateKeyForSignature:(id<MKMID>)user;
 
 /**
  *  Get private key for user
@@ -97,7 +97,7 @@ NSInteger DIMFindPrivateKey(id<MKMPrivateKey> key, NSArray<id<MKMPrivateKey>> *p
  * @param user - user ID
  * @return the private key matched with meta.key
  */
-- (nullable id<MKMPrivateKey>)privateKeyForVisaSignature:(id<MKMID>)user;
+- (nullable id<MKPrivateKey>)privateKeyForVisaSignature:(id<MKMID>)user;
 
 @end
 

@@ -2,12 +2,12 @@
 //
 //  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2019 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,37 +28,26 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMBlockCommand.m
+//  DIMCommonProcessor.h
 //  DIMClient
 //
-//  Created by Albert Moky on 2019/10/25.
-//  Copyright © 2019 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2025/10/28.
 //
 
-#import "DIMBlockCommand.h"
+#import <DIMSDK/DIMSDK.h>
 
-@implementation DIMBlockCommand
+#import <DIMClient/DIMEntityChecker.h>
 
-- (instancetype)initWithList:(nullable NSArray<id<MKMID>> *)blockList {
-    if (self = [self initWithCMD:DIMCommand_Block]) {
-        // block-list
-        if (blockList) {
-            [self setList:blockList];
-        }
-    }
-    return self;
-}
+NS_ASSUME_NONNULL_BEGIN
 
-- (nullable NSArray<id<MKMID>> *)list {
-    return MKMIDConvert([self objectForKey:@"list"]);
-}
+@interface DIMCommonProcessor : DIMMessageProcessor
 
-- (void)setList:(NSArray<id<MKMID>> *)list {
-    if (list) {
-        [self setObject:MKMIDRevert(list) forKey:@"list"];
-    } else {
-        [self removeObjectForKey:@"list"];
-    }
-}
+@property (readonly, strong, nonatomic, nullable) __kindof DIMEntityChecker *entityChecker;
+
+// protected
+- (id<DIMContentProcessorCreator>)createCreatorWithFacebook:(DIMFacebook *)facebook
+                                                  messenger:(DIMMessenger *)transceiver;
 
 @end
+
+NS_ASSUME_NONNULL_END

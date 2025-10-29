@@ -38,6 +38,13 @@
 #import "DIMAddressC.h"
 #import "DIMMetaC.h"
 
+#import "DIMAnsCommand.h"
+#import "DIMHandshakeCommand.h"
+#import "DIMLoginCommand.h"
+#import "DIMMuteCommand.h"
+#import "DIMBlockCommand.h"
+#import "DIMReportCommand.h"
+
 #import "DIMCommonLoaders.h"
 
 @implementation DIMCommonExtensionLoader
@@ -56,6 +63,25 @@
 - (void)registerCommandFactories {
     [super registerCommandFactories];
     
+    // ANS
+    DIMCommandRegisterClass(DIMCommand_ANS, DIMAnsCommand);
+    
+    // Handshake
+    DIMCommandRegisterClass(DIMCommand_Handshake, DIMHandshakeCommand);
+    // Login
+    DIMCommandRegisterClass(DIMCommand_Login, DIMLoginCommand);
+    
+    // Mute
+    DIMCommandRegisterClass(DIMCommand_Mute, DIMMuteCommand);
+    // Block
+    DIMCommandRegisterClass(DIMCommand_Block, DIMBlockCommand);
+    
+    // Report: online, offline
+    DIMCommandRegisterClass(DIMCommand_Report,  DIMReportCommand);
+    DIMCommandRegisterClass(DIMCommand_Online,  DIMReportCommand);
+    DIMCommandRegisterClass(DIMCommand_Offline, DIMReportCommand);
+
+    // Group command (deprecated)
     // ...
 }
 

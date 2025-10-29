@@ -37,35 +37,35 @@
 
 #import "DIMAccountDBI.h"
 
-NSArray<id<MKMDecryptKey>> *DIMConvertDecryptKeys(NSArray<id<MKMPrivateKey>> *privateKeys) {
-    NSMutableArray<id<MKMDecryptKey>> *decryptKeys = [[NSMutableArray alloc] initWithCapacity:[privateKeys count]];
-    for (id<MKMPrivateKey> key in privateKeys) {
-        if ([key conformsToProtocol:@protocol(MKMDecryptKey)]) {
-            [decryptKeys addObject:(id<MKMDecryptKey>)key];
+NSArray<id<MKDecryptKey>> *DIMConvertDecryptKeys(NSArray<id<MKPrivateKey>> *privateKeys) {
+    NSMutableArray<id<MKDecryptKey>> *decryptKeys = [[NSMutableArray alloc] initWithCapacity:[privateKeys count]];
+    for (id<MKPrivateKey> key in privateKeys) {
+        if ([key conformsToProtocol:@protocol(MKDecryptKey)]) {
+            [decryptKeys addObject:(id<MKDecryptKey>)key];
         }
     }
     return decryptKeys;
 }
 
-NSArray<id<MKMPrivateKey>> *DIMConvertPrivateKeys(NSArray<id<MKMDecryptKey>> *decryptKeys) {
-    NSMutableArray<id<MKMPrivateKey>> *privateKeys = [[NSMutableArray alloc] initWithCapacity:[decryptKeys count]];
-    for (id<MKMDecryptKey> key in decryptKeys) {
-        if ([key conformsToProtocol:@protocol(MKMPrivateKey)]) {
-            [privateKeys addObject:(id<MKMPrivateKey>)key];
+NSArray<id<MKPrivateKey>> *DIMConvertPrivateKeys(NSArray<id<MKDecryptKey>> *decryptKeys) {
+    NSMutableArray<id<MKPrivateKey>> *privateKeys = [[NSMutableArray alloc] initWithCapacity:[decryptKeys count]];
+    for (id<MKDecryptKey> key in decryptKeys) {
+        if ([key conformsToProtocol:@protocol(MKPrivateKey)]) {
+            [privateKeys addObject:(id<MKPrivateKey>)key];
         }
     }
     return privateKeys;
 }
 
-NSArray<NSDictionary<NSString *, id> *> *DIMRevertPrivateKeys(NSArray<id<MKMPrivateKey>> *privateKeys) {
+NSArray<NSDictionary<NSString *, id> *> *DIMRevertPrivateKeys(NSArray<id<MKPrivateKey>> *privateKeys) {
     NSMutableArray<id> *array = [[NSMutableArray alloc] initWithCapacity:[privateKeys count]];
-    for (id<MKMPrivateKey> key in privateKeys) {
+    for (id<MKPrivateKey> key in privateKeys) {
         [array addObject:key.dictionary];
     }
     return array;
 }
 
-NSArray<id<MKMPrivateKey>> *DIMUnshiftPrivateKey(id<MKMPrivateKey> key, NSMutableArray<id<MKMPrivateKey>> *privateKeys) {
+NSArray<id<MKPrivateKey>> *DIMUnshiftPrivateKey(id<MKPrivateKey> key, NSMutableArray<id<MKPrivateKey>> *privateKeys) {
     NSInteger index = DIMFindPrivateKey(key, privateKeys);
     if (index == 0) {
         // nothing change
@@ -81,11 +81,11 @@ NSArray<id<MKMPrivateKey>> *DIMUnshiftPrivateKey(id<MKMPrivateKey> key, NSMutabl
     return privateKeys;
 }
 
-NSInteger DIMFindPrivateKey(id<MKMPrivateKey> key, NSArray<id<MKMPrivateKey>> *privateKeys) {
+NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *privateKeys) {
     NSString *data = [key stringForKey:@"data" defaultValue:nil];
     assert(data.length > 0);
     NSInteger index = 0;
-    for (id<MKMPrivateKey> item in privateKeys) {
+    for (id<MKPrivateKey> item in privateKeys) {
         if ([[item stringForKey:@"data" defaultValue:nil] isEqualToString:data]) {
             return index;
         } else {

@@ -40,7 +40,7 @@
 @implementation DIMAnsCommand
 
 - (instancetype)initWithNames:(NSString *)names {
-    if (self = [self initWithCommandName:DIMCommand_ANS]) {
+    if (self = [self initWithCMD:DIMCommand_ANS]) {
         // names
         if (names) {
             [self setObject:names forKey:@"names"];

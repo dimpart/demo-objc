@@ -35,8 +35,10 @@
 //  Copyright © 2021 DIM Group. All rights reserved.
 //
 
-#import <DIMPlugins/MKMAddressBTC.h>
-#import <DIMPlugins/MKMAddressETH.h>
+#import <DIMPlugins/DIMBTCAddress.h>
+#import <DIMPlugins/DIMETHAddress.h>
+
+#import "DIMNetworkID.h"
 
 #import "MKMAnonymous.h"
 
@@ -51,11 +53,11 @@ static inline UInt32 user_number(NSData *cc) {
 }
 
 static inline UInt32 btc_number(NSString *address) {
-    NSData *data = MKMBase58Decode(address);
+    NSData *data = MKBase58Decode(address);
     return user_number(data);
 }
 static inline UInt32 eth_number(NSString *address) {
-    NSData *data = MKMHexDecode([address substringFromIndex:2]);
+    NSData *data = MKHexDecode([address substringFromIndex:2]);
     return user_number(data);
 }
 
@@ -101,13 +103,15 @@ static inline NSString *name_from_type(MKMEntityType network) {
 }
 
 + (UInt32)number:(id<MKMAddress>)address {
-    if ([address isBroadcast]) {
+    UInt8 network = [address network];
+    MKMEntityType type = MKMEntityTypeFromNetworkID(network);
+    if (MKMEntityTypeIsBroadcast(type)) {
         return 0;
     }
-    if ([address isKindOfClass:[MKMAddressBTC class]]) {
+    if ([address isKindOfClass:[DIMBTCAddress class]]) {
         return btc_number(address.string);
     }
-    if ([address isKindOfClass:[MKMAddressETH class]]) {
+    if ([address isKindOfClass:[DIMETHAddress class]]) {
         return eth_number(address.string);
     }
     NSAssert(false, @"address error: %@", address);

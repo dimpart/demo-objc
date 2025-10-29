@@ -68,9 +68,10 @@ NS_ASSUME_NONNULL_BEGIN
 // protected
 @interface DIMCommonPacker (Checking)
 
-- (nullable id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user;
-
-- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group;
+/**
+ *  for checking whether user's ready
+ */
+- (nullable id<MKEncryptKey>)getVisaKey:(id<MKMID>)user;
 
 /**
  *  Check sender before verifying received message
@@ -79,8 +80,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @return false on verify key not found
  */
 - (BOOL)checkSenderInReliableMessage:(id<DKDReliableMessage>)rMsg;
-
-- (BOOL)checkReceiverInReliableMessage:(id<DKDReliableMessage>)sMsg;
 
 /**
  *  Check receiver before encrypting message

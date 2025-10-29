@@ -60,7 +60,7 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
         _title = nil;
         _sessionKey = nil;
@@ -71,7 +71,7 @@
 
 - (instancetype)initWithTitle:(NSString *)title
                    sessionKey:(nullable NSString *)session {
-    if (self = [self initWithCommandName:DIMCommand_Handshake]) {
+    if (self = [self initWithCMD:DIMCommand_Handshake]) {
         // title
         if (title) {
             [self setObject:title forKey:@"title"];

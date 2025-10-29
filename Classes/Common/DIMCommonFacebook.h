@@ -39,6 +39,8 @@
 
 #import <DIMClient/DIMAccountDBI.h>
 #import <DIMClient/DIMAddressNameServer.h>
+#import <DIMClient/DIMEntityChecker.h>
+#import <DIMClient/DIMCommonArchivist.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -47,13 +49,44 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface DIMCommonFacebook : DIMFacebook
 
-// 1st local user
-@property(nonatomic, strong, nullable) __kindof id<MKMUser> currentUser;
+@property (readonly, strong, nonatomic) id<DIMAccountDBI> database;
 
-- (nullable id<MKMDocument>)documentForID:(id<MKMID>)ID
-                                 withType:(nullable NSString *)type;
+@property (strong, nonatomic, nullable) __kindof DIMEntityChecker *entityChecker;
 
-- (NSString *)nameForID:(id<MKMID>)ID;
+- (instancetype)initWithDatabase:(id<DIMAccountDBI>)adb
+NS_DESIGNATED_INITIALIZER;
+
+- (void)setArchivist:(DIMCommonArchivist *)barrack;
+
+//
+//  Current User
+//
+- (nullable __kindof id<MKMUser>)currentUser;
+- (void)setCurrentUser:(id<MKMUser>)user;
+
+@end
+
+@interface DIMCommonFacebook (Documents)
+
+- (nullable __kindof id<MKMDocument>)getDocument:(id<MKMID>)ID
+                                        withType:(nullable NSString *)type;
+
+- (nullable __kindof id<MKMVisa>)getVisa:(id<MKMID>)ID;
+- (nullable __kindof id<MKMBulletin>)getBulletin:(id<MKMID>)ID;
+
+- (nullable NSString *)getName:(id<MKMID>)ID;
+
+- (nullable id<MKPortableNetworkFile>)getAvatar:(id<MKMID>)user;
+
+@end
+
+@interface DIMCommonFacebook (Group)
+
+- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)group;
+
+- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)group;
+
+- (BOOL)saveMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)group;
 
 @end
 

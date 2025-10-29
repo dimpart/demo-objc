@@ -36,7 +36,13 @@
 
 #import "DIMCommonArchivist.h"
 
-@interface DIMCommonArchivist ()
+@interface DIMCommonArchivist () {
+    
+    id<DIMMemoryCache> _userCache;
+    id<DIMMemoryCache> _groupCache;
+}
+
+@property (weak, nonatomic, nullable) __kindof DIMFacebook *facebook;
 
 @property (strong, nonatomic) id<DIMAccountDBI> database;
 
@@ -44,132 +50,205 @@
 
 @implementation DIMCommonArchivist
 
-- (instancetype)initWithDatabase:(id<DIMAccountDBI>)db {
-    if (self = [self initWithDuration:DIMArchivist_QueryExpires]) {
+- (instancetype)init {
+    NSAssert(false, @"DON'T call me!");
+    DIMFacebook *facebook = nil;
+    id<DIMAccountDBI> adb = nil;
+    return [self initWithFacebook:facebook database:adb];
+}
+
+/* designated initializer */
+- (instancetype)initWithFacebook:(DIMFacebook *)facebook
+                        database:(id<DIMAccountDBI>)db {
+    if (self = [super init]) {
+        self.facebook = facebook;
         self.database = db;
+        _userCache = [self createUserCache];
+        _groupCache = [self createGroupCache];
     }
     return self;
 }
 
-- (NSArray<id<MKMID>> *)localUsers {
-    return [_database localUsers];
+// Override
+- (void)cacheUser:(id<MKMUser>)user {
+    if ([user dataSource] == nil) {
+        [user setDataSource:self.facebook];
+    }
+    id<MKMID> did = [user identifier];
+    [_userCache setObject:user forKey:did.string];
 }
 
-- (NSDate *)lastTimeOfHistoryForID:(id<MKMID>)group {
-    NSArray<DIMHistoryCmdMsg *> *array = [_database historiesOfGroup:group];
-    if ([array count] == 0) {
+// Override
+- (void)cacheGroup:(id<MKMGroup>)group {
+    if ([group dataSource] == nil) {
+        [group setDataSource:self.facebook];
+    }
+    id<MKMID> did = [group identifier];
+    [_groupCache setObject:group forKey:did.string];
+}
+
+// Override
+- (nullable __kindof id<MKMUser>)getUser:(id<MKMID>)did {
+    return [_userCache objectForKey:did.string];
+}
+
+// Override
+- (nullable __kindof id<MKMGroup>)getGroup:(id<MKMID>)did {
+    return [_groupCache objectForKey:did.string];
+}
+
+#pragma mark Archivist
+
+// Override
+- (BOOL)saveMeta:(id<MKMMeta>)meta withIdentifier:(id<MKMID>)ID {
+    //
+    //  1. check valid
+    //
+    if ([self checkMeta:meta forID:ID]) {
+        // meta valid
+    } else {
+        NSAssert(false, @"meta not valid: %@", ID);
+        return NO;
+    }
+    //
+    //  2. check duplicated
+    //
+    DIMFacebook *facebook = [self facebook];
+    id<MKMMeta> old = [facebook getMeta:ID];
+    if (old) {
+        // meta duplicated
+        return YES;
+    }
+    //
+    //  3. save into database
+    //
+    id<DIMAccountDBI> db = [self database];
+    return [db saveMeta:meta forID:ID];
+}
+
+// Override
+- (BOOL)saveDocument:(id<MKMDocument>)doc {
+    //
+    //  1. check valid
+    //
+    if ([self checkDocumentValid:doc]) {
+        // document valid
+    } else {
+        NSAssert(false, @"document not valid: %@", [doc identifier]);
+        return NO;
+    }
+    //
+    //  2. check expired
+    //
+    if ([self checkDocumentExpired:doc]) {
+        // drop expired document
+        return NO;
+    }
+    //
+    //  3. save into database
+    //
+    id<DIMAccountDBI> db = [self database];
+    return [db saveDocument:doc];
+}
+
+// Override
+- (nullable __kindof id<MKVerifyKey>)getMetaKey:(id<MKMID>)ID {
+    DIMFacebook *facebook = [self facebook];
+    id<MKMMeta> meta = [facebook getMeta:ID];
+    NSAssert(meta, @"failed to get meta for: %@", ID);
+    return [meta publicKey];
+}
+
+// Override
+- (nullable __kindof id<MKEncryptKey>)getVisaKey:(id<MKMID>)ID {
+    DIMFacebook *facebook = [self facebook];
+    NSArray<id<MKMDocument>> *docs = [facebook getDocuments:ID];
+    if ([docs count] == 0) {
         return nil;
     }
-    NSDate *lastTime;
-    NSDate *hisTime;
-    for (DIMHistoryCmdMsg *pair in array) {
-        hisTime = [pair.first time];
-        if (!hisTime) {
-            NSAssert(false, @"group command error: %@", pair.first);
-        } else if (/* !lastTime || */[lastTime timeIntervalSince1970] < [hisTime timeIntervalSince1970]) {
-            lastTime = hisTime;
-        }
-    }
-    return lastTime;
+    id<MKMVisa> visa = [DIMDocumentUtils lastVisa:docs];
+    NSAssert(visa, @"failed to get visa for: %@", ID);
+    return [visa publicKey];
 }
 
-- (BOOL)saveMeta:(id<MKMMeta>)meta forID:(id<MKMID>)ID {
-    return [_database saveMeta:meta forID:ID];
+// Override
+- (NSArray<id<MKMID>> *)localUsers {
+    id<DIMAccountDBI> db = [self database];
+    return [db localUsers];
 }
 
-- (BOOL)saveDocument:(id<MKMDocument>)doc {
+@end
+
+@implementation DIMCommonArchivist (Cache)
+
+- (id<DIMMemoryCache>)createUserCache {
+    return [[DIMThanosCache alloc] init];
+}
+
+- (id<DIMMemoryCache>)createGroupCache {
+    return [[DIMThanosCache alloc] init];
+}
+
+- (NSUInteger)reduceMemory {
+    NSUInteger cnt1 = [_userCache reduceMemory];
+    NSUInteger cnt2 = [_groupCache reduceMemory];
+    return cnt1 + cnt2;
+}
+
+@end
+
+@implementation DIMCommonArchivist (Checking)
+
+- (BOOL)checkMeta:(nonnull id<MKMMeta>)meta forID:(nonnull id<MKMID>)ID {
+    return [meta isValid] && [DIMMetaUtils meta:meta matchIdentifier:ID];
+}
+
+- (BOOL)checkDocumentValid:(nonnull id<MKMDocument>)doc {
+    id<MKMID> did = [doc identifier];
     NSDate *docTime = [doc time];
+    // check document time
     if (!docTime) {
         //NSAssert(false, @"document error: %@", doc);
     } else {
         // calibrate the clock
         // make sure the document time is not in the far future
-        NSTimeInterval current = [[[NSDate alloc] init] timeIntervalSince1970];
-        current += 64.0;
-        if ([docTime timeIntervalSince1970] > current) {
+        NSDate *now = [[NSDate alloc] init];
+        NSTimeInterval nearFuture = [now timeIntervalSince1970] + 1800;
+        if ([docTime timeIntervalSince1970] > nearFuture) {
             NSAssert(false, @"document time error: %@, %@", docTime, doc);
             return NO;
         }
     }
-    return [_database saveDocument:doc];
+    // check valid
+    return [self verifyDocument:doc];
 }
 
-//
-//  EntityDataSource
-//
-
-- (id<MKMMeta>)metaForID:(id<MKMID>)ID {
-    return [_database metaForID:ID];
+- (BOOL)verifyDocument:(nonnull id<MKMDocument>)doc {
+    if ([doc isValid]) {
+        return YES;
+    }
+    id<MKMID> did = [doc identifier];
+    DIMFacebook *facebook = [self facebook];
+    id<MKMMeta> meta = [facebook getMeta:did];
+    if (!meta) {
+        // failed to get meta
+        return NO;
+    }
+    id<MKVerifyKey> PK = [meta publicKey];
+    return [doc verify:PK];
 }
 
-- (NSArray<id<MKMDocument>> *)documentsForID:(id<MKMID>)ID {
-    return [_database documentsForID:ID];
-}
-
-//
-//  UserDataSource
-//
-
-- (NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
-    return [_database contactsOfUser:user];
-}
-
-- (id<MKMEncryptKey>)publicKeyForEncryption:(id<MKMID>)user {
-    NSAssert(false, @"don't call me!");
-    return nil;
-}
-
-- (NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
-    NSAssert(false, @"don't call me!");
-    return nil;
-}
-
-- (NSArray<id<MKMDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user {
-    return [_database privateKeysForDecryption:user];
-}
-
-- (id<MKMSignKey>)privateKeyForSignature:(id<MKMID>)user {
-    return [_database privateKeyForSignature:user];
-}
-
-- (id<MKMSignKey>)privateKeyForVisaSignature:(id<MKMID>)user {
-    return [_database privateKeyForVisaSignature:user];
-}
-
-//
-//  GroupDataSource
-//
-
-- (id<MKMID>)founderOfGroup:(id<MKMID>)group {
-    return [_database founderOfGroup:group];
-}
-
-- (id<MKMID>)ownerOfGroup:(id<MKMID>)group {
-    return [_database ownerOfGroup:group];
-}
-
-- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
-    return [_database membersOfGroup:group];
-}
-
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
-    return [_database assistantsOfGroup:group];
-}
-
-//
-//  Organization Structure
-//
-
-- (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group {
-    return [_database administratorsOfGroup:group];
-}
-
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
-    return [_database saveAdministrators:admins group:gid];
-}
-
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid {
-    return [_database saveMembers:members group:gid];
+- (BOOL)checkDocumentExpired:(nonnull id<MKMDocument>)doc {
+    id<MKMID> did = [doc identifier];
+    NSString *type = [DIMDocumentUtils getDocumentType:doc];
+    // check old documents with type
+    DIMFacebook *facebook = [self facebook];
+    NSArray<id<MKMDocument>> *documents = [facebook getDocuments:did];
+    if ([documents count] == 0) {
+        return NO;
+    }
+    id<MKMDocument> old = [DIMDocumentUtils lastDocument:documents forType:type];
+    return old && [DIMDocumentUtils timeIsExpired:doc compareTo:old];
 }
 
 @end

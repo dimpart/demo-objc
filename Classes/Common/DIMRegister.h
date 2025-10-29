@@ -54,7 +54,7 @@ NS_DESIGNATED_INITIALIZER;
  * @return User ID
  */
 - (id<MKMID>)createUserWithName:(NSString *)nickname
-                         avatar:(nullable id<MKMPortableNetworkFile>)url;
+                         avatar:(nullable id<MKPortableNetworkFile>)url;
 
 /**
  *  Generate group account (Polylogue)
@@ -66,13 +66,6 @@ NS_DESIGNATED_INITIALIZER;
 - (id<MKMID>)createGroupWithName:(NSString *)name founder:(id<MKMID>)ID;
 - (id<MKMID>)createGroupWithName:(NSString *)name
                             seed:(NSString *)seed founder:(id<MKMID>)ID;
-
-@end
-
-@interface DIMRegister (Plugins)
-
-// load plugins
-+ (void)prepare;
 
 @end
 
