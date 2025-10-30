@@ -121,7 +121,7 @@
         } else if ([res.MIMEType isEqualToString:@"text/html"]) {
             // server respond error
             NSData *data = [NSData dataWithContentsOfURL:loc];
-            NSString *html = MKMUTF8Decode(data);
+            NSString *html = MKUTF8Decode(data);
             NSLog(@"download %@ error: %@", url, html);
             // TODO: get error code
             NSInteger code = 404;

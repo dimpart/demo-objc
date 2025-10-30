@@ -35,6 +35,8 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "DIMDigestX.h"
+
 #import "DIMStorage.h"
 #import "DIMUploadTask.h"
 #import "DIMDownloadTask.h"
@@ -54,7 +56,7 @@ static inline NSData *hash_data(NSData *data, NSData *secret, NSData *salt) {
     [hash appendData:data];
     [hash appendData:secret];
     [hash appendData:salt];
-    return MKMMD5Digest(hash);
+    return MKMD5Digest(hash);
 }
 
 static inline NSString *make_filepath(NSString *dir, NSString *filename,
@@ -225,9 +227,9 @@ static inline NSString *make_filepath(NSString *dir, NSString *filename,
     string = [string stringByReplacingOccurrencesOfString:@"{ID}"
                                                withString:address.string];
     string = [string stringByReplacingOccurrencesOfString:@"{MD5}"
-                                               withString:MKMHexEncode(hash)];
+                                               withString:MKHexEncode(hash)];
     string = [string stringByReplacingOccurrencesOfString:@"{SALT}"
-                                               withString:MKMHexEncode(salt)];
+                                               withString:MKHexEncode(salt)];
     
     task = [[DIMUploadTask alloc] initWithURL:NSURLFromString(string)
                                          name:req.name

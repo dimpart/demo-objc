@@ -34,6 +34,8 @@
 //  Created by Albert Moky on 2025/10/25.
 //
 
+#import "DIMDigestX.h"
+
 #import "DIMEntityID.h"
 #import "DIMAddressC.h"
 #import "DIMMetaC.h"
@@ -88,6 +90,26 @@
 @end
 
 @implementation DIMCommonPluginLoader
+
+// Override
+- (void)registerDigesters {
+    [super registerDigesters];
+    
+    [self registerMD5Digester];
+    [self registerSHA1Digester];
+}
+
+- (void)registerMD5Digester {
+    // MD5
+    id<MKMessageDigester> md = [[DIMMD5Digester alloc] init];
+    [MKMD5 setDigester:md];
+}
+
+- (void)registerSHA1Digester {
+    // SHA1
+    id<MKMessageDigester> md = [[DIMSHA1Digester alloc] init];
+    [MKSHA1 setDigester:md];
+}
 
 // Override
 - (void)registerIDFactory {

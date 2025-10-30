@@ -124,9 +124,9 @@ static inline NSData *http_body(const NSString *var, NSString *filename, NSData 
     
     NSUInteger len = [begin length] + [data length] + [end length];
     NSMutableData *body = [[NSMutableData alloc] initWithCapacity:len];
-    [body appendData:MKMUTF8Encode(begin)];
+    [body appendData:MKUTF8Encode(begin)];
     [body appendData:data];
-    [body appendData:MKMUTF8Encode(end)];
+    [body appendData:MKUTF8Encode(end)];
     return body;
 }
 
@@ -186,7 +186,7 @@ static inline NSURLRequest *http_request(NSURL *url) {
                         completionHandler:^(NSData *data, NSURLResponse *res, NSError *error) {
         __strong DIMUploadTask *strongSelf = weakSelf;
         //[strongSelf touch];
-        NSLog(@"HTTP upload task complete: %@, %@, %@", res, error, MKMUTF8Decode(data));
+        NSLog(@"HTTP upload task complete: %@, %@, %@", res, error, MKUTF8Decode(data));
         if (error) {
             [strongSelf onError];
             [strongSelf.delegate uploadTask:strongSelf onError:error];
@@ -195,8 +195,8 @@ static inline NSURLRequest *http_request(NSURL *url) {
         }
         NSURL *url;
         @try {
-            NSString *json = MKMUTF8Decode(data);
-            NSDictionary *info = MKMJSONDecode(json);
+            NSString *json = MKUTF8Decode(data);
+            NSDictionary *info = MKJsonMapDecode(json);
             NSString *urlString = [info objectForKey:@"url"];
             url = NSURLFromString(urlString);
         } @catch (NSException *e) {
