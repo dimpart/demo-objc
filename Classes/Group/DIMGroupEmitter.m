@@ -34,17 +34,10 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import "DIMCommonFacebook.h"
-#import "DIMCommonMessenger.h"
-
-#import "DIMGroupDelegate.h"
-#import "DIMGroupPacker.h"
-
 #import "DIMGroupEmitter.h"
 
 @interface DIMGroupEmitter ()
 
-@property (strong, nonatomic) DIMGroupDelegate *delegate;
 @property (strong, nonatomic) DIMGroupPacker *packer;
 
 @end
@@ -52,8 +45,7 @@
 @implementation DIMGroupEmitter
 
 - (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate {
-    if (self = [self init]) {
-        self.delegate = delegate;
+    if (self = [super initWithDelegate:delegate]) {
         self.packer = [self createPacker];
     }
     return self;
@@ -63,21 +55,13 @@
     return [[DIMGroupPacker alloc] initWithDelegate:self.delegate];
 }
 
-- (DIMCommonFacebook *)facebook {
-    return [self.delegate facebook];
-}
-
-- (DIMCommonMessenger *)messenger {
-    return [self.delegate messenger];
-}
-
 // private
 - (void)attachGroupTimes:(id<DKDInstantMessage>)iMsg group:(id<MKMID>)gid {
     if ([iMsg.content conformsToProtocol:@protocol(DKDGroupCommand)]) {
         // no need to attach times for group command
         return;
     }
-    id<MKMBulletin> doc = [self.facebook bulletinForID:gid];
+    id<MKMBulletin> doc = [self.facebook getBulletin:gid];
     if (!doc) {
         NSAssert(false, @"failed to get bulletin document for group: %@", gid);
         return;
@@ -121,12 +105,12 @@
     //
     //  1. check group bots
     //
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:group];
-    if ([bots count] > 0) {
+    id<MKMID> prime = [self.delegate getFastestAssistant:group];
+    if (prime) {
         // group bots found, forward this message to any bot to let it split for me;
         // this can reduce my jobs.
         return [self _forwardMessage:iMsg
-                           assistant:bots.firstObject
+                           assistant:prime
                                group:group
                             priority:prior];
     }
@@ -134,7 +118,7 @@
     //
     //  2. check group members
     //
-    NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:group];
+    NSArray<id<MKMID>> *members = [self.delegate getMembers:group];
     NSUInteger count = [members count];
     if (count == 0) {
         NSAssert(false, @"failed to get members for group: %@", group);

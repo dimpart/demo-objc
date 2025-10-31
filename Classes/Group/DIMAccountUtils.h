@@ -1,6 +1,6 @@
 // license: https://mit-license.org
 //
-//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
+//  Ming-Ke-Ming : Decentralized User Identity Authentication
 //
 //                               Written in 2023 by Moky <albert.moky@gmail.com>
 //
@@ -28,32 +28,24 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMGroupAdminManager.h
-//  DIMClient
+//  DIMAccountUtils.h
+//  DIMCore
 //
-//  Created by Albert Moky on 2023/12/13.
+//  Created by Albert Moky on 2023/12/7.
+//  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <DIMClient/DIMGroupDelegate.h>
+#import <MingKeMing/MingKeMing.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMGroupAdminManager : DIMTripletsHelper
+@interface DIMBroadcastUtils : NSObject
 
-/**
- *  Update 'administrators' in bulletin document
- *  (broadcast new document to all members and neighbor station)
- *
- * @param gid - group ID
- * @param newAdmins - administrator list
- * @return false on error
- */
-- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins group:(id<MKMID>)gid;
++ (id<MKMID>)broadcastFounder:(id<MKMID>)group;
 
-/**
- *  Broadcast group document
- */
-- (BOOL)broadcastGroupDocument:(id<MKMBulletin>)doc;
++ (id<MKMID>)broadcastOwner:(id<MKMID>)group;
+
++ (NSArray<id<MKMID>> *)broadcastMembers:(id<MKMID>)group;
 
 @end
 

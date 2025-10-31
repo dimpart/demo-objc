@@ -34,28 +34,16 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import <DIMClient/DIMAccountDBI.h>
+#import <DIMClient/DIMGroupCommandHelper.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class DIMGroupDelegate;
-@class DIMGroupCommandHelper;
+@interface DIMGroupHistoryBuilder : DIMTripletsHelper
 
-@class DIMCommonFacebook;
-@class DIMCommonMessenger;
-
-@interface DIMGroupHistoryBuilder : NSObject
-
-@property (strong, nonatomic, readonly) DIMGroupDelegate *delegate;
-@property (strong, nonatomic, readonly) DIMGroupCommandHelper *helper;
+@property (readonly, strong, nonatomic) DIMGroupCommandHelper *helper;
 
 // protected, override for customized helper
 - (DIMGroupCommandHelper *)createHelper;
-
-@property (strong, nonatomic, readonly) __kindof DIMCommonFacebook *facebook;
-@property (strong, nonatomic, readonly) __kindof DIMCommonMessenger *messenger;
-
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate;
 
 /**
  *  Build command list for group history

@@ -35,16 +35,7 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import "DIMCommonFacebook.h"
-#import "DIMCommonMessenger.h"
-
 #import "DIMRegister.h"
-
-#import "DIMGroupDelegate.h"
-#import "DIMGroupPacker.h"
-
-#import "DIMGroupCommandHelper.h"
-#import "DIMGroupHistoryBuilder.h"
 
 #import "DIMGroupManager.h"
 
@@ -52,9 +43,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
 
 @interface DIMGroupManager ()
 
-@property (strong, nonatomic) DIMGroupDelegate *delegate;
 @property (strong, nonatomic) DIMGroupPacker *packer;
-
 @property (strong, nonatomic) DIMGroupCommandHelper *helper;
 @property (strong, nonatomic) DIMGroupHistoryBuilder *builder;
 
@@ -63,8 +52,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
 @implementation DIMGroupManager
 
 - (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate {
-    if (self = [self init]) {
-        self.delegate = delegate;
+    if (self = [super initWithDelegate:delegate]) {
         self.packer = [self createPacker];
         self.helper = [self createHelper];
         self.builder = [self createBuilder];
@@ -84,14 +72,6 @@ typedef NSMutableArray<id<MKMID>> UserList;
     return [[DIMGroupHistoryBuilder alloc] initWithDelegate:self.delegate];
 }
 
-- (DIMCommonFacebook *)facebook {
-    return [self.delegate facebook];
-}
-
-- (DIMCommonMessenger *)messenger {
-    return [self.delegate messenger];
-}
-
 - (id<MKMID>)createGroupWithMembers:(NSArray<id<MKMID>> *)members {
     NSAssert([members count] > 1, @"not enough members: %@", members);
     
@@ -103,7 +83,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
         NSAssert(false, @"failed to get current user");
         return nil;
     }
-    id<MKMID> founder = [user ID];
+    id<MKMID> founder = [user identifier];
 
     //
     //  1. check founder (owner)
@@ -134,18 +114,18 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //  3. upload meta+document to neighbor station(s)
     //  DISCUSS: should we let the neighbor stations know the group info?
     //
-    id<MKMMeta> meta = [self.delegate metaForID:group];
-    id<MKMBulletin> doc = [self.delegate bulletinForID:group];
+    id<MKMMeta> meta = [self.delegate getMeta:group];
+    id<MKMBulletin> doc = [self.delegate getBulletin:group];
     id<DKDCommand> content;
     if (doc) {
-        content = DIMDocumentCommandResponse(group, meta, doc);
+        content = DIMDocumentCommandResponse(group, meta, @[doc]);
     } else if (meta) {
         content = DIMMetaCommandResponse(group, meta);
     } else {
         NSAssert(false, @"failed to get group info: %@", group);
         return nil;
     }
-    BOOL ok = [self sendCommand:content receiver:MKMAnyStation()];  // to neighbor(s)
+    BOOL ok = [self sendCommand:content receiver:MKMAnyStation];  // to neighbor(s)
     if (!ok) {
         NSAssert(false, @"failed to upload meta/document to neighbor station");
     }
@@ -173,7 +153,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
         NSAssert(false, @"failed to get current user");
         return NO;
     }
-    id<MKMID> me = [user ID];
+    id<MKMID> me = [user identifier];
     
     // check member list
     id<MKMID> first = [newMembers firstObject];
@@ -183,7 +163,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
         return NO;
     }
     // member list OK, check expelled members
-    NSArray<id<MKMID>> *oldMembers = [self.delegate membersOfGroup:gid];
+    NSArray<id<MKMID>> *oldMembers = [self.delegate getMembers:gid];
     NSMutableArray<id<MKMID>> *expelList = [[NSMutableArray alloc] initWithCapacity:oldMembers.count];
     for (id<MKMID> item in oldMembers) {
         if (![newMembers containsObject:item]) {
@@ -238,7 +218,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     NSArray<id<DKDReliableMessage>> *messages = [self.builder buildHistoryForGroup:gid];
     id<DKDForwardContent> forward = DIMForwardContentCreate(messages);
     
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:gid];
+    NSArray<id<MKMID>> *bots = [self.delegate getAssistants:gid];
     if ([bots count] > 0) {
         // let the group bots know the newest member ID list,
         // so they can split group message correctly for us.
@@ -264,9 +244,9 @@ typedef NSMutableArray<id<MKMID>> UserList;
         NSAssert(false, @"failed to get current user");
         return NO;
     }
-    id<MKMID> me = [user ID];
+    id<MKMID> me = [user identifier];
     
-    NSArray<id<MKMID>> *oldMembers = [self.delegate membersOfGroup:gid];
+    NSArray<id<MKMID>> *oldMembers = [self.delegate getMembers:gid];
     
     BOOL isOwner = [self.delegate isOwner:me group:gid];
     BOOL isAdmin = [self.delegate isAdministrator:me group:gid];
@@ -314,7 +294,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  3. forward group command(s)
     //
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:gid];
+    NSArray<id<MKMID>> *bots = [self.delegate getAssistants:gid];
     if ([bots count] > 0) {
         // let the group bots know the newest member ID list,
         // so they can split group message correctly for us.
@@ -344,9 +324,9 @@ typedef NSMutableArray<id<MKMID>> UserList;
         NSAssert(false, @"failed to get current user");
         return NO;
     }
-    id<MKMID> me = [user ID];
+    id<MKMID> me = [user identifier];
     
-    NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:gid];
+    NSArray<id<MKMID>> *members = [self.delegate getMembers:gid];
     NSAssert([members count] > 0, @"failed to get members for group: %@", gid);
     
     BOOL isOwner = [self.delegate isOwner:me group:gid];
@@ -397,7 +377,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  4. forward 'quit' command
     //
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:gid];
+    NSArray<id<MKMID>> *bots = [self.delegate getAssistants:gid];
     if ([bots count] > 0) {
         // let the group bots know the newest member ID list,
         // so they can split group message correctly for us.
@@ -417,7 +397,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
         NSAssert(false, @"failed to get current user");
         return NO;
     }
-    id<MKMID> me = [user ID];
+    id<MKMID> me = [user identifier];
     if ([me isEqual:receiver]) {
         NSLog(@"skip cycled message: %@ => %@", me, receiver);
         return NO;
@@ -437,7 +417,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
         NSAssert(false, @"failed to get current user");
         return NO;
     }
-    id<MKMID> me = [user ID];
+    id<MKMID> me = [user identifier];
     // 2. send to all receivers
     DIMCommonMessenger *messenger = [self messenger];
     for (id<MKMID> receiver in members) {

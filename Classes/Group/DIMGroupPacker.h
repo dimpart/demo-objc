@@ -34,19 +34,11 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import <DIMSDK/DIMSDK.h>
+#import <DIMClient/DIMGroupDelegate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class DIMGroupDelegate;
-
-@interface DIMGroupPacker : NSObject
-
-@property (strong, nonatomic, readonly) DIMGroupDelegate *delegate;
-
-@property (strong, nonatomic, readonly) __kindof DIMMessenger *messenger;
-
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate;
+@interface DIMGroupPacker : DIMTripletsHelper
 
 /**
  *  Pack as broadcast message

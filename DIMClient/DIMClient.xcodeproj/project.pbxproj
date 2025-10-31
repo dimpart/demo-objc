@@ -120,6 +120,11 @@
 		E9B1083C2B2B6849009A127D /* DIMCommonPacker.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B1083A2B2B6849009A127D /* DIMCommonPacker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9B1083F2B2B6886009A127D /* DIMClientArchivist.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B1083D2B2B6886009A127D /* DIMClientArchivist.m */; };
 		E9B108402B2B6886009A127D /* DIMClientArchivist.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B1083E2B2B6886009A127D /* DIMClientArchivist.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9BFA02E2EB53938002EA7FF /* DIMSharedGroupManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BFA02C2EB53938002EA7FF /* DIMSharedGroupManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9BFA02F2EB53938002EA7FF /* DIMSharedGroupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BFA02D2EB53938002EA7FF /* DIMSharedGroupManager.m */; };
+		E9BFA0332EB53A86002EA7FF /* DIMChatroom.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BFA0322EB53A86002EA7FF /* DIMChatroom.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9BFA0342EB53A86002EA7FF /* DIMAccountUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BFA0302EB53A86002EA7FF /* DIMAccountUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9BFA0352EB53A86002EA7FF /* DIMAccountUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BFA0312EB53A86002EA7FF /* DIMAccountUtils.m */; };
 		E9DFAA9F2EB409AC005B9E9F /* DIMDigestX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9DFAA9E2EB409AC005B9E9F /* DIMDigestX.mm */; };
 		E9DFAAA02EB409AC005B9E9F /* DIMDigestX.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DFAA9D2EB409AC005B9E9F /* DIMDigestX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9E8AFE92B29D61D00F17DBE /* DIMSessionDBI.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E8AFE82B29D61D00F17DBE /* DIMSessionDBI.m */; };
@@ -288,6 +293,11 @@
 		E9B1083A2B2B6849009A127D /* DIMCommonPacker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMCommonPacker.h; sourceTree = "<group>"; };
 		E9B1083D2B2B6886009A127D /* DIMClientArchivist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMClientArchivist.m; sourceTree = "<group>"; };
 		E9B1083E2B2B6886009A127D /* DIMClientArchivist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMClientArchivist.h; sourceTree = "<group>"; };
+		E9BFA02C2EB53938002EA7FF /* DIMSharedGroupManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMSharedGroupManager.h; sourceTree = "<group>"; };
+		E9BFA02D2EB53938002EA7FF /* DIMSharedGroupManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMSharedGroupManager.m; sourceTree = "<group>"; };
+		E9BFA0302EB53A86002EA7FF /* DIMAccountUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMAccountUtils.h; sourceTree = "<group>"; };
+		E9BFA0312EB53A86002EA7FF /* DIMAccountUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMAccountUtils.m; sourceTree = "<group>"; };
+		E9BFA0322EB53A86002EA7FF /* DIMChatroom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMChatroom.h; sourceTree = "<group>"; };
 		E9DFAA9D2EB409AC005B9E9F /* DIMDigestX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMDigestX.h; sourceTree = "<group>"; };
 		E9DFAA9E2EB409AC005B9E9F /* DIMDigestX.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DIMDigestX.mm; sourceTree = "<group>"; };
 		E9E8AFE82B29D61D00F17DBE /* DIMSessionDBI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMSessionDBI.m; sourceTree = "<group>"; };
@@ -626,6 +636,9 @@
 		E9E8B0072B29D71500F17DBE /* Group */ = {
 			isa = PBXGroup;
 			children = (
+				E9BFA0302EB53A86002EA7FF /* DIMAccountUtils.h */,
+				E9BFA0312EB53A86002EA7FF /* DIMAccountUtils.m */,
+				E9BFA0322EB53A86002EA7FF /* DIMChatroom.h */,
 				E9E8B00C2B29D71500F17DBE /* DIMGroupDelegate.h */,
 				E9E8B0132B29D71500F17DBE /* DIMGroupDelegate.m */,
 				E9E8B0102B29D71500F17DBE /* DIMGroupCommandHelper.h */,
@@ -640,6 +653,8 @@
 				E9E8B00E2B29D71500F17DBE /* DIMGroupManager.m */,
 				E9E8B0082B29D71500F17DBE /* DIMGroupAdminManager.h */,
 				E9E8B0122B29D71500F17DBE /* DIMGroupAdminManager.m */,
+				E9BFA02C2EB53938002EA7FF /* DIMSharedGroupManager.h */,
+				E9BFA02D2EB53938002EA7FF /* DIMSharedGroupManager.m */,
 			);
 			path = Group;
 			sourceTree = "<group>";
@@ -684,7 +699,10 @@
 				E9E8B0222B29D71500F17DBE /* DIMGroupHistoryBuilder.h in Headers */,
 				E9A7F4DE29CD955B00CDC41E /* DIMAnsCommand.h in Headers */,
 				E9B108402B2B6886009A127D /* DIMClientArchivist.h in Headers */,
+				E9BFA02E2EB53938002EA7FF /* DIMSharedGroupManager.h in Headers */,
 				E9A7F4EA29CD955B00CDC41E /* DIMClientFacebook.h in Headers */,
+				E9BFA0332EB53A86002EA7FF /* DIMChatroom.h in Headers */,
+				E9BFA0342EB53A86002EA7FF /* DIMAccountUtils.h in Headers */,
 				E9E8B0052B29D6C100F17DBE /* MKMAnonymous.h in Headers */,
 				E9A7F4A629CD955B00CDC41E /* NSDate+Extension.h in Headers */,
 				E9A7F4EB29CD955B00CDC41E /* DIMClientMessenger.h in Headers */,
@@ -885,6 +903,7 @@
 				E9FE74442EAD080A007F704D /* DIMCheckers.m in Sources */,
 				E9A7F4D929CD955B00CDC41E /* DIMAnsCommand.m in Sources */,
 				E9A7F50A29CD955B00CDC41E /* DIMClientMessenger.m in Sources */,
+				E9BFA02F2EB53938002EA7FF /* DIMSharedGroupManager.m in Sources */,
 				E9A7F4E629CD955B00CDC41E /* DIMRegister.m in Sources */,
 				E9E8AFFD2B29D63F00F17DBE /* DIMMetaC.m in Sources */,
 				E9A7F4C329CD955B00CDC41E /* DIMUploadTask.m in Sources */,
@@ -908,6 +927,7 @@
 				E9A7F4B029CD955B00CDC41E /* STStreamArrival.m in Sources */,
 				E9A7F4DB29CD955B00CDC41E /* DIMReportCommand.m in Sources */,
 				E9B1083F2B2B6886009A127D /* DIMClientArchivist.m in Sources */,
+				E9BFA0352EB53A86002EA7FF /* DIMAccountUtils.m in Sources */,
 				E9A7F4F729CD955B00CDC41E /* DIMInviteCommandProcessor.m in Sources */,
 				E9E8B0182B29D71500F17DBE /* DIMGroupCommandHelper.m in Sources */,
 				E9A7F4E029CD955B00CDC41E /* DIMBlockCommand.m in Sources */,

@@ -34,34 +34,13 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import "DIMCommonMessenger.h"
-
-#import "DIMGroupDelegate.h"
-
 #import "DIMGroupPacker.h"
-
-@interface DIMGroupPacker ()
-
-@property (strong, nonatomic) DIMGroupDelegate *delegate;
-
-@end
 
 @implementation DIMGroupPacker
 
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate {
-    if (self = [self init]) {
-        self.delegate = delegate;
-    }
-    return self;
-}
-
-- (DIMMessenger *)messenger {
-    return [self.delegate messenger];
-}
-
 - (id<DKDReliableMessage>)packMessageWithContent:(id<DKDContent>)content
                                           sender:(id<MKMID>)from {
-    id<DKDEnvelope> envelope = DKDEnvelopeCreate(from, MKMAnyone(), nil);
+    id<DKDEnvelope> envelope = DKDEnvelopeCreate(from, MKMAnyone, nil);
     id<DKDInstantMessage> iMsg = DKDInstantMessageCreate(envelope, content);
     [iMsg setString:content.group forKey:@"group"];  // expose group ID
     return [self encryptAndSignMessage:iMsg];

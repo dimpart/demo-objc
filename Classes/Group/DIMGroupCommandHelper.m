@@ -34,31 +34,9 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import "DIMCommonArchivist.h"
-#import "DIMGroupDelegate.h"
-
 #import "DIMGroupCommandHelper.h"
 
-@interface DIMGroupCommandHelper ()
-
-@property (strong, nonatomic) DIMGroupDelegate *delegate;
-
-@end
-
 @implementation DIMGroupCommandHelper
-
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate {
-    if (self = [self init]) {
-        self.delegate = delegate;
-    }
-    return self;
-}
-
-- (id<DIMAccountDBI>)database {
-    DIMFacebook *facebook = [self.delegate facebook];
-    DIMCommonArchivist *archivist = [facebook archivist];
-    return [archivist database];
-}
 
 - (BOOL)saveGroupHistory:(id<DKDGroupCommand>)content
                  message:(id<DKDReliableMessage>)rMsg
@@ -119,12 +97,12 @@
     }
     if ([content conformsToProtocol:@protocol(DKDResetGroupCommand)]) {
         // administrator command, check with document time
-        id<MKMBulletin> doc = [self.delegate bulletinForID:group];
+        id<MKMBulletin> doc = [self.delegate getBulletin:group];
         if (!doc) {
             NSAssert(false, @"group document not exists: %@", group);
             return YES;
         }
-        return [DIMDocumentHelper time:content.time isBefore:doc.time];
+        return [DIMDocumentUtils time:content.time isBefore:doc.time];
     }
     // membership command, check with reset command
     DIMResetCmdMsg *pair = [self resetCommandMessageForGroup:group];
@@ -133,7 +111,7 @@
     if (!cmd/* || !msg*/) {
         return NO;
     }
-    return [DIMDocumentHelper time:content.time isBefore:cmd.time];
+    return [DIMDocumentUtils time:content.time isBefore:cmd.time];
 }
 
 - (NSArray<id<MKMID>> *)membersFromCommand:(id<DKDGroupCommand>)content {

@@ -34,7 +34,7 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import <DIMSDK/DIMSDK.h>
+#import <DIMClient/DIMGroupPacker.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -62,24 +62,12 @@ NS_ASSUME_NONNULL_BEGIN
 //
 #define DIM_SECRET_GROUP_LIMIT 16
 
-@class DIMGroupDelegate;
-@class DIMGroupPacker;
+@interface DIMGroupEmitter : DIMTripletsHelper
 
-@class DIMCommonFacebook;
-@class DIMCommonMessenger;
-
-@interface DIMGroupEmitter : NSObject
-
-@property (strong, nonatomic, readonly) DIMGroupDelegate *delegate;
-@property (strong, nonatomic, readonly) DIMGroupPacker *packer;
+@property (readonly, strong, nonatomic) DIMGroupPacker *packer;
 
 // protected, override for customized packer
 - (DIMGroupPacker *)createPacker;
-
-@property (strong, nonatomic, readonly) __kindof DIMCommonFacebook *facebook;
-@property (strong, nonatomic, readonly) __kindof DIMCommonMessenger *messenger;
-
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate;
 
 - (id<DKDReliableMessage>)sendInstantMessage:(id<DKDInstantMessage>)iMsg
                                     priority:(NSInteger)prior;

@@ -34,19 +34,11 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import <DIMClient/DIMAccountDBI.h>
+#import <DIMClient/DIMGroupDelegate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class DIMGroupDelegate;
-
-@interface DIMGroupCommandHelper : NSObject
-
-@property (strong, nonatomic, readonly) DIMGroupDelegate *delegate;
-
-@property (strong, nonatomic, readonly) id<DIMAccountDBI> database;
-
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate;
+@interface DIMGroupCommandHelper : DIMTripletsHelper
 
 //
 //  Group History Command

@@ -35,26 +35,16 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import <DIMSDK/DIMSDK.h>
+#import <DIMClient/DIMGroupDelegate.h>
+#import <DIMClient/DIMGroupCommandHelper.h>
+#import <DIMClient/DIMGroupHistoryBuilder.h>
+#import <DIMClient/DIMGroupPacker.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class DIMGroupDelegate;
-@class DIMGroupPacker;
+@interface DIMGroupManager : DIMTripletsHelper
 
-@class DIMGroupCommandHelper;
-@class DIMGroupHistoryBuilder;
-
-@class DIMCommonFacebook;
-@class DIMCommonMessenger;
-
-@protocol DIMAccountDBI;
-
-@interface DIMGroupManager : NSObject
-
-@property (strong, nonatomic, readonly) DIMGroupDelegate *delegate;
 @property (strong, nonatomic, readonly) DIMGroupPacker *packer;
-
 @property (strong, nonatomic, readonly) DIMGroupCommandHelper *helper;
 @property (strong, nonatomic, readonly) DIMGroupHistoryBuilder *builder;
 
@@ -66,13 +56,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 // protected, override for customized builder
 - (DIMGroupHistoryBuilder *)createBuilder;
-
-@property (strong, nonatomic, readonly) __kindof DIMCommonFacebook *facebook;
-@property (strong, nonatomic, readonly) __kindof DIMCommonMessenger *messenger;
-
-@property (strong, nonatomic, readonly) id<DIMAccountDBI> database;
-
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate;
 
 /**
  *  Create new group with members

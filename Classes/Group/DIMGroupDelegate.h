@@ -34,15 +34,21 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import <DIMSDK/DIMSDK.h>
+#import "DIMAccountDBI.h"
+#import "DIMCommonFacebook.h"
+#import "DIMCommonMessenger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMGroupDelegate : DIMTwinsHelper <MKMGroupDataSource>
 
-- (nullable id<MKMBulletin>)bulletinForID:(id<MKMID>)gid;
+@property (readonly, strong, nonatomic, nullable) id<DIMArchivist> archivist;
+
+- (nullable id<MKMBulletin>)getBulletin:(id<MKMID>)gid;
 
 - (BOOL)saveDocument:(id<MKMDocument>)doc;
+
+- (BOOL)updateRespondTime:(id<DKDReceiptCommand>)body envelope:(id<DKDEnvelope>)head;
 
 @end
 
@@ -54,9 +60,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface DIMGroupDelegate (Assistants)
+
+- (id<MKMID>)getFastestAssistant:(id<MKMID>)gid;
+
+- (void)setCommonAssistants:(NSArray<id<MKMID>> *)bots;
+
+@end
+
 @interface DIMGroupDelegate (Administrators)
 
-- (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid;
+- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)gid;
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;
 
@@ -73,6 +87,22 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isAdministrator:(id<MKMID>)uid group:(id<MKMID>)gid;
 
 - (BOOL)isAssistant:(id<MKMID>)bid group:(id<MKMID>)gid;
+
+@end
+
+#pragma mark -
+
+@interface DIMTripletsHelper : NSObject
+
+@property (readonly, strong, nonatomic) DIMGroupDelegate *delegate;
+
+@property (readonly, weak, nonatomic, nullable) __kindof DIMCommonFacebook *facebook;
+@property (readonly, weak, nonatomic, nullable) __kindof DIMCommonMessenger *messenger;
+
+@property (readonly, weak, nonatomic, nullable) id<DIMAccountDBI> database;
+
+- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate
+NS_DESIGNATED_INITIALIZER;
 
 @end
 

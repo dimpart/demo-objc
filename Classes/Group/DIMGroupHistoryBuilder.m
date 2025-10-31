@@ -34,17 +34,12 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import "DIMCommonFacebook.h"
-#import "DIMCommonMessenger.h"
-
-#import "DIMGroupDelegate.h"
-#import "DIMGroupCommandHelper.h"
+#import <ObjectKey/ObjectKey.h>
 
 #import "DIMGroupHistoryBuilder.h"
 
 @interface DIMGroupHistoryBuilder ()
 
-@property (strong, nonatomic) DIMGroupDelegate *delegate;
 @property (strong, nonatomic) DIMGroupCommandHelper *helper;
 
 @end
@@ -52,8 +47,7 @@
 @implementation DIMGroupHistoryBuilder
 
 - (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate {
-    if (self = [self init]) {
-        self.delegate = delegate;
+    if (self = [super initWithDelegate:delegate]) {
         self.helper = [self createHelper];
     }
     return self;
@@ -61,14 +55,6 @@
 
 - (DIMGroupCommandHelper *)createHelper {
     return [[DIMGroupCommandHelper alloc] initWithDelegate:self.delegate];
-}
-
-- (DIMCommonFacebook *)facebook {
-    return [self.delegate facebook];
-}
-
-- (DIMCommonMessenger *)messenger {
-    return [self.delegate messenger];
 }
 
 - (NSArray<id<DKDReliableMessage>> *)buildHistoryForGroup:(id<MKMID>)gid {
@@ -112,13 +98,13 @@
             continue;
         } else if ([item.first conformsToProtocol:@protocol(DKDResignGroupCommand)]) {
             // 'resign' command, comparing it with document time
-            if ([DIMDocumentHelper time:item.first.time isBefore:doc.time]) {
+            if ([DIMDocumentUtils time:item.first.time isBefore:doc.time]) {
                 NSLog(@"expired '%@' command in group: %@, sender: %@", item.first.cmd, gid, item.second.sender);
                 continue;
             }
         } else {
             // other commands('invite', 'join', 'quit'), comparing with 'reset' time
-            if ([DIMDocumentHelper time:item.first.time isBefore:reset.time]) {
+            if ([DIMDocumentUtils time:item.first.time isBefore:reset.time]) {
                 NSLog(@"expired '%@' command in group: %@, sender: %@", item.first.cmd, gid, item.second.sender);
                 continue;
             }
@@ -130,16 +116,17 @@
 }
 
 - (OKPair<id<MKMDocument>, id<DKDReliableMessage>> *)buildDocumentCommandForGroup:(id<MKMID>)gid {
-    id<MKMUser> user = [self.facebook currentUser];
-    id<MKMBulletin> doc = [self.delegate bulletinForID:gid];
+    DIMCommonFacebook *facebook = [self facebook];
+    id<MKMUser> user = [facebook currentUser];
+    id<MKMBulletin> doc = [self.delegate getBulletin:gid];
     if (!user || !doc) {
         NSAssert(user, @"failed to get current user");
         NSLog(@"document not found for group: %@", gid);
         return nil;
     }
-    id<MKMID> me = [user ID];
-    id<MKMMeta> meta = [self.delegate metaForID:gid];
-    id<DKDCommand> command = DIMDocumentCommandResponse(gid, meta, doc);
+    id<MKMID> me = [user identifier];
+    id<MKMMeta> meta = [self.delegate getMeta:gid];
+    id<DKDCommand> command = DIMDocumentCommandResponse(gid, meta, @[doc]);
     id<DKDReliableMessage> rMsg = [self packBroadcastMessage:command sender:me];
     return [[OKPair alloc] initWithFirst:doc second:rMsg];
 }
@@ -147,22 +134,22 @@
 - (DIMResetCmdMsg *)buildResetCommandForGroup:(id<MKMID>)gid
                                       members:(NSArray<id<MKMID>> *)members {
     id<MKMUser> user = [self.facebook currentUser];
-    id<MKMID> owner = [self.delegate ownerOfGroup:gid];
+    id<MKMID> owner = [self.delegate getOwner:gid];
     if (!user || !owner) {
         NSAssert(user, @"failed to get current user");
         NSLog(@"owner not found for group: %@", gid);
         return nil;
     }
-    id<MKMID> me = [user ID];
+    id<MKMID> me = [user identifier];
     if (![owner isEqual:me]) {
-        NSArray<id<MKMID>> *admins = [self.delegate administratorsOfGroup:gid];
+        NSArray<id<MKMID>> *admins = [self.delegate getAdministrators:gid];
         if (![admins containsObject:me]) {
             NSLog(@"not permit to build 'reset' command for group: %@, %@", gid, me);
             return nil;
         }
     }
     if ([members count] == 0) {
-        members = [self.delegate membersOfGroup:gid];
+        members = [self.delegate getMembers:gid];
         NSAssert([members count] > 0, @"group members not found: %@", gid);
     }
     id<DKDResetGroupCommand> command = DIMGroupCommandReset(gid, members);
@@ -172,7 +159,7 @@
 
 - (id<DKDReliableMessage>)packBroadcastMessage:(id<DKDContent>)content
                                         sender:(id<MKMID>)from {
-    id<DKDEnvelope> envelope = DKDEnvelopeCreate(from, MKMAnyone(), nil);
+    id<DKDEnvelope> envelope = DKDEnvelopeCreate(from, MKMAnyone, nil);
     id<DKDInstantMessage> iMsg = DKDInstantMessageCreate(envelope, content);
     id<DKDSecureMessage> sMsg = [self.messenger encryptMessage:iMsg];
     if (!sMsg) {

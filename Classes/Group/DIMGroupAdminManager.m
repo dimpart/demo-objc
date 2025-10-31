@@ -34,35 +34,9 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
-#import "DIMCommonFacebook.h"
-#import "DIMCommonMessenger.h"
-
-#import "DIMGroupDelegate.h"
-
 #import "DIMGroupAdminManager.h"
 
-@interface DIMGroupAdminManager ()
-
-@property (strong, nonatomic) DIMGroupDelegate *delegate;
-
-@end
-
 @implementation DIMGroupAdminManager
-
-- (instancetype)initWithDelegate:(DIMGroupDelegate *)delegate {
-    if (self = [self init]) {
-        self.delegate = delegate;
-    }
-    return self;
-}
-
-- (DIMCommonFacebook *)facebook {
-    return [self.delegate facebook];
-}
-
-- (DIMCommonMessenger *)messenger {
-    return [self.delegate messenger];
-}
 
 - (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins group:(id<MKMID>)gid {
     NSAssert([gid isGroup], @"group ID error: %@", gid);
@@ -77,8 +51,8 @@
         NSAssert(false, @"failed to get current user");
         return nil;
     }
-    id<MKMID> me = [user ID];
-    id<MKMSignKey> sKey = [facebook privateKeyForVisaSignature:me];
+    id<MKMID> me = [user identifier];
+    id<MKSignKey> sKey = [facebook getPrivateKeyForVisaSignature:me];
     NSAssert(sKey, @"failed to get sign key for current user: %@", me);
     
     //
@@ -93,31 +67,40 @@
     //
     //  2. update document
     //
-    id<MKMBulletin> doc = [self.delegate bulletinForID:gid];
-    if (!doc) {
+    id<MKMBulletin> bulletin = [self.delegate getBulletin:gid];
+    if (!bulletin) {
         // TODO: create new one?
         NSAssert(false, @"failed to get group document: %@, owner: %@", gid, me);
         return NO;
+    } else {
+        // clone for modifying
+        __kindof id<MKMDocument> clone = MKMDocumentParse([bulletin dictionary:NO]);
+        if ([clone conformsToProtocol:@protocol(MKMBulletin)]) {
+            bulletin = clone;
+        } else {
+            NSAssert(false, @"bulletin error: %@, %@", bulletin, gid);
+            return NO;
+        }
     }
-    [doc setProperty:MKMIDRevert(newAdmins) forKey:@"administrators"];
-    NSData *signature = !sKey ? nil : [doc sign:sKey];
+    [bulletin setProperty:MKMIDRevert(newAdmins) forKey:@"administrators"];
+    NSData *signature = !sKey ? nil : [bulletin sign:sKey];
     if (!signature) {
         NSAssert(false, @"failed to sign document for group: %@, owner: %@", gid, me);
         return NO;
-    } else if (![self.delegate saveDocument:doc]) {
+    } else if ([self.delegate saveDocument:bulletin]) {
+        NSLog(@"gorup document updated: %@", gid);
+    } else {
         NSAssert(false, @"failed to save document for group: %@", gid);
         return NO;
-    } else {
-        NSLog(@"gorup document updated: %@", gid);
     }
     
     //
     //  3. broadcast bulletin document
     //
-    return [self broadcastDocument:doc];
+    return [self broadcastGroupDocument:bulletin];
 }
 
-- (BOOL)broadcastDocument:(id<MKMBulletin>)doc {
+- (BOOL)broadcastGroupDocument:(id<MKMBulletin>)doc {
     DIMCommonFacebook *facebook = [self facebook];
     DIMCommonMessenger *messenger = [self messenger];
     NSAssert(facebook, @"facebook messenger not ready: %@, %@", facebook, messenger);
@@ -130,20 +113,20 @@
         NSAssert(false, @"failed to get current user");
         return nil;
     }
-    id<MKMID> me = [user ID];
+    id<MKMID> me = [user identifier];
     
     //
     //  1. create 'document' command, and send to current station
     //
-    id<MKMID> group = [doc ID];
-    id<MKMMeta> meta = [facebook metaForID:group];
-    id<DKDCommand> content = DIMDocumentCommandResponse(group, meta, doc);
-    [messenger sendContent:content sender:me receiver:MKMAnyStation() priority:1];
+    id<MKMID> group = [doc identifier];
+    id<MKMMeta> meta = [facebook getMeta:group];
+    id<DKDCommand> content = DIMDocumentCommandResponse(group, meta, @[doc]);
+    [messenger sendContent:content sender:me receiver:MKMAnyStation priority:1];
     
     //
     //  2. check group bots
     //
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:group];
+    NSArray<id<MKMID>> *bots = [self.delegate getAssistants:group];
     if ([bots count] > 0) {
         // group bots exist, let them to deliver to all other members
         for (id<MKMID> item in bots) {
@@ -159,7 +142,7 @@
     //
     //  3. broadcast to all members
     //
-    NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:group];
+    NSArray<id<MKMID>> *members = [self.delegate getMembers:group];
     if ([members count] == 0) {
         NSAssert(false, @"failed to get group members: %@", group);
         return NO;
