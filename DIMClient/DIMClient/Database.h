@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2022 by Moky <albert.moky@gmail.com>
+//                               Written in 2019 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2022 Albert Moky
+// Copyright (c) 2019 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,35 +28,21 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMEntityID.h
+//  Database.h
 //  DIMClient
 //
-//  Created by Albert Moky on 2020/12/12.
-//  Copyright © 2020 Albert Moky. All rights reserved.
+//  Created by Albert Moky on 2019/2/25.
+//  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import <DIMPlugins/DIMPlugins.h>
+#if !defined(__DIM_DB__)
+#define __DIM_DB__ 1
 
-NS_ASSUME_NONNULL_BEGIN
+//
+//  Database
+//
 
-@interface DIMEntityID : MKMID
+#import <DIMClient/DIMStorage.h>
+#import <DIMClient/DIMPrivateKeyStore.h>
 
-@end
-
-@interface DIMEntityIDFactory : DIMIDFactory
-
-@end
-
-@interface DIMEntityIDFactory (thanos)
-
-/**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
- *
- * @return number of survivors
- */
-- (NSUInteger)reduceMemory;
-
-@end
-
-NS_ASSUME_NONNULL_END
+#endif /* ! __DIM_DB__ */

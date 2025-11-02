@@ -86,7 +86,7 @@
 
 @implementation DIMCompatibleAddressFactory (thanos)
 
-- (NSInteger)reduceMemory {
+- (NSUInteger)reduceMemory {
     NSUInteger snap = 0;
     snap = DIMThanos(self.addresses, snap);
     return snap;

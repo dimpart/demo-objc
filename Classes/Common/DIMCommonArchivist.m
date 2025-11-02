@@ -204,7 +204,7 @@
 }
 
 - (BOOL)checkDocumentValid:(nonnull id<MKMDocument>)doc {
-    id<MKMID> did = [doc identifier];
+    //id<MKMID> did = [doc identifier];
     NSDate *docTime = [doc time];
     // check document time
     if (!docTime) {

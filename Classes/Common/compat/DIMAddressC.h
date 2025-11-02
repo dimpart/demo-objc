@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return number of survivors
  */
-- (NSInteger)reduceMemory;
+- (NSUInteger)reduceMemory;
 
 @end
 

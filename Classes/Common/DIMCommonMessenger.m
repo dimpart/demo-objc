@@ -252,9 +252,10 @@
               iMsg.sender, iMsg.receiver, iMsg.group);
         // attach sender's document times
         // for the receiver to check whether user info synchronized
-        BOOL ok = [self attachVisaTime:iMsg forSender:sender];
-        NSAssert(ok || [iMsg.content conformsToProtocol:@protocol(DKDCommand)],
-                 @"failed to attach document time: %@ => %@", sender, iMsg.content);;
+        [self attachVisaTime:iMsg forSender:sender];
+        //BOOL ok = [self attachVisaTime:iMsg forSender:sender];
+        //NSAssert(ok || [iMsg.content conformsToProtocol:@protocol(DKDCommand)],
+        //         @"failed to attach document time: %@ => %@", sender, iMsg.content);;
     }
     //
     //  1. encrypt message
