@@ -55,8 +55,8 @@
         return;
     }
     DIMClientFacebook *facebook = [self facebook];
-    DIMClientArchivist *archivist = [facebook archivist];
-    if (!archivist) {
+    DIMEntityChecker *checker = [facebook entityChecker];
+    if (!checker) {
         NSAssert(false, @"should not happen");
         return;
     }
@@ -70,7 +70,7 @@
             // calibrate the clock
             lastDocTime = now;
         }
-        docUpdated = [archivist setLastDocumentTime:lastDocTime forID:group];
+        docUpdated = [checker setLastDocumentTime:lastDocTime forID:group];
     }
     // check group history time
     NSDate *lastHisTime = [rMsg dateForKey:@"GHT" defaultValue:nil];
@@ -79,14 +79,14 @@
             // calibrate the clock
             lastHisTime = now;
         }
-        docUpdated = [archivist setLastHistoryTime:lastHisTime forID:group];
+        docUpdated = [checker setLastHistoryTime:lastHisTime forID:group];
     }
     // check whether needs update
     if (docUpdated) {
         [self.facebook documentsForID:group];
     }
     if (memUpdated) {
-        [archivist setLastActiveMember:rMsg.sender group:group];
+        [checker setLastActiveMember:rMsg.sender group:group];
         [self.facebook membersOfGroup:group];
     }
 }
@@ -109,9 +109,9 @@
     }
     id<MKMID> sender = [rMsg sender];
     id<MKMID> receiver = [rMsg receiver];
-    id<MKMUser> user = [self.facebook selectLocalUserWithID:receiver];
+    id<MKMID> user = [self.facebook selectLocalUser:receiver];
     NSAssert(user, @"receiver error: %@", receiver);
-    receiver = user.ID;
+    //receiver = [user identifier];
     DIMClientMessenger *messenger = [self messenger];
     // check responses
     for (id<DKDContent> res in responses) {
@@ -136,7 +136,7 @@
             }
         }
         // normal response
-        [messenger sendContent:res sender:receiver receiver:sender priority:STDeparturePrioritySlower];
+        [messenger sendContent:res sender:user receiver:sender priority:STDeparturePrioritySlower];
     }
     // DON'T respond to station directly
     return nil;

@@ -74,7 +74,7 @@
         return NO;
     } else {
         // clone for modifying
-        __kindof id<MKMDocument> clone = MKMDocumentParse([bulletin dictionary:NO]);
+        __kindof id<MKMDocument> clone = MKMDocumentParse([bulletin copyDictionary:NO]);
         if ([clone conformsToProtocol:@protocol(MKMBulletin)]) {
             bulletin = clone;
         } else {

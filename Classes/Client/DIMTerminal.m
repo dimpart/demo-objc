@@ -207,7 +207,7 @@
     // set current user for handshaking
     id<MKMUser> user = [_facebook currentUser];
     if (user) {
-        [session setID:user.ID];
+        [session setID:user.identifier];
     }
     [session startWithStateDelegate:self];
     return session;

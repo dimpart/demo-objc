@@ -42,6 +42,7 @@
 //#import "DIMMuteCommand.h"
 //#import "DIMBlockCommand.h"
 #import "DIMAnsCommand.h"
+#import "DIMGroupCommand.h"
 
 #import "DIMHistoryProcessor.h"
 #import "DIMGroupCommandProcessor.h"
@@ -65,7 +66,7 @@
 
 @implementation DIMClientContentProcessorCreator
 
-- (id<DIMContentProcessor>)createContentProcessor:(DKDContentType)type {
+- (id<DIMContentProcessor>)createContentProcessor:(NSString *)type {
     // history command
     if (type == DKDContentType_History) {
         return CREATE_CPU(DIMHistoryCommandProcessor);
@@ -78,7 +79,7 @@
     return [super createContentProcessor:type];
 }
 
-- (id<DIMContentProcessor>)createCommandProcessor:(NSString *)name type:(DKDContentType)msgType {
+- (id<DIMContentProcessor>)createCommandProcessor:(NSString *)name withType:(NSString *)msgType {
     // handshake
     if ([name isEqualToString:DIMCommand_Handshake]) {
         return CREATE_CPU(DIMHandshakeCommandProcessor);
@@ -88,7 +89,7 @@
         return CREATE_CPU(DIMLoginCommandProcessor);
     }
     // receipt
-    if ([name isEqualToString:DIMCommand_Receipt]) {
+    if ([name isEqualToString:DKDCommand_Receipt]) {
         return CREATE_CPU(DIMReceiptCommandProcessor);
     }
     // ans
@@ -99,19 +100,19 @@
     // group commands
     if ([name isEqualToString:@"group"]) {
         return CREATE_CPU(DIMGroupCommandProcessor);
-    } else if ([name isEqualToString:DIMGroupCommand_Invite]) {
+    } else if ([name isEqualToString:DKDGroupCommand_Invite]) {
         return CREATE_CPU(DIMInviteGroupCommandProcessor);
-    } else if ([name isEqualToString:DIMGroupCommand_Expel]) {
+    } else if ([name isEqualToString:DKDGroupCommand_Expel]) {
         return CREATE_CPU(DIMExpelGroupCommandProcessor);
-    } else if ([name isEqualToString:DIMGroupCommand_Quit]) {
+    } else if ([name isEqualToString:DKDGroupCommand_Quit]) {
         return CREATE_CPU(DIMQuitGroupCommandProcessor);
-    } else if ([name isEqualToString:DIMGroupCommand_Query]) {
+    } else if ([name isEqualToString:DKDGroupCommand_Query]) {
         return CREATE_CPU(DIMQueryGroupCommandProcessor);
-    } else if ([name isEqualToString:DIMGroupCommand_Reset]) {
+    } else if ([name isEqualToString:DKDGroupCommand_Reset]) {
         return CREATE_CPU(DIMResetGroupCommandProcessor);
     }
     // others
-    return [super createCommandProcessor:name type:msgType];
+    return [super createCommandProcessor:name withType:msgType];
 }
 
 @end

@@ -35,6 +35,9 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import <DIMPlugins/Loader.h>
+
+#import "DIMBroadcastUtils.h"
 #import "MKMAnonymous.h"
 #import "DIMRegister.h"
 #import "DIMGroupManager.h"
@@ -45,41 +48,26 @@
 
 @implementation DIMClientFacebook
 
-- (BOOL)saveDocument:(id<MKMDocument>)doc {
-    BOOL ok = [super saveDocument:doc];
-    if (ok && [doc conformsToProtocol:@protocol(MKMBulletin)]) {
-        // check administrators
-        id array = [doc propertyForKey:@"administrators"];
-        if ([array isKindOfClass:[NSArray class]]) {
-            id<MKMID> group = [doc ID];
-            NSAssert([group isGroup], @"group ID error: %@", group);
-            NSArray<id<MKMID>> *admins = MKMIDConvert(array);
-            ok = [self saveAdministrators:admins group:group];
-        }
-    }
-    return ok;
-}
-
 //
 //  GroupDataSource
 //
 
-- (id<MKMID>)founderOfGroup:(id<MKMID>)group {
+- (id<MKMID>)getFounder:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
         // founder of broadcast group
-        return [DIMBroadcastHelper broadcastFounder:group];
+        return [DIMBroadcastUtils broadcastFounder:group];
     }
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletinForID:group];
+    id<MKMBulletin> doc = [self getBulletin:group];
     if (!doc) {
         // the owner(founder) should be set in the bulletin document of group
         return nil;
     }
     // check local storage
-    DIMCommonArchivist *archivist = [self archivist];
-    id<MKMID> user = [archivist founderOfGroup:group];
+    id<DIMAccountDBI> db = [self database];
+    id<MKMID> user = [db founderOfGroup:group];
     if (user) {
         // got from local storage
         return user;
@@ -90,22 +78,22 @@
     return user;
 }
 
-- (id<MKMID>)ownerOfGroup:(id<MKMID>)group {
+- (id<MKMID>)getOwner:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
         // founder of broadcast group
-        return [DIMBroadcastHelper broadcastOwner:group];
+        return [DIMBroadcastUtils broadcastOwner:group];
     }
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletinForID:group];
+    id<MKMBulletin> doc = [self getBulletin:group];
     if (!doc) {
         // the owner(founder) should be set in the bulletin document of group
         return nil;
     }
     // check local storage
-    DIMCommonArchivist *archivist = [self archivist];
-    id<MKMID> user = [archivist ownerOfGroup:group];
+    id<DIMAccountDBI> db = [self database];
+    id<MKMID> user = [db ownerOfGroup:group];
     if (user) {
         // got from local storage
         return user;
@@ -113,7 +101,7 @@
     // check group type
     if ([group type] == MKMEntityType_Group) {
         // Polylogue owner is its founder
-        user = [archivist founderOfGroup:group];
+        user = [db founderOfGroup:group];
         if (!user) {
             user = [doc founder];
         }
@@ -122,17 +110,23 @@
     return user;
 }
 
-- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)getMembers:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
-    id<MKMID> owner = [self ownerOfGroup:group];
+    // check broadcast group
+    if ([group isBroadcast]) {
+        // founder of broadcast group
+        return [DIMBroadcastUtils broadcastMembers:group];
+    }
+    id<MKMID> owner = [self getOwner:group];
     if (!owner) {
         //NSAssert(false, @"group owner not found: %@", group);
         return nil;
     }
     // check local storage
-    DIMCommonArchivist *archivist = [self archivist];
-    NSArray<id<MKMID>> *members = [archivist membersOfGroup:group];
-    [archivist checkMembers:members forID:group];
+    id<DIMAccountDBI> db = [self database];
+    NSArray<id<MKMID>> *members = [db membersOfGroup:group];
+    DIMEntityChecker *checker = [self entityChecker];
+    [checker checkMembers:members forID:group];
     if ([members count] == 0) {
         members = @[owner];
     } else {
@@ -141,17 +135,17 @@
     return members;
 }
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)getAssistants:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletinForID:group];
+    id<MKMBulletin> doc = [self getBulletin:group];
     if (!doc) {
         // the assistants should be set in the bulletin document of group
         return nil;
     }
     // check local storage
-    DIMCommonArchivist *archivist = [self archivist];
-    NSArray<id<MKMID>> *bots = [archivist assistantsOfGroup:group];
+    id<DIMAccountDBI> db = [self database];
+    NSArray<id<MKMID>> *bots = [db assistantsOfGroup:group];
     if ([bots count] > 0) {
         return bots;
     }
@@ -163,10 +157,10 @@
 //  Organizational Structure
 //
 
-- (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletinForID:group];
+    id<MKMBulletin> doc = [self getBulletin:group];
     if (!doc) {
         // the administrators should be set in the bulletin document of group
         return nil;
@@ -175,18 +169,18 @@
     // when the newest bulletin document received,
     // so we must get them from the local storage only,
     // not from the bulletin document.
-    DIMCommonArchivist *archivist = [self archivist];
-    return [archivist administratorsOfGroup:group];
+    id<DIMAccountDBI> db = [self database];
+    return [db administratorsOfGroup:group];
 }
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
-    DIMCommonArchivist *archivist = [self archivist];
-    return [archivist saveAdministrators:admins group:gid];
+    id<DIMAccountDBI> db = [self database];
+    return [db saveAdministrators:admins group:gid];
 }
 
 - (BOOL)saveMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid {
-    DIMCommonArchivist *archivist = [self archivist];
-    return [archivist saveMembers:newMembers group:gid];
+    id<DIMAccountDBI> db = [self database];
+    return [db saveMembers:newMembers group:gid];
 }
 
 @end
@@ -208,12 +202,12 @@ static id<MKMIDFactory> _idFactory = nil;
     return [_idFactory createIdentifierWithName:name address:address terminal:location];
 }
 
-- (nonnull id<MKMID>)generateIdentifierWithMeta:(id<MKMMeta>)meta
-                                           type:(MKMEntityType)network
-                                       terminal:(NSString *)location {
-    return [_idFactory generateIdentifierWithMeta:meta
-                                             type:network
-                                         terminal:location];
+- (id<MKMID>)generateIdentifier:(MKMEntityType)network
+                       withMeta:(id<MKMMeta>)meta
+                       terminal:(nullable NSString *)location {
+    return [_idFactory generateIdentifier:network
+                                 withMeta:meta
+                                 terminal:location];
 }
 
 - (nullable id<MKMID>)parseIdentifier:(NSString *)identifier {
@@ -245,7 +239,10 @@ static id<MKMIDFactory> _idFactory = nil;
     OKSingletonDispatchOnce(^{
 
         // load plugins
-        [DIMRegister prepare];
+        DIMExtensionLoader *ext = [[DIMExtensionLoader alloc] init];
+        [ext load];
+        DIMPluginLoader *plugin = [[DIMPluginLoader alloc] init];
+        [plugin load];
         
         _idFactory = MKMIDGetFactory();
         MKMIDSetFactory([[IDFactory alloc] init]);

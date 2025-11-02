@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +28,30 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMAccountUtils.h
-//  DIMCore
+//  DIMGroupCommand.m
+//  DIMClient
 //
-//  Created by Albert Moky on 2023/12/7.
-//  Copyright © 2023 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2019/2/3.
+//  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/MingKeMing.h>
+#import "DIMGroupCommand.h"
 
-NS_ASSUME_NONNULL_BEGIN
+NSString * const DKDGroupCommand_Query  = @"query"; // Deprecated
 
-@interface DIMBroadcastUtils : NSObject
+@implementation DIMQueryGroupCommand
 
-+ (id<MKMID>)broadcastFounder:(id<MKMID>)group;
+- (instancetype)initWithGroup:(id<MKMID>)groupID lastTime:(nullable NSDate *)time {
+    if (self = [self initWithCmd:DKDGroupCommand_Query group:groupID]) {
+        if (time) {
+            [self setDate:time forKey:@"last_time"];
+        }
+    }
+    return self;
+}
 
-+ (id<MKMID>)broadcastOwner:(id<MKMID>)group;
-
-+ (NSArray<id<MKMID>> *)broadcastMembers:(id<MKMID>)group;
+- (NSDate *)lastTime {
+    return [self dateForKey:@"last_time" defaultValue:nil];
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

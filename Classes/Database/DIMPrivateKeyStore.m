@@ -34,7 +34,7 @@
 //  Created by Albert Moky on 2023/12/20.
 //
 
-#import <DIMPlugins/MKMPrivateKey+Store.h>
+#import <DIMPlugins/DIMPlugins.h>
 
 #import "DIMPrivateKeyStore.h"
 
@@ -46,14 +46,14 @@ static inline NSString *private_label(NSString *type, id<MKMID> ID) {
     return [NSString stringWithFormat:@"%@:%@", type, address];
 }
 
-static inline BOOL private_save(id<MKMPrivateKey> key, NSString *type, id<MKMID> ID) {
+static inline BOOL private_save(id<MKPrivateKey> key, NSString *type, id<MKMID> ID) {
     NSString *label = private_label(type, ID);
-    return MKMPrivateKeySave(label, key);
+    return DIMPrivateKeySave(label, key);
 }
 
-static inline id<MKMPrivateKey> private_load(NSString *type, id<MKMID> ID) {
+static inline id<MKPrivateKey> private_load(NSString *type, id<MKMID> ID) {
     NSString *label = private_label(type, ID);
-    return MKMPrivateKeyLoad(label);
+    return DIMPrivateKeyLoad(label);
 }
 
 @implementation DIMPrivateKeyStore
@@ -68,7 +68,7 @@ OKSingletonImplementations(DIMPrivateKeyStore, sharedInstance)
 }
 
 // Override
-- (BOOL)savePrivateKey:(id<MKMPrivateKey>)key
+- (BOOL)savePrivateKey:(id<MKPrivateKey>)key
               withType:(NSString *)type
                forUser:(id<MKMID>)user {
     // TODO: support multi private keys
@@ -78,14 +78,14 @@ OKSingletonImplementations(DIMPrivateKeyStore, sharedInstance)
 }
 
 // Override
-- (id<MKMPrivateKey>)privateKeyForSignature:(id<MKMID>)user {
+- (id<MKPrivateKey>)privateKeyForSignature:(id<MKMID>)user {
     // TODO: support multi private keys
     return [self privateKeyForVisaSignature:user];
 }
 
 // Override
-- (id<MKMPrivateKey>)privateKeyForVisaSignature:(id<MKMID>)user {
-    id<MKMPrivateKey> key;
+- (id<MKPrivateKey>)privateKeyForVisaSignature:(id<MKMID>)user {
+    id<MKPrivateKey> key;
     // get private key paired with meta.key
     key = private_load(DIMPrivateKeyType_Meta, user);
     if (!key) {
@@ -97,9 +97,9 @@ OKSingletonImplementations(DIMPrivateKeyStore, sharedInstance)
 }
 
 // Override
-- (NSArray<id<MKMDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user {
+- (NSArray<id<MKDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user {
     NSMutableArray *mArray = [[NSMutableArray alloc] init];
-    id<MKMPrivateKey> key;
+    id<MKPrivateKey> key;
     // 1. get private key paired with visa.key
     key = private_load(DIMPrivateKeyType_Visa, user);
     if (key) {
@@ -107,12 +107,12 @@ OKSingletonImplementations(DIMPrivateKeyStore, sharedInstance)
     }
     // get private key paired with meta.key
     key = private_load(DIMPrivateKeyType_Meta, user);
-    if ([key conformsToProtocol:@protocol(MKMDecryptKey)]) {
+    if ([key conformsToProtocol:@protocol(MKDecryptKey)]) {
         [mArray addObject:key];
     }
     // get private key paired with meta.key
     key = private_load(nil, user);
-    if ([key conformsToProtocol:@protocol(MKMDecryptKey)]) {
+    if ([key conformsToProtocol:@protocol(MKDecryptKey)]) {
         [mArray addObject:key];
     }
     NSLog(@"load private keys: %lu, %@", [mArray count], user);

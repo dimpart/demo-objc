@@ -121,9 +121,9 @@ static _GroupBotsManager *s_grp_bot_man = nil;
         return NO;
     }
     id<DKDEnvelope> originalEnvelope = [body originalEnvelope];
-    id<MKMID> originalReceiver = [originalEnvelope receiver];
     if ([originalEnvelope isEqual:sender]) {} else {
-        NSAssert([originalReceiver isBroadcast], @"sender error: %@, %@", sender, originalReceiver);
+        NSAssert([originalEnvelope.receiver isBroadcast],
+                 @"sender error: %@, %@", sender, originalEnvelope.receiver);
         return NO;
     }
     //
@@ -360,7 +360,7 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 
 - (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid {
     DIMClientFacebook *facebook = [self facebook];
-    return [facebook saveMembers:members group:gid];
+    return [facebook saveMembers:members forGroup:gid];
 }
 
 @end
@@ -388,7 +388,7 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
     DIMClientFacebook *facebook = [self facebook];
-    return [facebook saveAdministrators:admins group:gid];
+    return [facebook saveAdministrators:admins forGroup:gid];
 }
 
 @end

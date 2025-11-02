@@ -54,7 +54,7 @@
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    if (self = [self initWithCMD:DIMCommand_Login]) {
+    if (self = [self initWithCmd:DIMCommand_Login]) {
         // ID
         if (ID) {
             [self setObject:[ID string] forKey:@"ID"];

@@ -80,11 +80,18 @@ FOUNDATION_EXPORT const unsigned char DIMPClientVersionString[];
 //  Common
 //
 
+#import <DIMClient/DIMCache.h>
+#import <DIMClient/DIMCheckers.h>
+#import <DIMClient/DIMDigestX.h>
+
 #import <DIMClient/DIMNetworkID.h>
-#import <DIMClient/DIMAddressBTC.h>
+#import <DIMClient/DIMAddressC.h>
 #import <DIMClient/DIMEntityID.h>
+#import <DIMClient/DIMMetaVersion.h>
 #import <DIMClient/DIMMetaC.h>
+#import <DIMClient/DIMCompressor.h>
 #import <DIMClient/DIMCompatible.h>
+#import <DIMClient/DIMCommonLoaders.h>
 
 #import <DIMClient/DIMAccountDBI.h>
 #import <DIMClient/DIMMessageDBI.h>
@@ -96,14 +103,17 @@ FOUNDATION_EXPORT const unsigned char DIMPClientVersionString[];
 #import <DIMClient/DIMReportCommand.h>
 #import <DIMClient/DIMMuteCommand.h>
 #import <DIMClient/DIMBlockCommand.h>
+#import <DIMClient/DIMGroupCommand.h>
 
 #import <DIMClient/MKMAnonymous.h>
 #import <DIMClient/DIMRegister.h>
 #import <DIMClient/DIMAddressNameServer.h>
+#import <DIMClient/DIMEntityChecker.h>
 #import <DIMClient/DIMCommonArchivist.h>
 #import <DIMClient/DIMCommonFacebook.h>
 #import <DIMClient/DIMSession.h>
 #import <DIMClient/DIMCommonPacker.h>
+#import <DIMClient/DIMCommonProcessor.h>
 #import <DIMClient/DIMCommonMessenger.h>
 
 //
@@ -140,6 +150,8 @@ FOUNDATION_EXPORT const unsigned char DIMPClientVersionString[];
 //  Group
 //
 
+#import <DIMClient/DIMBroadcastUtils.h>
+#import <DIMClient/DIMChatroom.h>
 #import <DIMClient/DIMGroupDelegate.h>
 #import <DIMClient/DIMGroupCommandHelper.h>
 #import <DIMClient/DIMGroupHistoryBuilder.h>
@@ -147,6 +159,7 @@ FOUNDATION_EXPORT const unsigned char DIMPClientVersionString[];
 #import <DIMClient/DIMGroupEmitter.h>
 #import <DIMClient/DIMGroupManager.h>
 #import <DIMClient/DIMGroupAdminManager.h>
+#import <DIMClient/DIMSharedGroupManager.h>
 
 //
 //  Client

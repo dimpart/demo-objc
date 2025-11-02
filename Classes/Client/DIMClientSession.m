@@ -35,6 +35,8 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import <DIMSDK/DIMSDK.h>
+
 #import "STStreamArrival.h"
 #import "DIMClientSession+State.h"
 
@@ -45,8 +47,8 @@ static NSData *sn_end = nil;
 
 static inline NSData *fetch_sn(NSData *data) {
     OKSingletonDispatchOnce(^{
-        sn_start = MKMUTF8Encode(@"Mars SN:");
-        sn_end = MKMUTF8Encode(@"\n");
+        sn_start = MKUTF8Encode(@"Mars SN:");
+        sn_end = MKUTF8Encode(@"\n");
     });
 
     NSData *sn = nil;
@@ -233,7 +235,7 @@ static inline NSArray<NSData *> *split_lines(NSData *data) {
     if (head.length > 0) {
         NSRange range = NSMakeRange(head.length, data.length - head.length);
         data = [data subdataWithRange:range];
-        NSLog(@"got data with head [%@] body: %lu byte(s)", MKMUTF8Decode(head), [data length]);
+        NSLog(@"got data with head [%@] body: %lu byte(s)", MKUTF8Decode(head), [data length]);
     }
     
     // 1. split data when multi packages received one time
@@ -252,7 +254,7 @@ static inline NSArray<NSData *> *split_lines(NSData *data) {
     id<NIOSocketAddress> source = [worker remoteAddress];
 
     // 2. process package data one by one
-    NSData *SEPARATOR = MKMUTF8Encode(@"\n");
+    NSData *SEPARATOR = MKUTF8Encode(@"\n");
     NSMutableData *mData = [[NSMutableData alloc] init];
     NSArray<NSData *> *responses;
     for (NSData *pack in packages) {

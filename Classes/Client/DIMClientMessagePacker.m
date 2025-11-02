@@ -35,6 +35,8 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import "DIMCommonFacebook.h"
+
 #import "DIMClientMessagePacker.h"
 
 //static inline NSString *trim(NSString *string) {
@@ -149,7 +151,8 @@
     //
     //  check group's meta & members
     //
-    NSArray<id<MKMID>> *members = [self membersOfGroup:receiver];
+    DIMCommonFacebook *facebook = [self facebook];
+    NSArray<id<MKMID>> *members = [facebook getMembers:receiver];
     if ([members count] == 0) {
         // group not ready, suspend message for waiting meta/members
         NSDictionary *error = @{
@@ -164,7 +167,7 @@
     //
     NSMutableArray<id<MKMID>> *waiting = [[NSMutableArray alloc] init];
     for (id<MKMID> item in members) {
-        if ([self visaKeyForID:item]) {
+        if ([facebook getVisa:item]) {
             // member is ready
         } else {
             [waiting addObject:item];

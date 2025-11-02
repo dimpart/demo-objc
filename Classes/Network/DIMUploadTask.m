@@ -35,7 +35,7 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/MingKeMing.h>
+#import <DIMSDK/DIMSDK.h>
 
 #import "DIMUploadTask.h"
 

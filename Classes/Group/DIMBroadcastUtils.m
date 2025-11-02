@@ -28,14 +28,14 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMAccountUtils.m
+//  DIMBroadcastUtils.m
 //  DIMCore
 //
 //  Created by Albert Moky on 2023/12/7.
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import "DIMAccountUtils.h"
+#import "DIMBroadcastUtils.h"
 
 @implementation DIMBroadcastUtils
 

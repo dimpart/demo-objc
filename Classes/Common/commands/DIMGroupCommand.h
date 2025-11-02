@@ -2,12 +2,12 @@
 //
 //  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,30 +28,41 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMClientFacebook.h
+//  DIMGroupCommand.h
 //  DIMClient
 //
-//  Created by Albert Moky on 2023/3/13.
-//  Copyright © 2023 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2019/2/3.
+//  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import <DIMClient/DIMCommonFacebook.h>
+#import <DIMCore/DIMCore.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Query;  // Deprecated
+
 /**
- *  Client Facebook with Address Name Service
+ *  History command: {
+ *      type : 0x88,
+ *      sn   : 123,
+ *
+ *      command : "query",
+ *      time    : 123.456,
+ *
+ *      group     : "{GROUP_ID}",
+ *      last_time : 0
+ *  }
  */
-@interface DIMClientFacebook : DIMCommonFacebook
+@protocol DKDQueryGroupCommand <DKDGroupCommand>
+
+// Last group history time for querying
+@property (readonly, strong, nonatomic, nullable) NSDate *lastTime;
 
 @end
 
-@interface DIMClientFacebook (ANS)
+@interface DIMQueryGroupCommand : DIMGroupCommand <DKDQueryGroupCommand>
 
-+ (__kindof DIMAddressNameServer *)ans;
-+ (void)setANS:(DIMAddressNameServer *)ans;
-
-+ (void)prepare;
+- (instancetype)initWithGroup:(id<MKMID>)groupID lastTime:(nullable NSDate *)time;
 
 @end
 

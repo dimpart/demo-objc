@@ -35,6 +35,8 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import <DIMCore/DIMCore.h>
+
 #import "DIMHandshakeCommand.h"
 #import "DIMReportCommand.h"
 #import "DIMGroupManager.h"
@@ -54,7 +56,7 @@
 - (void)handshake:(NSString *)sessionKey {
     DIMClientSession *session = [self session];
     id<MKMStation> station = [session station];
-    id<MKMID> sid = [station ID];
+    id<MKMID> sid = [station identifier];
     id<DKDContent> cmd;
     if (sessionKey) {
         // handshake again
@@ -69,13 +71,13 @@
         DIMCommonFacebook *facebook = [self facebook];
         id<MKMUser> user = [facebook currentUser];
         NSAssert(user, @"current user not found");
-        id<MKMID> uid = [user ID];
+        id<MKMID> uid = [user identifier];
         id<MKMMeta> meta = [user meta];
         id<MKMVisa> visa = [user visa];
         id<DKDEnvelope> env = DKDEnvelopeCreate(uid, sid, nil);
         cmd = [[DIMHandshakeCommand alloc] initWithSessionKey:nil];
         // send first handshake command as broadcast message
-        [cmd setGroup:MKMEveryStations()];
+        [cmd setGroup:MKMEveryStations];
         // create instant message with meta & visa
         id<DKDInstantMessage> iMsg = DKDInstantMessageCreate(env, cmd);
         DIMMessageSetMeta(meta, iMsg);
@@ -95,19 +97,19 @@
     DIMCommonFacebook *facebook = [self facebook];
     id<MKMUser> user = [facebook currentUser];
     NSAssert(user, @"current user not found");
-    id<MKMID> uid = [user ID];
+    id<MKMID> uid = [user identifier];
     id<MKMMeta> meta = [user meta];
     id<MKMVisa> visa = [user visa];
     id<DKDContent> command = [[DIMDocumentCommand alloc] initWithID:uid
                                                                meta:meta
-                                                           document:visa];
-    DIMClientArchivist *archivist = [self.facebook archivist];
+                                                          documents:@[visa]];
+    DIMEntityChecker *checker = [facebook entityChecker];
     //
     //  send to all contacts
     //
     NSArray<id<MKMID>> *contacts = [self.facebook contactsOfUser:uid];
     for (id<MKMID> item in contacts) {
-        if ([archivist isDocumentResponseExpired:item force:updated]) {
+        if ([checker isDocumentResponseExpired:item forceUpdate:updated]) {
             NSLog(@"sending visa to: %@", item);
             [self sendContent:command sender:uid receiver:item priority:1];
         } else {
@@ -118,8 +120,8 @@
     //
     //  broadcast to 'everyone@everywhere'
     //
-    id<MKMID> everyone = MKMEveryone();
-    if ([archivist isDocumentResponseExpired:everyone force:updated]) {
+    id<MKMID> everyone = MKMEveryone;
+    if ([checker isDocumentResponseExpired:everyone forceUpdate:updated]) {
         NSLog(@"sending visa to %@", everyone);
         [self sendContent:command sender:uid receiver:everyone priority:1];
     } else {
@@ -138,7 +140,7 @@
     // broadcast to 'everyone@everywhere'
     [self sendContent:command
                sender:sender
-             receiver:MKMEveryone()
+             receiver:MKMEveryone
              priority:STDeparturePrioritySlower];
 }
 
@@ -151,7 +153,7 @@
     }
     [self sendContent:command
                sender:sender
-             receiver:MKMAnyStation()
+             receiver:MKMAnyStation
              priority:STDeparturePrioritySlower];
 }
 
@@ -163,7 +165,7 @@
     }
     [self sendContent:command
                sender:sender
-             receiver:MKMAnyStation()
+             receiver:MKMAnyStation
              priority:STDeparturePrioritySlower];
 }
 

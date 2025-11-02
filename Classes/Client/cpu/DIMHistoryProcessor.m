@@ -53,9 +53,9 @@
 
 @implementation DIMHistoryCommandProcessor
 
-- (instancetype)initWithFacebook:(DIMBarrack *)barrack
-                       messenger:(DIMTransceiver *)transceiver {
-    if (self = [super initWithFacebook:barrack messenger:transceiver]) {
+- (instancetype)initWithFacebook:(DIMFacebook *)facebook
+                       messenger:(DIMMessenger *)transceiver {
+    if (self = [super initWithFacebook:facebook messenger:transceiver]) {
         self.delegate = [self createDelegate];
         self.helper = [self createHelper];
         self.builder = [self createBuilder];

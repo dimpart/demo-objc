@@ -1,6 +1,6 @@
 // license: https://mit-license.org
 //
-//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
+//  Ming-Ke-Ming : Decentralized User Identity Authentication
 //
 //                               Written in 2023 by Moky <albert.moky@gmail.com>
 //
@@ -28,30 +28,24 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMClientFacebook.h
-//  DIMClient
+//  DIMBroadcastUtils.h
+//  DIMCore
 //
-//  Created by Albert Moky on 2023/3/13.
+//  Created by Albert Moky on 2023/12/7.
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <DIMClient/DIMCommonFacebook.h>
+#import <MingKeMing/MingKeMing.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  Client Facebook with Address Name Service
- */
-@interface DIMClientFacebook : DIMCommonFacebook
+@interface DIMBroadcastUtils : NSObject
 
-@end
++ (id<MKMID>)broadcastFounder:(id<MKMID>)group;
 
-@interface DIMClientFacebook (ANS)
++ (id<MKMID>)broadcastOwner:(id<MKMID>)group;
 
-+ (__kindof DIMAddressNameServer *)ans;
-+ (void)setANS:(DIMAddressNameServer *)ans;
-
-+ (void)prepare;
++ (NSArray<id<MKMID>> *)broadcastMembers:(id<MKMID>)group;
 
 @end
 

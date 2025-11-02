@@ -107,7 +107,7 @@
         // we should respond the sender with the newest membership again.
         DIMCommonFacebook *facebook = [self facebook];
         id<MKMUser> user = [facebook currentUser];
-        if (!canReset || [user.ID isEqual:owner]) {
+        if (!canReset || [user.identifier isEqual:owner]) {
             // the sender cannot reset the group, means it's an ordinary member now,
             // and if I am the owner, then send the group history commands
             // to update the sender's memory.

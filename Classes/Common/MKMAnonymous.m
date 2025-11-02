@@ -35,6 +35,7 @@
 //  Copyright © 2021 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/Format.h>
 #import <DIMPlugins/DIMBTCAddress.h>
 #import <DIMPlugins/DIMETHAddress.h>
 

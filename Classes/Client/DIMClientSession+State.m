@@ -77,7 +77,7 @@
 }
 
 - (NSString *)sessionKey {
-    return [_session key];
+    return [_session sessionKey];
 }
 
 - (id<MKMID>)sessionID {

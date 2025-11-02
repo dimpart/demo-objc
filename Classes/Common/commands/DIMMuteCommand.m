@@ -40,7 +40,7 @@
 @implementation DIMMuteCommand
 
 - (instancetype)initWithList:(nullable NSArray<id<MKMID>> *)muteList {
-    if (self = [self initWithCMD:DIMCommand_Mute]) {
+    if (self = [self initWithCmd:DIMCommand_Mute]) {
         // mute-list
         if (muteList) {
             [self setList:muteList];

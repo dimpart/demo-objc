@@ -90,15 +90,15 @@
 @implementation DIMGroupCommandProcessor (Membership)
 
 - (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)gid {
-    return [self.delegate ownerOfGroup:gid];
+    return [self.delegate getOwner:gid];
 }
 
 - (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)gid {
-    return [self.delegate assistantsOfGroup:gid];
+    return [self.delegate getAssistants:gid];
 }
 
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid {
-    return [self.delegate administratorsOfGroup:gid];
+    return [self.delegate getAdministrators:gid];
 }
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
@@ -106,7 +106,7 @@
 }
 
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)gid {
-    return [self.delegate membersOfGroup:gid];
+    return [self.delegate getMembers:gid];
 }
 
 - (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid {

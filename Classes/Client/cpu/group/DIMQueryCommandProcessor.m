@@ -35,6 +35,9 @@
 //  Copyright © 2019 Albert Moky. All rights reserved.
 //
 
+#import "DIMCommonFacebook.h"
+#import "DIMGroupCommand.h"
+
 #import "DIMQueryCommandProcessor.h"
 
 @implementation DIMQueryGroupCommandProcessor
@@ -90,8 +93,9 @@
     NSDate *queryTime = [command lastTime];
     if (queryTime) {
         // check last group history time
-        DIMFacebook *facebook = [self facebook];
-        NSDate *lastTime = [facebook.archivist lastTimeOfHistoryForID:group];
+        DIMCommonFacebook *facebook = [self facebook];
+        DIMEntityChecker *checker = [facebook entityChecker];
+        NSDate *lastTime = [checker lastTimeOfHistoryForID:group];
         NSTimeInterval lt = [lastTime timeIntervalSince1970];
         if (lt < 1) {
             NSAssert(false, @"group history error: %@", group);

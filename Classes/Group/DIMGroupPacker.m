@@ -82,7 +82,7 @@
             continue;
         }
         NSLog(@"split group message for member: %@", receiver);
-        info = [iMsg dictionary:NO];
+        info = [iMsg copyDictionary:NO];
         // replace 'receiver' with member ID
         [info setObject:receiver.string forKey:@"receiver"];
         item = DKDInstantMessageParse(info);
@@ -127,7 +127,7 @@
             continue;
         }
         NSLog(@"split group message for member: %@", receiver);
-        info = [rMsg dictionary:NO];
+        info = [rMsg copyDictionary:NO];
         // replace 'receiver' with member ID
         [info setObject:receiver.string forKey:@"receiver"];
         // fetch encrypted key data

@@ -53,17 +53,17 @@
     DIMClientSession *session = [messenger session];
     // update station's default ID ('station@anywhere') to sender (real ID)
     id<MKMStation> station = [session station];
-    id<MKMID> old = [station ID];
+    id<MKMID> old = [station identifier];
     id<MKMID> sender = [rMsg sender];
     if (!old || [old isBroadcast]) {
-        station.ID = sender;
+        station.identifier = sender;
     } else {
         NSAssert([old isEqual:sender], @"station ID not match: %@, %@", old, sender);
     }
     // handle handshake command with title & session key
     NSString *title = [command title];
     NSString *newKey = [command sessionKey];
-    NSString *oldKey = [session key];
+    NSString *oldKey = [session sessionKey];
     NSAssert(newKey, @"new session key should not be empty: %@", command);
     if ([title isEqualToString:@"DIM?"]) {
         // S -> C: station ask client to handshake again

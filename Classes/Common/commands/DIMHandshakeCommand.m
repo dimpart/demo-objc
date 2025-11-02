@@ -71,7 +71,7 @@
 
 - (instancetype)initWithTitle:(NSString *)title
                    sessionKey:(nullable NSString *)session {
-    if (self = [self initWithCMD:DIMCommand_Handshake]) {
+    if (self = [self initWithCmd:DIMCommand_Handshake]) {
         // title
         if (title) {
             [self setObject:title forKey:@"title"];
