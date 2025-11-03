@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name                  = 'DIMClient'
-    s.version               = '1.0.1'
+    s.version               = '1.0.2'
     s.summary               = 'DIMPLES'
     s.description           = <<-DESC
             DIMP Libraries for Easy Startup

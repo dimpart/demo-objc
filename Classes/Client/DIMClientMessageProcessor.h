@@ -35,11 +35,11 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <DIMSDK/DIMSDK.h>
+#import <DIMClient/DIMCommonProcessor.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMClientMessageProcessor : DIMMessageProcessor
+@interface DIMClientMessageProcessor : DIMCommonProcessor
 
 @end
 

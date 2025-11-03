@@ -48,6 +48,13 @@
 
 @implementation DIMClientMessageProcessor
 
+// Override
+- (id<DIMContentProcessorCreator>)createCreatorWithFacebook:(DIMFacebook *)facebook
+                                                  messenger:(DIMMessenger *)transceiver {
+    return [[DIMClientContentProcessorCreator alloc] initWithFacebook:facebook
+                                                            messenger:transceiver];
+}
+
 // private
 - (void)checkGroupTimes:(id<DKDContent>)content message:(id<DKDReliableMessage>)rMsg {
     id<MKMID> group = [content group];

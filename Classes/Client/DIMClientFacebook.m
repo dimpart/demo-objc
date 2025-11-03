@@ -35,8 +35,7 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <DIMPlugins/Loader.h>
-
+#import "DIMCommonLoaders.h"
 #import "DIMBroadcastUtils.h"
 #import "MKMAnonymous.h"
 #import "DIMRegister.h"
@@ -239,9 +238,9 @@ static id<MKMIDFactory> _idFactory = nil;
     OKSingletonDispatchOnce(^{
 
         // load plugins
-        DIMExtensionLoader *ext = [[DIMExtensionLoader alloc] init];
+        DIMExtensionLoader *ext = [[DIMCommonExtensionLoader alloc] init];
         [ext load];
-        DIMPluginLoader *plugin = [[DIMPluginLoader alloc] init];
+        DIMPluginLoader *plugin = [[DIMCommonPluginLoader alloc] init];
         [plugin load];
         
         _idFactory = MKMIDGetFactory();

@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly, nullable) DIMSessionState *state;
 
 // session key
-- (void)setKey:(nullable NSString *)key;
+- (void)setSessionKey:(nullable NSString *)key;
 
 - (instancetype)initWithDatabase:(id<DIMSessionDBI>)db station:(id<MKMStation>)server;
 

@@ -36,6 +36,7 @@
 //
 
 #import "DIMCompatible.h"
+#import "DIMCompressor.h"
 
 #import "DIMCommonMessenger.h"
 
@@ -81,7 +82,7 @@
 }
 
 - (id<DIMCompressor>)createMessageCompressor {
-    DIMMessageShortener *shortener = [[DIMMessageShortener alloc] init];
+    DIMMessageShortener *shortener = [[DIMCompatibleShortener alloc] init];
     return [[DIMMessageCompressor alloc] initWithShortener:shortener];
 }
 

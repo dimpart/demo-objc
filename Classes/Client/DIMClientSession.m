@@ -118,7 +118,7 @@ static inline NSArray<NSData *> *split_lines(NSData *data) {
 
 @property(nonatomic, strong) DIMSessionStateMachine *fsm;
 
-@property(nonatomic, strong) NSString *key;
+@property(nonatomic, strong) NSString *sessionKey;
 
 @property(nonatomic, strong) SMThread *thread;
 
@@ -151,11 +151,11 @@ static inline NSArray<NSData *> *split_lines(NSData *data) {
     return [_fsm currentState];
 }
 
-- (NSString *)key {
+- (NSString *)sessionKey {
     return _key;
 }
 
-- (void)setKey:(nullable NSString *)key {
+- (void)setSessionKey:(nullable NSString *)key {
     _key = key;
 }
 

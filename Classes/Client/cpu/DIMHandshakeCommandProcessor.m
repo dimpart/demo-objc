@@ -77,21 +77,21 @@
         } else {
             // connection changed?
             // erase session key to handshake again
-            [session setKey:nil];
+            [session setSessionKey:nil];
         }
     } else if ([title isEqualToString:@"DIM!"]) {
         // S -> C: handshake accepted by station
         if (!oldKey) {
             // normal handshake response,
             // update session key to change state to 'running'
-            [session setKey:newKey];
+            [session setSessionKey:newKey];
         } else if ([oldKey isEqualToString:newKey]) {
             // duplicated handshake response?
             NSLog(@"duplicated handshake response");
         } else {
             // FIXME: handshake error
             // erase session key to handshake again
-            [session setKey:nil];
+            [session setSessionKey:nil];
         }
     } else {
         // C -> S: Hello world!
