@@ -44,7 +44,7 @@
 #import "DIMHttpClient.h"
 
 static inline NSData *random_data(NSUInteger size) {
-    unsigned char *buf = malloc(size * sizeof(unsigned char));
+    unsigned char *buf = (unsigned char *)malloc(size * sizeof(unsigned char));
     arc4random_buf(buf, size);
     return [[NSData alloc] initWithBytesNoCopy:buf length:size freeWhenDone:YES];
 }

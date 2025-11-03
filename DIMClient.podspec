@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name                  = 'DIMClient'
-    s.version               = '1.0.0'
+    s.version               = '1.0.1'
     s.summary               = 'DIMPLES'
     s.description           = <<-DESC
             DIMP Libraries for Easy Startup
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
     # s.platform            = :ios, "11.0"
     s.ios.deployment_target = '12.0'
 
-    s.source_files          = 'Classes', 'Classes/**/*.{h,m}', 'DIMClient/DIMClient/*.h'
+    s.source_files          = 'Classes', 'Classes/**/*.{h,m,mm}', 'DIMClient/DIMClient/*.h'
     # s.exclude_files       = 'Classes/Exclude'
     s.public_header_files   = 'Classes/**/*.h', 'DIMClient/DIMClient/*.h'
 
@@ -34,7 +34,7 @@ Pod::Spec.new do |s|
     s.dependency 'DaoKeDao', '~> 1.0.6'
     s.dependency 'MingKeMing', '~> 1.0.6'
 
-    s.dependency 'StarTrek', '~> 0.1.2'
+    s.dependency 'StarTrek', '~> 0.1.3'
     s.dependency 'FiniteStateMachine', '~> 2.3.2'
     s.dependency 'ObjectKey', '~> 0.1.3'
 
