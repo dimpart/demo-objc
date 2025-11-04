@@ -51,6 +51,8 @@ NS_ASSUME_NONNULL_BEGIN
 // session key
 - (void)setSessionKey:(nullable NSString *)key;
 
+- (BOOL)isReady;
+
 - (instancetype)initWithDatabase:(id<DIMSessionDBI>)db station:(id<MKMStation>)server;
 
 - (void)startWithStateDelegate:(id<DIMSessionStateDelegate>) delegate;

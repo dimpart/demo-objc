@@ -159,6 +159,23 @@ static inline NSArray<NSData *> *split_lines(NSData *data) {
     _key = key;
 }
 
+- (BOOL)isReady {
+    if ([self isActive] && [self ID]) {
+        // handshake successful
+    } else {
+        // not active,
+        // handshaking, or
+        // not login
+        return NO;
+    }
+    BOOL ok = [self sessionKey] != nil;
+    if (!ok) {
+        // session key lost?
+        [_fsm resume];
+    }
+    return ok;
+}
+
 - (void)startWithStateDelegate:(id<DIMSessionStateDelegate>) delegate {
 //    [self stop];
     

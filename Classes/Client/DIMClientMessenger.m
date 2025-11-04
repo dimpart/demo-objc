@@ -53,6 +53,51 @@
 
 @implementation DIMClientMessenger
 
+// Override
+- (id<DKDReliableMessage>)sendInstantMessage:(id<DKDInstantMessage>)iMsg
+                                    priority:(NSInteger)prior {
+    DIMClientSession *session = [self session];
+    if ([session isReady]) {
+        // OK, any message can go out
+    } else {
+        // not login yet
+        __kindof id<DKDContent> content = [iMsg content];
+        if (![content conformsToProtocol:@protocol(DKDCommand)]) {
+            NSLog(@"not handshake yet, suspend message: %@ => %@", content, iMsg.receiver);
+            // TODO: suspend instant message
+            return nil;
+        } else if ([[content cmd] isEqualToString:DIMCommand_Handshake]) {
+            // NOTICE: only handshake message can go out
+            [iMsg setObject:@"handshaking" forKey:@"pass"];
+        } else {
+            NSLog(@"not handshake yet, drop command: %@ => %@", content, iMsg.receiver);
+            // TODO: suspend instant message
+            return nil;
+        }
+    }
+    return [super sendInstantMessage:iMsg priority:prior];
+}
+
+// Override
+- (BOOL)sendReliableMessage:(id<DKDReliableMessage>)rMsg priority:(NSInteger)prior {
+    NSString *passport = [rMsg objectForKey:@"pass"];
+    if (passport) {
+        [rMsg removeObjectForKey:@"pass"];
+    }
+    DIMClientSession *session = [self session];
+    if ([session isReady]) {
+        // OK, any message can go out
+        NSAssert(!passport, @"should not happen: %@", rMsg);
+    } else if ([passport isEqualToString:@"handshaking"]) {
+        // not login in yet, let the handshake message go out only
+    } else {
+        NSLog(@"not handshake yet, suspend message: %@ => %@", rMsg.sender, rMsg.receiver);
+        // TODO: suspend reliable message
+        return NO;
+    }
+    return [super sendReliableMessage:rMsg priority:prior];
+}
+
 - (void)handshake:(NSString *)sessionKey {
     DIMClientSession *session = [self session];
     id<MKMStation> station = [session station];
