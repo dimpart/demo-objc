@@ -164,50 +164,50 @@ static DIMSharedGroupManager *s_grp_man = nil;
 
 #pragma mark Entity DataSource
 
-- (id<MKMMeta>)getMeta:(id<MKMID>)ID {
+- (id<MKMMeta>)meta:(id<MKMID>)ID {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getMeta:ID];
+    return [delegate meta:ID];
 }
 
-- (NSArray<id<MKMDocument>> *)getDocuments:(id<MKMID>)ID {
+- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)ID {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getDocuments:ID];
+    return [delegate documents:ID];
 }
 
 #pragma mark Group DataSource
 
-- (id<MKMID>)getFounder:(id<MKMID>)group {
+- (id<MKMID>)founder:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getFounder:group];
+    return [delegate founder:group];
 }
 
-- (id<MKMID>)getOwner:(id<MKMID>)group {
+- (id<MKMID>)owner:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getOwner:group];
+    return [delegate owner:group];
 }
 
-- (NSArray<id<MKMID>> *)getAssistants:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)assistants:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getAssistants:group];
+    return [delegate assistants:group];
 }
 
-- (NSArray<id<MKMID>> *)getMembers:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)members:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getMembers:group];
+    return [delegate members:group];
 }
 
 @end
 
 @implementation DIMSharedGroupManager (DataSource)
 
-- (id<MKMBulletin>)getBulletin:(id<MKMID>)group {
+- (id<MKMBulletin>)bulletin:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getBulletin:group];
+    return [delegate bulletin:group];
 }
 
-- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate getAdministrators:group];
+    return [delegate administrators:group];
 }
 
 - (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins group:(id<MKMID>)gid {
@@ -241,7 +241,7 @@ static DIMSharedGroupManager *s_grp_man = nil;
     id<MKMID> me = [user identifier];
     DIMGroupDelegate *delegate = [self delegate];
     
-    NSArray<id<MKMID>> *oldMembers = [delegate getMembers:gid];
+    NSArray<id<MKMID>> *oldMembers = [delegate members:gid];
     BOOL isOwner = [delegate isOwner:me group:gid];
     bool isAdmin = [delegate isAdministrator:me group:gid];
     

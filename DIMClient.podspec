@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name                  = 'DIMClient'
-    s.version               = '1.0.2'
+    s.version               = '1.0.3'
     s.summary               = 'DIMPLES'
     s.description           = <<-DESC
             DIMP Libraries for Easy Startup
@@ -28,11 +28,11 @@ Pod::Spec.new do |s|
     # s.frameworks          = 'Security'
     # s.requires_arc        = true
 
-    s.dependency 'DIMSDK', '~> 1.0.6'
-    s.dependency 'DIMPlugins', '~> 1.0.6'
-    s.dependency 'DIMCore', '~> 1.0.6'
-    s.dependency 'DaoKeDao', '~> 1.0.6'
-    s.dependency 'MingKeMing', '~> 1.0.6'
+    s.dependency 'DIMSDK', '~> 1.0.7'
+    s.dependency 'DIMPlugins', '~> 1.0.7'
+    s.dependency 'DIMCore', '~> 1.0.7'
+    s.dependency 'DaoKeDao', '~> 1.0.7'
+    s.dependency 'MingKeMing', '~> 1.0.7'
 
     s.dependency 'StarTrek', '~> 0.1.3'
     s.dependency 'FiniteStateMachine', '~> 2.3.2'

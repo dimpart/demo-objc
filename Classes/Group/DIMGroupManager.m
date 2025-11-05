@@ -114,8 +114,8 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //  3. upload meta+document to neighbor station(s)
     //  DISCUSS: should we let the neighbor stations know the group info?
     //
-    id<MKMMeta> meta = [self.delegate getMeta:group];
-    id<MKMBulletin> doc = [self.delegate getBulletin:group];
+    id<MKMMeta> meta = [self.delegate meta:group];
+    id<MKMBulletin> doc = [self.delegate bulletin:group];
     id<DKDCommand> content;
     if (doc) {
         content = DIMDocumentCommandResponse(group, meta, @[doc]);
@@ -163,7 +163,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
         return NO;
     }
     // member list OK, check expelled members
-    NSArray<id<MKMID>> *oldMembers = [self.delegate getMembers:gid];
+    NSArray<id<MKMID>> *oldMembers = [self.delegate members:gid];
     NSMutableArray<id<MKMID>> *expelList = [[NSMutableArray alloc] initWithCapacity:oldMembers.count];
     for (id<MKMID> item in oldMembers) {
         if (![newMembers containsObject:item]) {
@@ -218,7 +218,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     NSArray<id<DKDReliableMessage>> *messages = [self.builder buildHistoryForGroup:gid];
     id<DKDForwardContent> forward = DIMForwardContentCreate(messages);
     
-    NSArray<id<MKMID>> *bots = [self.delegate getAssistants:gid];
+    NSArray<id<MKMID>> *bots = [self.delegate assistants:gid];
     if ([bots count] > 0) {
         // let the group bots know the newest member ID list,
         // so they can split group message correctly for us.
@@ -246,7 +246,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     }
     id<MKMID> me = [user identifier];
     
-    NSArray<id<MKMID>> *oldMembers = [self.delegate getMembers:gid];
+    NSArray<id<MKMID>> *oldMembers = [self.delegate members:gid];
     
     BOOL isOwner = [self.delegate isOwner:me group:gid];
     BOOL isAdmin = [self.delegate isAdministrator:me group:gid];
@@ -294,7 +294,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  3. forward group command(s)
     //
-    NSArray<id<MKMID>> *bots = [self.delegate getAssistants:gid];
+    NSArray<id<MKMID>> *bots = [self.delegate assistants:gid];
     if ([bots count] > 0) {
         // let the group bots know the newest member ID list,
         // so they can split group message correctly for us.
@@ -326,7 +326,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     }
     id<MKMID> me = [user identifier];
     
-    NSArray<id<MKMID>> *members = [self.delegate getMembers:gid];
+    NSArray<id<MKMID>> *members = [self.delegate members:gid];
     NSAssert([members count] > 0, @"failed to get members for group: %@", gid);
     
     BOOL isOwner = [self.delegate isOwner:me group:gid];
@@ -377,7 +377,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  4. forward 'quit' command
     //
-    NSArray<id<MKMID>> *bots = [self.delegate getAssistants:gid];
+    NSArray<id<MKMID>> *bots = [self.delegate assistants:gid];
     if ([bots count] > 0) {
         // let the group bots know the newest member ID list,
         // so they can split group message correctly for us.

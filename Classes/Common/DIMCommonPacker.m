@@ -118,10 +118,10 @@
 
 @implementation DIMCommonPacker (Checking)
 
-- (nullable id<MKEncryptKey>)getVisaKey:(id<MKMID>)user {
+- (nullable id<MKEncryptKey>)messageKey:(id<MKMID>)user {
     NSAssert([user isUser], @"user ID error: %@", user);
     DIMFacebook *facebook = [self facebook];
-    return [facebook getPublicKeyForEncryption:user];
+    return [facebook publicKeyForEncryption:user];
 }
 
 - (BOOL)checkSenderInReliableMessage:(id<DKDReliableMessage>)rMsg {
@@ -133,7 +133,7 @@
         // first handshake?
         NSAssert([visa.identifier isEqual:sender], @"visa ID not match: %@", sender);
         return [visa.identifier isEqual:sender];
-    } else if ([self getVisaKey:sender]) {
+    } else if ([self messageKey:sender]) {
         // sender is OK
         return YES;
     }
@@ -193,7 +193,7 @@
         //         that should be sent to a group bot first,
         //         and the bot will split it for all members.
         return NO;
-    } else if ([self getVisaKey:receiver]) {
+    } else if ([self messageKey:receiver]) {
         // receiver is OK
         return YES;
     }

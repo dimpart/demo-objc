@@ -68,11 +68,11 @@ NS_DESIGNATED_INITIALIZER;
 
 @interface DIMCommonFacebook (Documents)
 
-- (nullable __kindof id<MKMDocument>)getDocument:(id<MKMID>)ID
-                                        withType:(nullable NSString *)type;
+- (nullable __kindof id<MKMDocument>)document:(id<MKMID>)ID
+                                      forType:(nullable NSString *)type;
 
-- (nullable __kindof id<MKMVisa>)getVisa:(id<MKMID>)ID;
-- (nullable __kindof id<MKMBulletin>)getBulletin:(id<MKMID>)ID;
+- (nullable __kindof id<MKMVisa>)visa:(id<MKMID>)ID;
+- (nullable __kindof id<MKMBulletin>)bulletin:(id<MKMID>)ID;
 
 - (nullable NSString *)getName:(id<MKMID>)ID;
 
@@ -82,7 +82,7 @@ NS_DESIGNATED_INITIALIZER;
 
 @interface DIMCommonFacebook (Group)
 
-- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)group;
+- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)group;
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)group;
 

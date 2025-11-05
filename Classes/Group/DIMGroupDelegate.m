@@ -69,12 +69,12 @@
  */
 - (void)setCommonAssistants:(NSArray<id<MKMID>> *)bots;
 
-- (NSArray<id<MKMID>> *)getAssistants:(id<MKMID>)group;
+- (NSArray<id<MKMID>> *)assistants:(id<MKMID>)group;
 
 /**
  *  Get the fastest group bot
  */
-- (id<MKMID>)getFastestAssistant:(id<MKMID>)group;
+- (id<MKMID>)fastestAssistant:(id<MKMID>)group;
 
 @end
 
@@ -157,9 +157,9 @@ static _GroupBotsManager *s_grp_bot_man = nil;
     _commonAssistants = bots;
 }
 
-- (NSArray<id<MKMID>> *)getAssistants:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)assistants:(id<MKMID>)group {
     DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMID>> *bots = [facebook getAssistants:group];
+    NSArray<id<MKMID>> *bots = [facebook assistants:group];
     if ([bots count] == 0) {
         return _commonAssistants;
     }
@@ -167,8 +167,8 @@ static _GroupBotsManager *s_grp_bot_man = nil;
     return bots;
 }
 
-- (id<MKMID>)getFastestAssistant:(id<MKMID>)group {
-    NSArray<id<MKMID>> *bots = [self getAssistants:group];
+- (id<MKMID>)fastestAssistant:(id<MKMID>)group {
+    NSArray<id<MKMID>> *bots = [self assistants:group];
     if ([bots count] == 0) {
         NSLog(@"group bots not found: %@", group);
         return nil;
@@ -275,9 +275,9 @@ static _GroupBotsManager *s_grp_bot_man = nil;
     return [facebook archivist];
 }
 
-- (nullable id<MKMBulletin>)getBulletin:(id<MKMID>)gid {
+- (nullable id<MKMBulletin>)bulletin:(id<MKMID>)gid {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook getBulletin:gid];
+    return [facebook bulletin:gid];
 }
 
 - (BOOL)saveDocument:(id<MKMDocument>)doc {
@@ -295,15 +295,15 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 //
 
 // Override
-- (nullable id<MKMMeta>)getMeta:(id<MKMID>)ID {
+- (nullable id<MKMMeta>)meta:(id<MKMID>)ID {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook getMeta:ID];
+    return [facebook meta:ID];
 }
 
 // Override
-- (NSArray<id<MKMDocument>> *)getDocuments:(id<MKMID>)ID {
+- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)ID {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook getDocuments:ID];
+    return [facebook documents:ID];
 }
 
 //
@@ -311,27 +311,27 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 //
 
 // Override
-- (nullable id<MKMID>)getFounder:(id<MKMID>)group {
+- (nullable id<MKMID>)founder:(id<MKMID>)group {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook getFounder:group];
+    return [facebook founder:group];
 }
 
 // Override
-- (nullable id<MKMID>)getOwner:(id<MKMID>)group {
+- (nullable id<MKMID>)owner:(id<MKMID>)group {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook getOwner:group];
+    return [facebook owner:group];
 }
 
 // Override
-- (NSArray<id<MKMID>> *)getAssistants:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)assistants:(id<MKMID>)group {
     _GroupBotsManager *man = [_GroupBotsManager sharedInstance];
-    return [man getAssistants:group];
+    return [man assistants:group];
 }
 
 // Override
-- (NSArray<id<MKMID>> *)getMembers:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)members:(id<MKMID>)group {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook getMembers:group];
+    return [facebook members:group];
 }
 
 @end
@@ -367,9 +367,9 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 
 @implementation DIMGroupDelegate (Assistants)
 
-- (id<MKMID>)getFastestAssistant:(id<MKMID>)gid {
+- (id<MKMID>)fastestAssistant:(id<MKMID>)gid {
     _GroupBotsManager *man = [_GroupBotsManager sharedInstance];
-    return [man getFastestAssistant:gid];
+    return [man fastestAssistant:gid];
 }
 
 - (void)setCommonAssistants:(NSArray<id<MKMID>> *)bots {
@@ -381,9 +381,9 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 
 @implementation DIMGroupDelegate (Administrators)
 
-- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)gid {
+- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)gid {
     DIMClientFacebook *facebook = [self facebook];
-    return [facebook getAdministrators:gid];
+    return [facebook administrators:gid];
 }
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
@@ -397,13 +397,13 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 
 - (BOOL)isFounder:(id<MKMID>)uid group:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
-    id<MKMID> founder = [self getFounder:gid];
+    id<MKMID> founder = [self founder:gid];
     if (founder) {
         return [founder isEqual:uid];
     }
     // check member's public key with group's meta.key
-    id<MKMMeta> gMeta = [self getMeta:gid];
-    id<MKMMeta> uMeta = [self getMeta:uid];
+    id<MKMMeta> gMeta = [self meta:gid];
+    id<MKMMeta> uMeta = [self meta:uid];
     if (gMeta == nil || uMeta == nil) {
         NSAssert(false, @"failed to get meta for group: %@, user: %@", gid, uid);
         return NO;
@@ -413,7 +413,7 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 
 - (BOOL)isOwner:(id<MKMID>)uid group:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
-    id<MKMID> owner = [self getOwner:gid];
+    id<MKMID> owner = [self owner:gid];
     if (owner) {
         return [owner isEqual:uid];
     }
@@ -427,19 +427,19 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 
 - (BOOL)isMember:(id<MKMID>)uid group:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
-    NSArray<id<MKMID>> *members = [self getMembers:gid];
+    NSArray<id<MKMID>> *members = [self members:gid];
     return [members containsObject:uid];
 }
 
 - (BOOL)isAdministrator:(id<MKMID>)uid group:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
-    NSArray<id<MKMID>> *admins = [self getAdministrators:gid];
+    NSArray<id<MKMID>> *admins = [self administrators:gid];
     return [admins containsObject:uid];
 }
 
 - (BOOL)isAssistant:(id<MKMID>)bid group:(id<MKMID>)gid {
     NSAssert([bid isUser] && [gid isGroup], @"ID error: %@, %@", bid, gid);
-    NSArray<id<MKMID>> *bots = [self getAssistants:gid];
+    NSArray<id<MKMID>> *bots = [self assistants:gid];
     return [bots containsObject:bid];
 }
 

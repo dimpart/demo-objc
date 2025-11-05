@@ -69,9 +69,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMSharedGroupManager (DataSource)
 
-- (id<MKMBulletin>)getBulletin:(id<MKMID>)group;
+- (id<MKMBulletin>)bulletin:(id<MKMID>)group;
 
-- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)group;
+- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)group;
 
 /**
  *  Update 'administrators' in bulletin document

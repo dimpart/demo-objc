@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, strong, nonatomic, nullable) id<DIMArchivist> archivist;
 
-- (nullable id<MKMBulletin>)getBulletin:(id<MKMID>)gid;
+- (nullable id<MKMBulletin>)bulletin:(id<MKMID>)gid;
 
 - (BOOL)saveDocument:(id<MKMDocument>)doc;
 
@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMGroupDelegate (Assistants)
 
-- (id<MKMID>)getFastestAssistant:(id<MKMID>)gid;
+- (id<MKMID>)fastestAssistant:(id<MKMID>)gid;
 
 - (void)setCommonAssistants:(NSArray<id<MKMID>> *)bots;
 
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMGroupDelegate (Administrators)
 
-- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)gid;
+- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)gid;
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;
 

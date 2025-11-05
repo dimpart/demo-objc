@@ -152,7 +152,7 @@
     //  check group's meta & members
     //
     DIMCommonFacebook *facebook = [self facebook];
-    NSArray<id<MKMID>> *members = [facebook getMembers:receiver];
+    NSArray<id<MKMID>> *members = [facebook members:receiver];
     if ([members count] == 0) {
         // group not ready, suspend message for waiting meta/members
         NSDictionary *error = @{
@@ -167,7 +167,7 @@
     //
     NSMutableArray<id<MKMID>> *waiting = [[NSMutableArray alloc] init];
     for (id<MKMID> item in members) {
-        if ([facebook getVisa:item]) {
+        if ([facebook visa:item]) {
             // member is ready
         } else {
             [waiting addObject:item];

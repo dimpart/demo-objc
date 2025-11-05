@@ -88,12 +88,12 @@
 }
 
 // Override
-- (nullable __kindof id<MKMUser>)getUser:(id<MKMID>)did {
+- (nullable __kindof id<MKMUser>)user:(id<MKMID>)did {
     return [_userCache objectForKey:did.string];
 }
 
 // Override
-- (nullable __kindof id<MKMGroup>)getGroup:(id<MKMID>)did {
+- (nullable __kindof id<MKMGroup>)group:(id<MKMID>)did {
     return [_groupCache objectForKey:did.string];
 }
 
@@ -114,7 +114,7 @@
     //  2. check duplicated
     //
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> old = [facebook getMeta:ID];
+    id<MKMMeta> old = [facebook meta:ID];
     if (old) {
         // meta duplicated
         return YES;
@@ -152,17 +152,17 @@
 }
 
 // Override
-- (nullable __kindof id<MKVerifyKey>)getMetaKey:(id<MKMID>)ID {
+- (nullable __kindof id<MKVerifyKey>)metaKey:(id<MKMID>)ID {
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> meta = [facebook getMeta:ID];
+    id<MKMMeta> meta = [facebook meta:ID];
     NSAssert(meta, @"failed to get meta for: %@", ID);
     return [meta publicKey];
 }
 
 // Override
-- (nullable __kindof id<MKEncryptKey>)getVisaKey:(id<MKMID>)ID {
+- (nullable __kindof id<MKEncryptKey>)visaKey:(id<MKMID>)ID {
     DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMDocument>> *docs = [facebook getDocuments:ID];
+    NSArray<id<MKMDocument>> *docs = [facebook documents:ID];
     if ([docs count] == 0) {
         return nil;
     }
@@ -229,7 +229,7 @@
     }
     id<MKMID> did = [doc identifier];
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> meta = [facebook getMeta:did];
+    id<MKMMeta> meta = [facebook meta:did];
     if (!meta) {
         // failed to get meta
         return NO;
@@ -243,7 +243,7 @@
     NSString *type = [DIMDocumentUtils getDocumentType:doc];
     // check old documents with type
     DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMDocument>> *documents = [facebook getDocuments:did];
+    NSArray<id<MKMDocument>> *documents = [facebook documents:did];
     if ([documents count] == 0) {
         return NO;
     }

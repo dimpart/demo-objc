@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  for checking whether user's ready
  */
-- (nullable id<MKEncryptKey>)getVisaKey:(id<MKMID>)user;
+- (nullable id<MKEncryptKey>)messageKey:(id<MKMID>)user;
 
 /**
  *  Check sender before verifying received message

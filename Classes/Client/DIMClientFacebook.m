@@ -51,7 +51,7 @@
 //  GroupDataSource
 //
 
-- (id<MKMID>)getFounder:(id<MKMID>)group {
+- (id<MKMID>)founder:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
@@ -59,7 +59,7 @@
         return [DIMBroadcastUtils broadcastFounder:group];
     }
     // check bulletin document
-    id<MKMBulletin> doc = [self getBulletin:group];
+    id<MKMBulletin> doc = [self bulletin:group];
     if (!doc) {
         // the owner(founder) should be set in the bulletin document of group
         return nil;
@@ -77,7 +77,7 @@
     return user;
 }
 
-- (id<MKMID>)getOwner:(id<MKMID>)group {
+- (id<MKMID>)owner:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
@@ -85,7 +85,7 @@
         return [DIMBroadcastUtils broadcastOwner:group];
     }
     // check bulletin document
-    id<MKMBulletin> doc = [self getBulletin:group];
+    id<MKMBulletin> doc = [self bulletin:group];
     if (!doc) {
         // the owner(founder) should be set in the bulletin document of group
         return nil;
@@ -109,14 +109,14 @@
     return user;
 }
 
-- (NSArray<id<MKMID>> *)getMembers:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)members:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
         // founder of broadcast group
         return [DIMBroadcastUtils broadcastMembers:group];
     }
-    id<MKMID> owner = [self getOwner:group];
+    id<MKMID> owner = [self owner:group];
     if (!owner) {
         //NSAssert(false, @"group owner not found: %@", group);
         return nil;
@@ -134,10 +134,10 @@
     return members;
 }
 
-- (NSArray<id<MKMID>> *)getAssistants:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)assistants:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check bulletin document
-    id<MKMBulletin> doc = [self getBulletin:group];
+    id<MKMBulletin> doc = [self bulletin:group];
     if (!doc) {
         // the assistants should be set in the bulletin document of group
         return nil;
@@ -156,10 +156,10 @@
 //  Organizational Structure
 //
 
-- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check bulletin document
-    id<MKMBulletin> doc = [self getBulletin:group];
+    id<MKMBulletin> doc = [self bulletin:group];
     if (!doc) {
         // the administrators should be set in the bulletin document of group
         return nil;

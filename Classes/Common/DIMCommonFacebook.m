@@ -95,8 +95,8 @@
         return nil;
     }
     id<MKMID> current = [localUsers firstObject];
-    NSAssert([self getPrivateKeyForSignature:current], @"user error: %@", current);
-    user = [self getUser:current];
+    NSAssert([self privateKeyForSignature:current], @"user error: %@", current);
+    user = [self user:current];
     _currentUser = user;
     return user;
 }
@@ -122,7 +122,7 @@
             //
             // the messenger will check group info before decrypting message,
             // so we can trust that the group's meta & members MUST exist here.
-            NSArray<id<MKMID>> *members = [self getMembers:receiver];
+            NSArray<id<MKMID>> *members = [self members:receiver];
             if ([members count] == 0) {
                 NSAssert(false, @"members not found: %@", receiver);
                 return nil;
@@ -140,7 +140,7 @@
 #pragma mark Entity DataSource
 
 // Override
-- (id<MKMMeta>)getMeta:(id<MKMID>)ID {
+- (id<MKMMeta>)meta:(id<MKMID>)ID {
     id<DIMAccountDBI> adb = [self database];
     id<MKMMeta> meta = [adb metaForID:ID];
     [self.entityChecker checkMeta:meta forID:ID];
@@ -148,7 +148,7 @@
 }
 
 // Override
-- (NSArray<id<MKMDocument>> *)getDocuments:(id<MKMID>)ID {
+- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)ID {
     id<DIMAccountDBI> adb = [self database];
     NSArray<id<MKMDocument>> *docs = [adb documentsForID:ID];
     [self.entityChecker checkDocuments:docs forID:ID];
@@ -158,25 +158,25 @@
 #pragma mark User DataSource
 
 // Override
-- (NSArray<id<MKMID>> *)getContacts:(id<MKMID>)user {
+- (NSArray<id<MKMID>> *)contacts:(id<MKMID>)user {
     id<DIMAccountDBI> adb = [self database];
     return [adb contactsOfUser:user];
 }
 
 // Override
-- (NSArray<id<MKDecryptKey>> *)getPrivateKeysForDecryption:(id<MKMID>)user {
+- (NSArray<id<MKDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user {
     id<DIMAccountDBI> adb = [self database];
     return [adb privateKeysForDecryption:user];
 }
 
 // Override
-- (id<MKSignKey>)getPrivateKeyForSignature:(id<MKMID>)user {
+- (id<MKSignKey>)privateKeyForSignature:(id<MKMID>)user {
     id<DIMAccountDBI> adb = [self database];
     return [adb privateKeyForSignature:user];
 }
 
 // Override
-- (id<MKSignKey>)getPrivateKeyForVisaSignature:(id<MKMID>)user {
+- (id<MKSignKey>)privateKeyForVisaSignature:(id<MKMID>)user {
     id<DIMAccountDBI> adb = [self database];
     return [adb privateKeyForVisaSignature:user];
 }
@@ -185,9 +185,9 @@
 
 @implementation DIMCommonFacebook (Documents)
 
-- (nullable __kindof id<MKMDocument>)getDocument:(id<MKMID>)ID
-                                        withType:(nullable NSString *)type {
-    NSArray<id<MKMDocument>> *docs = [self getDocuments:ID];
+- (nullable __kindof id<MKMDocument>)document:(id<MKMID>)ID
+                                      forType:(nullable NSString *)type {
+    NSArray<id<MKMDocument>> *docs = [self documents:ID];
     id<MKMDocument> doc = [DIMDocumentUtils lastDocument:docs
                                                  forType:type];
     // compatible for document type
@@ -198,13 +198,13 @@
     return doc;
 }
 
-- (nullable __kindof id<MKMVisa>)getVisa:(id<MKMID>)ID {
-    NSArray<id<MKMDocument>> *docs = [self getDocuments:ID];
+- (nullable __kindof id<MKMVisa>)visa:(id<MKMID>)ID {
+    NSArray<id<MKMDocument>> *docs = [self documents:ID];
     return [DIMDocumentUtils lastVisa:docs];
 }
 
-- (nullable __kindof id<MKMBulletin>)getBulletin:(id<MKMID>)ID {
-    NSArray<id<MKMDocument>> *docs = [self getDocuments:ID];
+- (nullable __kindof id<MKMBulletin>)bulletin:(id<MKMID>)ID {
+    NSArray<id<MKMDocument>> *docs = [self documents:ID];
     return [DIMDocumentUtils lastBulletin:docs];
 }
 
@@ -218,7 +218,7 @@
         type = @"*";
     }
     // get name from document
-    id<MKMDocument> doc = [self getDocument:ID withType:type];
+    id<MKMDocument> doc = [self document:ID forType:type];
     if (doc) {
         NSString *name = [doc name];
         if ([name length] > 0) {
@@ -230,7 +230,7 @@
 }
 
 - (nullable id<MKPortableNetworkFile>)getAvatar:(id<MKMID>)user {
-    id<MKMVisa> doc = [self getVisa:user];
+    id<MKMVisa> doc = [self visa:user];
     return [doc avatar];
 }
 
@@ -238,7 +238,7 @@
 
 @implementation DIMCommonFacebook (Group)
 
-- (NSArray<id<MKMID>> *)getAdministrators:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)group {
     NSAssert(false, @"implement me!");
     return nil;
 }
