@@ -37,12 +37,24 @@
 
 #import "DIMHandshakeCommand.h"
 
+DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable session) {
+    if ([title isEqualToString:@"DIM!"]/* || [title isEqualToString:@"OK!"]*/) {
+        return DKDHandshake_Success;
+    } else if ([title isEqualToString:@"DIM?"]) {
+        return DKDHandshake_Again;
+    } else if ([session length] == 0) {
+        return DKDHandshake_Start;
+    } else {
+        return DKDHandshake_Restart;
+    }
+}
+
 @interface DIMHandshakeCommand ()
 
 @property (strong, nonatomic) NSString *title;
 @property (strong, nonatomic, nullable) NSString *sessionKey;
 
-@property (nonatomic) DIMHandshakeState state;
+@property (nonatomic) DKDHandshakeState state;
 
 @end
 
@@ -54,7 +66,7 @@
         // lazy
         _title = nil;
         _sessionKey = nil;
-        _state = DIMHandshake_Init;
+        _state = DKDHandshake_Init;
     }
     return self;
 }
@@ -64,14 +76,14 @@
     if (self = [super initWithType:type]) {
         _title = nil;
         _sessionKey = nil;
-        _state = DIMHandshake_Init;
+        _state = DKDHandshake_Init;
     }
     return self;
 }
 
 - (instancetype)initWithTitle:(NSString *)title
                    sessionKey:(nullable NSString *)session {
-    if (self = [self initWithCmd:DIMCommand_Handshake]) {
+    if (self = [self initWithCmd:DKDCommand_Handshake]) {
         // title
         if (title) {
             [self setObject:title forKey:@"title"];
@@ -84,7 +96,7 @@
         }
         _sessionKey = session;
         
-        _state = DIMHandshake_Init;
+        _state = DKDHandshake_Init;
     }
     return self;
 }
@@ -103,6 +115,7 @@
     return content;
 }
 
+// Override
 - (NSString *)title {
     if (!_title) {
         _title = [self objectForKey:@"title"];
@@ -110,6 +123,7 @@
     return _title;
 }
 
+// Override
 - (nullable NSString *)sessionKey {
     if (!_sessionKey) {
         _sessionKey = [self objectForKey:@"session"];
@@ -117,19 +131,10 @@
     return _sessionKey;
 }
 
-- (DIMHandshakeState)state {
-    if (_state != DIMHandshake_Init) {
-        return _state;
-    }
-    NSString *msg = self.title;
-    if ([msg isEqualToString:@"DIM!"] || [msg isEqualToString:@"OK!"]) {
-        _state = DIMHandshake_Success;
-    } else if ([msg isEqualToString:@"DIM?"]) {
-        _state = DIMHandshake_Again;
-    } else if (self.sessionKey) {
-        _state = DIMHandshake_Restart;
-    } else {
-        _state = DIMHandshake_Start;
+// Override
+- (DKDHandshakeState)state {
+    if (_state == DKDHandshake_Init) {
+        _state = DKDHandshakeCheckState(self.title, self.sessionKey);
     }
     return _state;
 }

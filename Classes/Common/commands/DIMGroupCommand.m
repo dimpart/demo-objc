@@ -55,3 +55,16 @@ NSString * const DKDGroupCommand_Query  = @"query"; // Deprecated
 }
 
 @end
+
+#pragma mark -
+
+NSString * const DIMGroupHistory_App      = @"chat.dim.group";
+NSString * const DIMGroupHistory_Mod      = @"history";
+NSString * const DIMGroupHistory_ActQuery = @"query";
+
+NSString * const DIMGroupKeys_App         = @"chat.dim.group";
+NSString * const DIMGroupKeys_Mod         = @"keys";
+NSString * const DIMGroupKeys_ActQuery    = @"query";    // 1. bot -> sender
+NSString * const DIMGroupKeys_ActUpdate   = @"update";   // 2. sender -> bot
+NSString * const DIMGroupKeys_ActRequest  = @"request";  // 3. member -> bot
+NSString * const DIMGroupKeys_ActRespond  = @"respond";

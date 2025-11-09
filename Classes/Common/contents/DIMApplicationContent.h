@@ -2,12 +2,12 @@
 //
 //  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,28 +28,28 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMCreator.h
+//  DIMApplicationContent.h
 //  DIMClient
 //
-//  Created by Albert Moky on 2023/3/3.
-//  Copyright © 2023 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2025/11/8.
 //
 
-#import <DIMSDK/DIMSDK.h>
-
-#import "DIMAppCustomizedProcessor.h"
+#import <DIMCore/DIMCore.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMClientContentProcessorCreator : DIMContentProcessorCreator
+/*
+ *  Content for Application 0nly: {
+ *      type : i2s(0xA0),
+ *      sn   : 123,
+ *
+ *      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+ *      extra : info         // others
+ *  }
+ */
+@interface DIMApplicationContent : DIMContent <DKDAppContent>
 
-@end
-
-@interface DIMClientContentProcessorCreator (Customized)
-
-// protected
-- (DIMAppCustomizedProcessor *)createCustomizedProcessor:(DIMFacebook *)facebook
-                                               messenger:(DIMMessenger *)transceiver;
+- (instancetype)initWithApplication:(NSString *)app;
 
 @end
 

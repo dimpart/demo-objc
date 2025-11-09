@@ -39,15 +39,25 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define DIMCommand_Handshake @"handshake"
+#define DKDCommand_Handshake @"handshake"
 
-typedef NS_ENUM(UInt8, DIMHandshakeState) {
-    DIMHandshake_Init,
-    DIMHandshake_Start,   // C -> S, without session key(or session expired)
-    DIMHandshake_Again,   // S -> C, with new session key
-    DIMHandshake_Restart, // C -> S, with new session key
-    DIMHandshake_Success, // S -> C, handshake accepted
+typedef NS_ENUM(UInt8, DKDHandshakeState) {
+    DKDHandshake_Init,
+    DKDHandshake_Start,   // C -> S, without session key(or session expired)
+    DKDHandshake_Again,   // S -> C, with new session key
+    DKDHandshake_Restart, // C -> S, with new session key
+    DKDHandshake_Success, // S -> C, handshake accepted
 };
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable session);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 /*
  *  Command message: {
@@ -64,7 +74,7 @@ typedef NS_ENUM(UInt8, DIMHandshakeState) {
 @property (readonly, strong, nonatomic) NSString *title;
 @property (readonly, strong, nonatomic, nullable) NSString *sessionKey;
 
-@property (readonly, nonatomic) DIMHandshakeState state;
+@property (readonly, nonatomic) DKDHandshakeState state;
 
 @end
 

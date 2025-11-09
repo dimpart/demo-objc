@@ -69,7 +69,7 @@
     DIMCommandRegisterClass(DIMCommand_ANS, DIMAnsCommand);
     
     // Handshake
-    DIMCommandRegisterClass(DIMCommand_Handshake, DIMHandshakeCommand);
+    DIMCommandRegisterClass(DKDCommand_Handshake, DIMHandshakeCommand);
     // Login
     DIMCommandRegisterClass(DIMCommand_Login, DIMLoginCommand);
     
@@ -140,6 +140,56 @@
     MKMMetaSetFactory(@"MKM", mkm);
     MKMMetaSetFactory(@"BTC", btc);
     MKMMetaSetFactory(@"ETH", eth);
+}
+
+@end
+
+#pragma mark -
+
+@interface DIMLibraryLoader () {
+    
+    BOOL _loaded;
+}
+
+@property (strong, nonatomic) __kindof DIMExtensionLoader *extensionLoader;
+@property (strong, nonatomic) __kindof DIMPluginLoader *pluginLoader;
+
+@end
+
+@implementation DIMLibraryLoader
+
+- (instancetype)init {
+    DIMExtensionLoader *extensionLoader = [[DIMCommonExtensionLoader alloc] init];
+    DIMPluginLoader *pluginLoader = [[DIMCommonPluginLoader alloc] init];
+    return [self initWithExtensionLoader:extensionLoader andPluginLoader:pluginLoader];
+}
+
+/* designated initializer */
+- (instancetype)initWithExtensionLoader:(DIMExtensionLoader *)extensionLoader
+                        andPluginLoader:(DIMPluginLoader *)pluginLoader {
+    if (self = [super init]) {
+        self.extensionLoader = extensionLoader;
+        self.pluginLoader = pluginLoader;
+        _loaded = NO;
+    }
+    return self;
+}
+
+- (void)run {
+    if (_loaded) {
+        // no need to load it again
+        return;
+    } else {
+        // mark it to loaded
+        _loaded = YES;
+    }
+    // try to load all plugins
+    [self load];
+}
+
+- (void)load {
+    [self.extensionLoader load];
+    [self.pluginLoader load];
 }
 
 @end

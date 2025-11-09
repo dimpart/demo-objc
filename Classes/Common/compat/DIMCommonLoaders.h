@@ -46,4 +46,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark -
+
+@interface DIMLibraryLoader : NSObject
+
+@property (readonly, strong, nonatomic) __kindof DIMExtensionLoader *extensionLoader;
+@property (readonly, strong, nonatomic) __kindof DIMPluginLoader *pluginLoader;
+
+- (instancetype)initWithExtensionLoader:(DIMExtensionLoader *)extensionLoader
+                        andPluginLoader:(DIMPluginLoader *)pluginLoader
+NS_DESIGNATED_INITIALIZER;
+
+- (void)run;
+
+// protected
+- (void)load;
+
+@end
+
 NS_ASSUME_NONNULL_END

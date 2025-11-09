@@ -66,7 +66,7 @@
             NSLog(@"not handshake yet, suspend message: %@ => %@", content, iMsg.receiver);
             // TODO: suspend instant message
             return nil;
-        } else if ([[content cmd] isEqualToString:DIMCommand_Handshake]) {
+        } else if ([[content cmd] isEqualToString:DKDCommand_Handshake]) {
             // NOTICE: only handshake message can go out
             [iMsg setObject:@"handshaking" forKey:@"pass"];
         } else {
@@ -145,9 +145,10 @@
     id<MKMID> uid = [user identifier];
     id<MKMMeta> meta = [user meta];
     id<MKMVisa> visa = [user visa];
-    id<DKDContent> command = [[DIMDocumentCommand alloc] initWithID:uid
-                                                               meta:meta
-                                                          documents:@[visa]];
+    id<DKDContent> command;
+    command = [[DIMDocumentCommand alloc] initWithIdentifier:uid
+                                                        meta:meta
+                                                   documents:@[visa]];
     DIMEntityChecker *checker = [facebook entityChecker];
     //
     //  send to all contacts

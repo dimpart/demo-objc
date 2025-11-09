@@ -66,22 +66,42 @@
 
 @implementation DIMClientContentProcessorCreator
 
+- (DIMAppCustomizedProcessor *)createCustomizedProcessor:(DIMFacebook *)facebook
+                                               messenger:(DIMMessenger *)transceiver {
+
+    DIMAppCustomizedProcessor *cpu = CREATE_CPU(DIMAppCustomizedProcessor);
+    // 'chat.dim.group:history'
+    [cpu setContentHandler:CREATE_CPU(DIMGroupHistoryHandler)
+                 forModule:DIMGroupHistory_Mod
+             inApplication:DIMGroupHistory_App];
+    
+    return cpu;
+}
+
+// Override
 - (id<DIMContentProcessor>)createContentProcessor:(NSString *)type {
+    // application customized
+    if ([type isEqualToString:DKDContentType_Application] ||
+        [type isEqualToString:DKDContentType_Customized]) {
+        return [self createCustomizedProcessor:self.facebook messenger:self.messenger];
+    }
+    
     // history command
-    if (type == DKDContentType_History) {
+    if ([type isEqualToString:DKDContentType_History]) {
         return CREATE_CPU(DIMHistoryCommandProcessor);
     }
     // default
-    if (type == 0) {
+    if (type == nil) {
         return CREATE_CPU(DIMContentProcessor);
     }
     // others
     return [super createContentProcessor:type];
 }
 
+// Override
 - (id<DIMContentProcessor>)createCommandProcessor:(NSString *)name withType:(NSString *)msgType {
     // handshake
-    if ([name isEqualToString:DIMCommand_Handshake]) {
+    if ([name isEqualToString:DKDCommand_Handshake]) {
         return CREATE_CPU(DIMHandshakeCommandProcessor);
     }
     // login

@@ -66,4 +66,65 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Query;  // Deprecated
 
 @end
 
+#pragma mark -
+
+/**
+ *  Group Query Command: {
+ *      "type" : i2s(0xCC),
+ *      "sn"   : 123,
+ *      "time" : 123.456,
+ *
+ *      "app"  : "chat.dim.group",
+ *      "mod"  : "history",
+ *      "act"  : "query",
+ *
+ *      "group"     : "{GROUP_ID}",
+ *      "last_time" : 0,             // Last group history time for querying
+ *  }
+ */
+@protocol DIMGroupHistory <NSObject>
+
++ (id<DKDCustomizedContent>)queryGroupHistory:(id<MKMID>)group
+                                     lastTime:(nullable NSDate *)time;
+
+@end
+
+FOUNDATION_EXPORT NSString * const DIMGroupHistory_App;
+FOUNDATION_EXPORT NSString * const DIMGroupHistory_Mod;
+FOUNDATION_EXPORT NSString * const DIMGroupHistory_ActQuery;
+
+FOUNDATION_EXPORT NSString * const DIMGroupKeys_App;
+FOUNDATION_EXPORT NSString * const DIMGroupKeys_Mod;
+FOUNDATION_EXPORT NSString * const DIMGroupKeys_ActQuery;    // 1. bot -> sender
+FOUNDATION_EXPORT NSString * const DIMGroupKeys_ActUpdate;   // 2. sender -> bot
+FOUNDATION_EXPORT NSString * const DIMGroupKeys_ActRequest;  // 3. member -> bot
+FOUNDATION_EXPORT NSString * const DIMGroupKeys_ActRespond;  // 4. bot -> member
+
+/**
+ *  Group Keys Command: {
+ *      "type" : i2s(0xCC),
+ *      "sn"   : 123,
+ *      "time" : 123.456,
+ *
+ *      "app"  : "chat.dim.group",
+ *      "mod"  : "keys",
+ *      "act"  : "query",   // "update", "request", "respond"
+ *
+ *      "group"  : "{GROUP_ID}",
+ *      "from"   : "{SENDER_ID}",
+ *      "to"     : ["{MEMBER_ID}", ],  // query for members
+ *      "digest" : "{KEY_DIGEST}",     // query with digest
+ *      "keys"   : {
+ *          "digest"      : "{KEY_DIGEST}",
+ *          "{MEMBER_ID}" : "{ENCRYPTED_KEY}",
+ *      }
+ *  }
+ */
+@protocol DIMGroupKeys <NSObject>
+
+// TODO: ...
+//+ (id<DKDCustomizedContent>)queryGroupKeys:(id<MKMID>)group;
+
+@end
+
 NS_ASSUME_NONNULL_END
