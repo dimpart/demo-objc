@@ -46,7 +46,7 @@
     NSAssert([content isKindOfClass:[DIMLoginCommand class]], @"login error: %@", content);
     DIMLoginCommand *command = content;
     
-    NSLog(@"[%@] %@ login: %@", command.time, command.ID, command.stationInfo);
+    NSLog(@"[%@] %@ login: %@", command.time, command.identifier, command.stationInfo);
     // TODO: update contact's login status
     
     // no need to respond login command

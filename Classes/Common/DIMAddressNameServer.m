@@ -124,40 +124,40 @@
 }
 
 // Override
-- (NSArray<NSString *> *)getNames:(id<MKMID>)ID {
-    return [_caches allKeysForObject:ID];
+- (NSArray<NSString *> *)getNames:(id<MKMID>)did {
+    return [_caches allKeysForObject:did];
 }
 
-- (BOOL)cacheID:(id<MKMID>)ID withName:(NSString *)alias {
+- (BOOL)cacheID:(id<MKMID>)did withName:(NSString *)alias {
     if ([self isReserved:alias]) {
         // this name is reserved, cannot register
         return NO;
     }
-    if (ID) {
-        [_caches setObject:ID forKey:alias];
+    if (did) {
+        [_caches setObject:did forKey:alias];
     } else {
         [_caches removeObjectForKey:alias];
     }
     return YES;
 }
 
-- (BOOL)saveID:(id<MKMID>)ID withName:(NSString *)alias {
+- (BOOL)saveID:(id<MKMID>)did withName:(NSString *)alias {
     // TODO: save new record into database
-    return [self cacheID:ID withName:alias];
+    return [self cacheID:did withName:alias];
 }
 
 - (NSUInteger)fixRecords:(NSDictionary<NSString *, NSString *> *)records {
     [_reserved removeObjectForKey:@"assistant"];
     //[_reserved removeObjectForKey:@"station"];
     NSUInteger count = 0;
-    id<MKMID> ID;
+    id<MKMID> did;
     for (NSString *alias in records) {
-        ID = MKMIDParse([records objectForKey:alias]);
-        if (!alias || !ID) {
+        did = MKMIDParse([records objectForKey:alias]);
+        if (!alias || !did) {
             // should not happen
             continue;;
         }
-        if ([self saveID:ID withName:alias]) {
+        if ([self saveID:did withName:alias]) {
             count += 1;
         }
     }

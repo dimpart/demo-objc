@@ -81,7 +81,7 @@
 }
 
 - (id<MKMID>)sessionID {
-    return [_session ID];
+    return [_session identifier];
 }
 
 - (STDockerStatus)status {

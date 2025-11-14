@@ -164,14 +164,14 @@ static DIMSharedGroupManager *s_grp_man = nil;
 
 #pragma mark Entity DataSource
 
-- (id<MKMMeta>)meta:(id<MKMID>)ID {
+- (id<MKMMeta>)meta:(id<MKMID>)did {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate meta:ID];
+    return [delegate meta:did];
 }
 
-- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)ID {
+- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)did {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate documents:ID];
+    return [delegate documents:did];
 }
 
 #pragma mark Group DataSource

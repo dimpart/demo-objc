@@ -295,15 +295,15 @@ static _GroupBotsManager *s_grp_bot_man = nil;
 //
 
 // Override
-- (nullable id<MKMMeta>)meta:(id<MKMID>)ID {
+- (nullable id<MKMMeta>)meta:(id<MKMID>)did {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook meta:ID];
+    return [facebook meta:did];
 }
 
 // Override
-- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)ID {
+- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)did {
     DIMCommonFacebook *facebook = [self facebook];
-    return [facebook documents:ID];
+    return [facebook documents:did];
 }
 
 //

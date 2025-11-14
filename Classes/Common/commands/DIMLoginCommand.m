@@ -53,11 +53,11 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID {
+- (instancetype)initWithIdentifier:(id<MKMID>)did {
     if (self = [self initWithCmd:DIMCommand_Login]) {
         // ID
-        if (ID) {
-            [self setObject:[ID string] forKey:@"ID"];
+        if (did) {
+            [self setObject:[did string] forKey:@"did"];
         }
     }
     return self;
@@ -73,8 +73,8 @@
 
 #pragma mark Client Info
 
-- (id<MKMID>)ID {
-    id string = [self objectForKey:@"ID"];
+- (id<MKMID>)identifier {
+    id string = [self objectForKey:@"did"];
     return MKMIDParse(string);
 }
 
@@ -113,10 +113,10 @@
     }
 }
 - (void)copyStationInfo:(DIMStation *)station {
-    id<MKMID> ID = [station identifier];
+    id<MKMID> did = [station identifier];
     NSString *host = station.host;
     UInt32 port = station.port;
-    if (!ID || [host length] == 0) {
+    if (!did || [host length] == 0) {
         NSAssert(!station, @"station error: %@", station);
         return;
     }
@@ -124,7 +124,7 @@
         port = 9394;
     }
     [self setStationInfo:@{
-        @"ID"  : [ID string],
+        @"did"  : [did string],
         @"host": host,
         @"port": @(port),
     }];
@@ -141,13 +141,13 @@
     }
 }
 - (void)copyProviderInfo:(DIMServiceProvider *)provider {
-    id<MKMID> ID = [provider identifier];
-    if (!ID) {
+    id<MKMID> did = [provider identifier];
+    if (!did) {
         NSAssert(!provider, @"SP error: %@", provider);
         return;
     }
     [self setProviderInfo:@{
-        @"ID"  : [ID string],
+        @"did"  : [did string],
     }];
 }
 

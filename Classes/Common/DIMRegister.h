@@ -60,12 +60,12 @@ NS_DESIGNATED_INITIALIZER;
  *  Generate group account (Polylogue)
  *
  * @param name - group title
- * @param ID - group founder
+ * @param uid - group founder
  * @return Group ID
  */
-- (id<MKMID>)createGroupWithName:(NSString *)name founder:(id<MKMID>)ID;
+- (id<MKMID>)createGroupWithName:(NSString *)name founder:(id<MKMID>)uid;
 - (id<MKMID>)createGroupWithName:(NSString *)name
-                            seed:(NSString *)seed founder:(id<MKMID>)ID;
+                            seed:(NSString *)seed founder:(id<MKMID>)uid;
 
 @end
 

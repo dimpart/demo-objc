@@ -58,66 +58,66 @@ NS_DESIGNATED_INITIALIZER;
 @interface DIMEntityChecker (Meta)
 
 // protected
-- (BOOL)isMetaQueryExpired:(id<MKMID>)ID;
+- (BOOL)isMetaQueryExpired:(id<MKMID>)did;
 
 /**
  *  Check meta for querying
  *
- * @param ID - entity ID
+ * @param did - entity ID
  * @param meta - exists meta
  * @return ture on querying
  */
-- (BOOL)checkMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)ID;
+- (BOOL)checkMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)did;
 
 /**
  *  check whether need to query meta
  */
 // protected
-- (BOOL)needsQueryMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)ID;
+- (BOOL)needsQueryMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)did;
 
 /**
  *  Request for meta with entity ID
  *  (call 'isMetaQueryExpired()' before sending command)
  *
- * @param ID - entity ID
+ * @param did - entity ID
  * @return false on duplicated
  */
-- (BOOL)queryMetaForID:(id<MKMID>)ID;
+- (BOOL)queryMetaForID:(id<MKMID>)did;
 
 @end
 
 @interface DIMEntityChecker (Documents)
 
 // protected
-- (BOOL)isDocumentsQueryExpired:(id<MKMID>)ID;
+- (BOOL)isDocumentsQueryExpired:(id<MKMID>)did;
 
 // protected
-- (BOOL)isDocumentResponseExpired:(id<MKMID>)ID forceUpdate:(BOOL)force;
+- (BOOL)isDocumentResponseExpired:(id<MKMID>)did forceUpdate:(BOOL)force;
 
 /**
  *  Check documents for querying/updating
  *
- * @param ID - entity ID
+ * @param did - entity ID
  * @param docs - exist document
  * @return true on querying
  */
-- (BOOL)checkDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)ID;
+- (BOOL)checkDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did;
 
 /**
  *  check whether need to query documents
  */
 // protected
-- (BOOL)needsQueryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)ID;
+- (BOOL)needsQueryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did;
 
 /**
  *  Request for documents with entity ID
  *  (call 'isDocumentQueryExpired()' before sending command)
  *
- * @param ID - entity ID
+ * @param did - entity ID
  * @param docs - exist documents
  * @return false on duplicated
  */
-- (BOOL)queryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)ID;
+- (BOOL)queryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did;
 
 @end
 
@@ -166,11 +166,11 @@ NS_DESIGNATED_INITIALIZER;
 /**
  *  Update 'SDT' - Sender Document Time
  */
-- (BOOL)setLastDocumentTime:(NSDate *)time forID:(id<MKMID>)ID;
+- (BOOL)setLastDocumentTime:(NSDate *)time forID:(id<MKMID>)did;
 
 // protected
 - (nullable NSDate *)lastTimeOfDocuments:(NSArray<id<MKMDocument>> *)docs
-                                   forID:(id<MKMID>)ID;
+                                   forID:(id<MKMID>)did;
 
 /**
  *  Update 'GHT' - Group History Time

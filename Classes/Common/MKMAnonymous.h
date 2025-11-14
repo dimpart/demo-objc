@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKMAnonymous : NSObject
 
-+ (NSString *)name:(id<MKMID>)ID;
++ (NSString *)name:(id<MKMID>)did;
 
 + (UInt32)number:(id<MKMAddress>)address;
 

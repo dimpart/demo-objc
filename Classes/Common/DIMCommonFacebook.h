@@ -68,13 +68,13 @@ NS_DESIGNATED_INITIALIZER;
 
 @interface DIMCommonFacebook (Documents)
 
-- (nullable __kindof id<MKMDocument>)document:(id<MKMID>)ID
+- (nullable __kindof id<MKMDocument>)document:(id<MKMID>)did
                                       forType:(nullable NSString *)type;
 
-- (nullable __kindof id<MKMVisa>)visa:(id<MKMID>)ID;
-- (nullable __kindof id<MKMBulletin>)bulletin:(id<MKMID>)ID;
+- (nullable __kindof id<MKMVisa>)visa:(id<MKMID>)did;
+- (nullable __kindof id<MKMBulletin>)bulletin:(id<MKMID>)did;
 
-- (nullable NSString *)getName:(id<MKMID>)ID;
+- (nullable NSString *)getName:(id<MKMID>)did;
 
 - (nullable id<MKPortableNetworkFile>)getAvatar:(id<MKMID>)user;
 

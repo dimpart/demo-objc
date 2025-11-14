@@ -82,9 +82,9 @@
     BOOL canReset = isOwner || isAdmin;
     if (!canReset) {
         NSDictionary *info = @{
-            @"template": @"Not allowed to reset members of group: ${ID}",
+            @"template": @"Not allowed to reset members of group: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         return [self respondReceipt:@"Permission denied."
@@ -95,9 +95,9 @@
     // 2.1. check owner
     if (![newMembers.firstObject isEqual:owner]) {
         NSDictionary *info = @{
-            @"template": @"Owner must be the first member of group: ${ID}",
+            @"template": @"Owner must be the first member of group: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         return [self respondReceipt:@"Permission denied."
@@ -115,9 +115,9 @@
     }
     if (expelAdmin) {
         NSDictionary *info = @{
-            @"template": @"Not allowed to expel administrator of group: ${ID}",
+            @"template": @"Not allowed to expel administrator of group: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         return [self respondReceipt:@"Permission denied."

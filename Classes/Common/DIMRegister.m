@@ -51,13 +51,13 @@
 
 #import "DIMRegister.h"
 
-static inline id<MKMVisa> create_visa(id<MKMID> ID,
+static inline id<MKMVisa> create_visa(id<MKMID> uid,
                                       NSString *nickname,
                                       _Nullable id<MKPortableNetworkFile> avatarUrl,
                                       id<MKEncryptKey> visaKey,
                                       id<MKSignKey> idKey) {
-    assert([ID isUser]);
-    id<MKMVisa> visa = [[DIMVisa alloc] initWithIdentifier:ID];
+    assert([uid isUser]);
+    id<MKMVisa> visa = [[DIMVisa alloc] initWithIdentifier:uid];
     // App ID
     [visa setProperty:@"chat.dim.tarsier" forKey:@"app_id"];
     // nickname
@@ -74,12 +74,12 @@ static inline id<MKMVisa> create_visa(id<MKMID> ID,
     return visa;
 }
 
-static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
+static inline id<MKMBulletin> create_bulletin(id<MKMID> gid,
                                               NSString *title,
                                               id<MKSignKey> sKey,
                                               id<MKMID> founder) {
-    assert([ID isGroup]);
-    id<MKMBulletin> doc = [[DIMBulletin alloc] initWithIdentifier:ID];
+    assert([gid isGroup]);
+    id<MKMBulletin> doc = [[DIMBulletin alloc] initWithIdentifier:gid];
     // App ID
     [doc setProperty:@"chat.dim.tarsier" forKey:@"app_id"];
     // group founder
@@ -126,23 +126,23 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
     //
     //  Step 3: generate ID with meta
     //
-    id<MKMID> ID = MKMIDGenerate(meta, MKMEntityType_User, nil);
+    id<MKMID> uid = MKMIDGenerate(meta, MKMEntityType_User, nil);
     //
     //  Step 4: generate visa with ID and sign with private key
     //
     id<MKPrivateKey> msgKey = MKPrivateKeyGenerate(MKAsymmetricAlgorithm_RSA);
     id<MKEncryptKey> visaKey = (id<MKEncryptKey>)[msgKey publicKey];
-    id<MKMVisa> visa = create_visa(ID, nickname, url, visaKey, idKey);
+    id<MKMVisa> visa = create_visa(uid, nickname, url, visaKey, idKey);
     //
     //  Step 5: save private key, meta & visa in local storage
     //          don't forget to upload them onto the DIM station
     //
-    [_database saveMeta:meta forID:ID];
-    [_database savePrivateKey:idKey withType:DIMPrivateKeyType_Meta forUser:ID];
-    [_database savePrivateKey:msgKey withType:DIMPrivateKeyType_Visa forUser:ID];
+    [_database saveMeta:meta forID:uid];
+    [_database savePrivateKey:idKey withType:DIMPrivateKeyType_Meta forUser:uid];
+    [_database savePrivateKey:msgKey withType:DIMPrivateKeyType_Visa forUser:uid];
     [_database saveDocument:visa];
     // OK
-    return ID;
+    return uid;
 }
 
 - (id<MKMID>)createGroupWithName:(NSString *)name founder:(id<MKMID>)founder {
@@ -164,23 +164,23 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> ID,
     //
     //  Step 3: generate ID with meta
     //
-    id<MKMID> ID = MKMIDGenerate(meta, MKMEntityType_Group, nil);
+    id<MKMID> gid = MKMIDGenerate(meta, MKMEntityType_Group, nil);
     //
     //  Step 4: generate bulletin with ID and sign with founder's private key
     //
-    id<MKMBulletin> doc = create_bulletin(ID, name, sKey, founder);
+    id<MKMBulletin> doc = create_bulletin(gid, name, sKey, founder);
     //
     //  Step 5: save meta & bulletin in local storage
     //          don't forget to upload then onto the DIM station
     //
-    [_database saveMeta:meta forID:ID];
+    [_database saveMeta:meta forID:gid];
     [_database saveDocument:doc];
     //
     //  Step 6: add founder as first member
     //
-    [_database saveMembers:@[founder] group:ID];
+    [_database saveMembers:@[founder] group:gid];
     // OK
-    return ID;
+    return gid;
 }
 
 @end

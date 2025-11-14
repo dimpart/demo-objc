@@ -37,11 +37,12 @@
 
 #import "DIMBaseSession.h"
 
-@interface DIMSession ()
+@interface DIMSession () {
+    
+    id<MKMID> _identifier;
+}
 
 @property(nonatomic, strong) id<DIMSessionDBI> database;
-
-@property(nonatomic, strong) id<MKMID> identifier;
 
 @end
 
@@ -73,12 +74,12 @@
 }
 
 // Override
-- (id<MKMID>)ID {
+- (id<MKMID>)identifier {
     return _identifier;
 }
 
 // Override
-- (BOOL)setID:(id<MKMID>)user {
+- (BOOL)setIdentifier:(id<MKMID>)user {
     if (!_identifier) {
         if (!user) {
             return NO;
@@ -150,7 +151,7 @@
     //    a roaming message, remove it for actual receiver.
     // 3. if the original receiver is a group, it must had been
     //    replaced to the group assistant ID by GroupDeliver.
-    id<MKMID> receiver = [self ID];
+    id<MKMID> receiver = [self identifier];
     if (!receiver || [receiver type] == MKMEntityType_Station) {
         //if ([[rMsg receiver] isEqual:receiver]) {
         //    // staion message won't be stored

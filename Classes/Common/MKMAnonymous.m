@@ -94,12 +94,12 @@ static inline NSString *name_from_type(MKMEntityType network) {
 
 @implementation MKMAnonymous
 
-+ (NSString *)name:(id<MKMID>)ID {
-    NSString *string = ID.name;
++ (NSString *)name:(id<MKMID>)did {
+    NSString *string = did.name;
     if (string.length == 0) {
-        string = name_from_type(ID.type);
+        string = name_from_type(did.type);
     }
-    NSString *number = [self numberString:ID.address];
+    NSString *number = [self numberString:did.address];
     return [NSString stringWithFormat:@"%@ (%@)", string, number];
 }
 

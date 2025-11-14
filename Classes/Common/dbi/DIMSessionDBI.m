@@ -52,37 +52,37 @@ id<MKMID> DIMGSP(void) {
 
 @interface DIMProviderInfo ()
 
-@property (strong, nonatomic) id<MKMID> ID;
+@property (strong, nonatomic) id<MKMID> identifier;
 
 @end
 
 @implementation DIMProviderInfo
 
-- (instancetype)initWithID:(id<MKMID>)PID chosen:(NSInteger)order {
+- (instancetype)initWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order {
     if (self = [self init]) {
-        self.ID = PID;
+        self.identifier = pid;
         self.chosen = order;
     }
     return self;
 }
 
-+ (instancetype)providerWithID:(id<MKMID>)PID chosen:(NSInteger)order {
-    return [[DIMProviderInfo alloc] initWithID:PID chosen:order];
++ (instancetype)providerWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order {
+    return [[DIMProviderInfo alloc] initWithIdentifier:pid chosen:order];
 }
 
 + (NSArray<DIMProviderInfo *> *)convert:(NSArray<NSDictionary *> *)array {
     NSMutableArray *providers = [[NSMutableArray alloc] initWithCapacity:array.count];
-    id<MKMID> PID;
+    id<MKMID> pid;
     NSInteger chosen;
     for (NSDictionary *info in array) {
-        PID = MKMIDParse([info objectForKey:@"ID"]);
+        pid = MKMIDParse([info objectForKey:@"did"]);
         chosen = MKConvertInteger([info objectForKey:@"chosen"], 0);
-        if (!PID) {
+        if (!pid) {
             // SP ID error
             NSAssert(false, @"provider ID error: %@", info);
             continue;
         }
-        [providers addObject:[DIMProviderInfo providerWithID:PID chosen:chosen]];
+        [providers addObject:[DIMProviderInfo providerWithIdentifier:pid chosen:chosen]];
     }
     return providers;
 }
@@ -91,7 +91,7 @@ id<MKMID> DIMGSP(void) {
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:providers.count];
     for (DIMProviderInfo *info in providers) {
         [array addObject:@{
-            @"ID": [info.ID string],
+            @"did": [info.identifier string],
             @"chosen": @(info.chosen),
         }];
     }
@@ -109,56 +109,58 @@ id<MKMID> DIMGSP(void) {
 
 @implementation DIMStationInfo
 
-- (instancetype)initWithID:(nullable id<MKMID>)SID
-                    chosen:(NSInteger)order
-                      host:(NSString *)IP
-                      port:(UInt16)port
-                  provider:(nullable id<MKMID>)PID {
+- (instancetype)initWithIdentifier:(nullable id<MKMID>)sid
+                            chosen:(NSInteger)order
+                              host:(NSString *)IP
+                              port:(UInt16)port
+                          provider:(nullable id<MKMID>)pid {
     if (self = [self init]) {
-        self.ID = SID;
+        self.identifier = sid;
         self.chosen = order;
         self.host = IP;
         self.port = port;
-        self.provider = PID;
+        self.provider = pid;
     }
     return self;
 }
 
-+ (instancetype)stationWithID:(nullable id<MKMID>)SID
-                       chosen:(NSInteger)order
-                         host:(NSString *)IP
-                         port:(UInt16)port
-                     provider:(nullable id<MKMID>)PID {
-    return [[DIMStationInfo alloc] initWithID:SID
-                                       chosen:order
-                                         host:IP
-                                         port:port
-                                     provider:PID];
++ (instancetype)stationWithIdentifier:(nullable id<MKMID>)sid
+                               chosen:(NSInteger)order
+                                 host:(NSString *)IP
+                                 port:(UInt16)port
+                             provider:(nullable id<MKMID>)pid {
+    return [[DIMStationInfo alloc] initWithIdentifier:sid
+                                               chosen:order
+                                                 host:IP
+                                                 port:port
+                                             provider:pid];
 }
 
 + (NSArray<DIMStationInfo *> *)convert:(NSArray<NSDictionary *> *)array {
     NSMutableArray *stations = [[NSMutableArray alloc] initWithCapacity:array.count];
-    id<MKMID> SID;
+    id<MKMID> sid;
     NSInteger chosen;
     NSString *IP;
     UInt16 port;
-    id<MKMID> PID;
-    for (NSDictionary *info in array) {
-        SID = MKMIDParse([info objectForKey:@"ID"]);
-        chosen = MKConvertInteger([info objectForKey:@"chosen"], 0);
-        IP = MKConvertString([info objectForKey:@"host"], nil);
-        port = MKConvertUnsignedShort([info objectForKey:@"port"], 0);
-        PID = MKMIDParse([info objectForKey:@"provider"]);
-        if (!IP || port == 0/* || !PID*/) {
+    id<MKMID> pid;
+    DIMStationInfo *info;
+    for (NSDictionary *item in array) {
+        sid = MKMIDParse([item objectForKey:@"did"]);
+        chosen = MKConvertInteger([item objectForKey:@"chosen"], 0);
+        IP = MKConvertString([item objectForKey:@"host"], nil);
+        port = MKConvertUnsignedShort([item objectForKey:@"port"], 0);
+        pid = MKMIDParse([item objectForKey:@"provider"]);
+        if (!IP || port == 0/* || !pid*/) {
             // SP ID error
-            NSAssert(false, @"station info error: %@", info);
+            NSAssert(false, @"station info error: %@", item);
             continue;
         }
-        [stations addObject:[DIMStationInfo stationWithID:SID
-                                                   chosen:chosen
-                                                     host:IP
-                                                     port:port
-                                                 provider:PID]];
+        info = [DIMStationInfo stationWithIdentifier:sid
+                                              chosen:chosen
+                                                host:IP
+                                                port:port
+                                            provider:pid];
+        [stations addObject:info];
     }
     return stations;
 }
@@ -167,7 +169,7 @@ id<MKMID> DIMGSP(void) {
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:stations.count];
     for (DIMStationInfo *info in stations) {
         [array addObject:@{
-            @"ID": [info.ID string],
+            @"did": [info.identifier string],
             @"chosen": @(info.chosen),
             @"host": [info host],
             @"port": @(info.port),

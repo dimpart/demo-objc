@@ -105,37 +105,37 @@ static inline DIMRecentTimeChecker *_time_checkers(void) {
 
 @implementation DIMEntityChecker (Meta)
 
-- (BOOL)isMetaQueryExpired:(id<MKMID>)ID {
-    return [_metaQueries isExpired:ID time:nil];
+- (BOOL)isMetaQueryExpired:(id<MKMID>)did {
+    return [_metaQueries isExpired:did time:nil];
 }
 
-- (BOOL)checkMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)ID {
-    if ([self needsQueryMeta:meta forID:ID]) {
-        //if (![self isMetaQueryExpired:ID]) {
+- (BOOL)checkMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)did {
+    if ([self needsQueryMeta:meta forID:did]) {
+        //if (![self isMetaQueryExpired:did]) {
         //    // query not expired yet
         //    return NO;
         //}
-        return [self queryMetaForID:ID];
+        return [self queryMetaForID:did];
     } else {
         // no need to query meta again
         return NO;
     }
 }
 
-- (BOOL)needsQueryMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)ID {
-    if ([ID isBroadcast]) {
+- (BOOL)needsQueryMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)did {
+    if ([did isBroadcast]) {
         // broadcast entity has no meta to query
         return NO;
     } else if (!meta) {
         // meta not found, sure to query
         return YES;
     }
-    NSAssert([DIMMetaUtils meta:meta matchIdentifier:ID],
-             @"meta not match: %@, %@", ID, meta);
+    NSAssert([DIMMetaUtils meta:meta matchIdentifier:did],
+             @"meta not match: %@, %@", did, meta);
     return NO;
 }
 
-- (BOOL)queryMetaForID:(id<MKMID>)ID {
+- (BOOL)queryMetaForID:(id<MKMID>)did {
     NSAssert(false, @"implement me!");
     return NO;
 }
@@ -144,40 +144,40 @@ static inline DIMRecentTimeChecker *_time_checkers(void) {
 
 @implementation DIMEntityChecker (Documents)
 
-- (BOOL)isDocumentsQueryExpired:(id<MKMID>)ID {
-    return [_docsQueries isExpired:ID time:nil];
+- (BOOL)isDocumentsQueryExpired:(id<MKMID>)did {
+    return [_docsQueries isExpired:did time:nil];
 }
 
-- (BOOL)isDocumentResponseExpired:(id<MKMID>)ID forceUpdate:(BOOL)force {
-    return [_visaResponses isExpired:ID time:nil force:force];
+- (BOOL)isDocumentResponseExpired:(id<MKMID>)did forceUpdate:(BOOL)force {
+    return [_visaResponses isExpired:did time:nil force:force];
 }
 
-- (BOOL)checkDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)ID {
-    if ([self needsQueryDocuments:docs forID:ID]) {
-        //if (![self isDocumentsQueryExpired:ID]) {
+- (BOOL)checkDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did {
+    if ([self needsQueryDocuments:docs forID:did]) {
+        //if (![self isDocumentsQueryExpired:did]) {
         //    // query not expired yet
         //    return NO;
         //}
-        return [self queryDocuments:docs forID:ID];
+        return [self queryDocuments:docs forID:did];
     } else {
         // no need to update documents now
         return NO;
     }
 }
 
-- (BOOL)needsQueryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)ID {
-    if ([ID isBroadcast]) {
+- (BOOL)needsQueryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did {
+    if ([did isBroadcast]) {
         // boradcast entity has no document to query
         return NO;
     } else if ([docs count] == 0) {
         // documents not found, sure to query
         return YES;
     }
-    NSDate *current = [self lastTimeOfDocuments:docs forID:ID];
-    return [_lastDocumentTimes isExpired:current forKey:ID];
+    NSDate *current = [self lastTimeOfDocuments:docs forID:did];
+    return [_lastDocumentTimes isExpired:current forKey:did];
 }
 
-- (BOOL)queryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)ID {
+- (BOOL)queryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did {
     NSAssert(false, @"implement me!");
     return NO;
 }
@@ -232,11 +232,11 @@ static inline DIMRecentTimeChecker *_time_checkers(void) {
 
 @implementation DIMEntityChecker (Time)
 
-- (BOOL)setLastDocumentTime:(NSDate *)time forID:(id<MKMID>)ID {
-    return [_lastDocumentTimes setLastTime:time forKey:ID];
+- (BOOL)setLastDocumentTime:(NSDate *)time forID:(id<MKMID>)did {
+    return [_lastDocumentTimes setLastTime:time forKey:did];
 }
 
-- (NSDate *)lastTimeOfDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)ID {
+- (NSDate *)lastTimeOfDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did {
     if ([docs count] == 0) {
         return nil;
     }
@@ -244,8 +244,8 @@ static inline DIMRecentTimeChecker *_time_checkers(void) {
     NSDate *docTime;
     NSTimeInterval dt, lt = 0;
     for (id<MKMDocument> document in docs) {
-        NSAssert([document.identifier isEqual:ID],
-                 @"document ID not match: %@, %@", ID, document);
+        NSAssert([document.identifier isEqual:did],
+                 @"document ID not match: %@, %@", did, document);
         docTime = [document time];
         dt = [docTime timeIntervalSince1970];
         if (dt < 1) {

@@ -38,21 +38,21 @@
 
 #import "DIMPrivateKeyStore.h"
 
-static inline NSString *private_label(NSString *type, id<MKMID> ID) {
-    NSString *address = [ID.address string];
+static inline NSString *private_label(NSString *type, id<MKMID> did) {
+    NSString *address = [did.address string];
     if ([type length] == 0) {
         return address;
     }
     return [NSString stringWithFormat:@"%@:%@", type, address];
 }
 
-static inline BOOL private_save(id<MKPrivateKey> key, NSString *type, id<MKMID> ID) {
-    NSString *label = private_label(type, ID);
+static inline BOOL private_save(id<MKPrivateKey> key, NSString *type, id<MKMID> did) {
+    NSString *label = private_label(type, did);
     return DIMPrivateKeySave(label, key);
 }
 
-static inline id<MKPrivateKey> private_load(NSString *type, id<MKMID> ID) {
-    NSString *label = private_label(type, ID);
+static inline id<MKPrivateKey> private_load(NSString *type, id<MKMID> did) {
+    NSString *label = private_label(type, did);
     return DIMPrivateKeyLoad(label);
 }
 

@@ -100,21 +100,21 @@
 #pragma mark Archivist
 
 // Override
-- (BOOL)saveMeta:(id<MKMMeta>)meta withIdentifier:(id<MKMID>)ID {
+- (BOOL)saveMeta:(id<MKMMeta>)meta withIdentifier:(id<MKMID>)did {
     //
     //  1. check valid
     //
-    if ([self checkMeta:meta forID:ID]) {
+    if ([self checkMeta:meta forID:did]) {
         // meta valid
     } else {
-        NSAssert(false, @"meta not valid: %@", ID);
+        NSAssert(false, @"meta not valid: %@", did);
         return NO;
     }
     //
     //  2. check duplicated
     //
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> old = [facebook meta:ID];
+    id<MKMMeta> old = [facebook meta:did];
     if (old) {
         // meta duplicated
         return YES;
@@ -123,7 +123,7 @@
     //  3. save into database
     //
     id<DIMAccountDBI> db = [self database];
-    return [db saveMeta:meta forID:ID];
+    return [db saveMeta:meta forID:did];
 }
 
 // Override
@@ -152,22 +152,22 @@
 }
 
 // Override
-- (nullable __kindof id<MKVerifyKey>)metaKey:(id<MKMID>)ID {
+- (nullable __kindof id<MKVerifyKey>)metaKey:(id<MKMID>)did {
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> meta = [facebook meta:ID];
-    NSAssert(meta, @"failed to get meta for: %@", ID);
+    id<MKMMeta> meta = [facebook meta:did];
+    NSAssert(meta, @"failed to get meta for: %@", did);
     return [meta publicKey];
 }
 
 // Override
-- (nullable __kindof id<MKEncryptKey>)visaKey:(id<MKMID>)ID {
+- (nullable __kindof id<MKEncryptKey>)visaKey:(id<MKMID>)did {
     DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMDocument>> *docs = [facebook documents:ID];
+    NSArray<id<MKMDocument>> *docs = [facebook documents:did];
     if ([docs count] == 0) {
         return nil;
     }
     id<MKMVisa> visa = [DIMDocumentUtils lastVisa:docs];
-    NSAssert(visa, @"failed to get visa for: %@", ID);
+    NSAssert(visa, @"failed to get visa for: %@", did);
     return [visa publicKey];
 }
 
@@ -199,8 +199,8 @@
 
 @implementation DIMCommonArchivist (Checking)
 
-- (BOOL)checkMeta:(nonnull id<MKMMeta>)meta forID:(nonnull id<MKMID>)ID {
-    return [meta isValid] && [DIMMetaUtils meta:meta matchIdentifier:ID];
+- (BOOL)checkMeta:(nonnull id<MKMMeta>)meta forID:(nonnull id<MKMID>)did {
+    return [meta isValid] && [DIMMetaUtils meta:meta matchIdentifier:did];
 }
 
 - (BOOL)checkDocumentValid:(nonnull id<MKMDocument>)doc {

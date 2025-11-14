@@ -118,7 +118,7 @@
         return NO;
     }
     DIMClientSession *session = [messenger session];
-    id<MKMID> uid = [session ID];
+    id<MKMID> uid = [session identifier];
     DIMSessionState *state = session.state;
     if (!uid || state.index != DIMSessionStateOrderRunning) {
         // handshake not accepted
@@ -207,7 +207,7 @@
     // set current user for handshaking
     id<MKMUser> user = [_facebook currentUser];
     if (user) {
-        [session setID:user.identifier];
+        [session setIdentifier:user.identifier];
     }
     [session startWithStateDelegate:self];
     return session;
@@ -270,7 +270,7 @@
 - (BOOL)loginUser:(id<MKMID>)user {
     DIMClientSession *session = [self session];
     if (session) {
-        [session setID:user];
+        [session setIdentifier:user];
         return YES;
     } else {
         return NO;
@@ -292,7 +292,7 @@
     }
     // check signed in user
     DIMClientSession *session = [messenger session];
-    id<MKMID> uid = [session ID];
+    id<MKMID> uid = [session identifier];
     if (uid) {
         // already signed in, check session state
         DIMSessionState *state = [session state];
@@ -317,7 +317,7 @@
     [session resume];
 
     // check signed in user
-    id<MKMID> uid = [session ID];
+    id<MKMID> uid = [session identifier];
     if (uid) {
         // already signed in, wait a while to check session state
         [NSObject performBlockInBackground:^{

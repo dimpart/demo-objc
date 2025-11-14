@@ -98,11 +98,11 @@ typedef OKPair<id<DKDInstantMessage>, id<DKDReliableMessage>> DIMTransmitterResu
 /**
  *  Update user ID
  *
- * @param ID - login user ID
+ * @param did - login user ID
  * @return true on changed
  */
-- (BOOL)setID:(nullable id<MKMID>)ID;
-- (nullable id<MKMID>)ID;
+- (BOOL)setIdentifier:(nullable id<MKMID>)did;
+- (nullable id<MKMID>)identifier;
 
 /**
  *  Update active flag

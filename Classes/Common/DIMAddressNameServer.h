@@ -60,26 +60,26 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Get all short names with the same ID
  *
- * @param ID - user ID
+ * @param did - user ID
  * @return short name list
  */
-- (NSArray<NSString *> *)getNames:(id<MKMID>)ID;
+- (NSArray<NSString *> *)getNames:(id<MKMID>)did;
 
 @end
 
 @interface DIMAddressNameServer : NSObject <DIMAddressNameService>
 
 // protected
-- (BOOL)cacheID:(id<MKMID>)ID withName:(NSString *)username;
+- (BOOL)cacheID:(id<MKMID>)did withName:(NSString *)username;
 
 /**
  *  Save ANS record
  *
  * @param alias - short name for user ID
- * @param ID - user ID; if empty, means delete this name
+ * @param did - user ID; if empty, means delete this name
  * @return true on success
  */
-- (BOOL)saveID:(id<MKMID>)ID withName:(NSString *)alias;
+- (BOOL)saveID:(id<MKMID>)did withName:(NSString *)alias;
 
 // remove the keywords temporary before save new records
 - (NSUInteger)fixRecords:(NSDictionary<NSString *, NSString *> *)records;

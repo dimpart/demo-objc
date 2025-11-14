@@ -180,7 +180,7 @@
     DIMClientSession *session = [self session];
     DIMStation *station = [session station];
     // create login command
-    DIMLoginCommand *command = [[DIMLoginCommand alloc] initWithID:sender];
+    DIMLoginCommand *command = [[DIMLoginCommand alloc] initWithIdentifier:sender];
     [command setAgent:ua];
     [command copyStationInfo:station];
     // broadcast to 'everyone@everywhere'

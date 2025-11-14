@@ -75,9 +75,9 @@
     // 2. check permission
     if (isOwner) {
         NSDictionary *info = @{
-            @"template": @"Owner cannot quit from group: ${ID}",
+            @"template": @"Owner cannot quit from group: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         return [self respondReceipt:@"Permission denied."
@@ -87,9 +87,9 @@
     }
     if (isAdmin) {
         NSDictionary *info = @{
-            @"template": @"Administrator cannot quit from group: ${ID}",
+            @"template": @"Administrator cannot quit from group: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         return [self respondReceipt:@"Permission denied."

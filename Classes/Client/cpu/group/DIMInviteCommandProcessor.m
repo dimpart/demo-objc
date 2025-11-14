@@ -84,9 +84,9 @@
     // 2. check permission
     if (!isMember) {
         NSDictionary *info = @{
-            @"template": @"Not allowed to invite member into group: ${ID}",
+            @"template": @"Not allowed to invite member into group: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         return [self respondReceipt:@"Permission denied."

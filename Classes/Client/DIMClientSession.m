@@ -160,7 +160,7 @@ static inline NSArray<NSData *> *split_lines(NSData *data) {
 }
 
 - (BOOL)isReady {
-    if ([self isActive] && [self ID]) {
+    if ([self isActive] && [self identifier]) {
         // handshake successful
     } else {
         // not active,

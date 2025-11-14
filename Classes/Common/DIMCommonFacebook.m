@@ -140,18 +140,18 @@
 #pragma mark Entity DataSource
 
 // Override
-- (id<MKMMeta>)meta:(id<MKMID>)ID {
+- (id<MKMMeta>)meta:(id<MKMID>)did {
     id<DIMAccountDBI> adb = [self database];
-    id<MKMMeta> meta = [adb metaForID:ID];
-    [self.entityChecker checkMeta:meta forID:ID];
+    id<MKMMeta> meta = [adb metaForID:did];
+    [self.entityChecker checkMeta:meta forID:did];
     return meta;
 }
 
 // Override
-- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)ID {
+- (NSArray<id<MKMDocument>> *)documents:(id<MKMID>)did {
     id<DIMAccountDBI> adb = [self database];
-    NSArray<id<MKMDocument>> *docs = [adb documentsForID:ID];
-    [self.entityChecker checkDocuments:docs forID:ID];
+    NSArray<id<MKMDocument>> *docs = [adb documentsForID:did];
+    [self.entityChecker checkDocuments:docs forID:did];
     return docs;
 }
 
@@ -185,9 +185,9 @@
 
 @implementation DIMCommonFacebook (Documents)
 
-- (nullable __kindof id<MKMDocument>)document:(id<MKMID>)ID
+- (nullable __kindof id<MKMDocument>)document:(id<MKMID>)did
                                       forType:(nullable NSString *)type {
-    NSArray<id<MKMDocument>> *docs = [self documents:ID];
+    NSArray<id<MKMDocument>> *docs = [self documents:did];
     id<MKMDocument> doc = [DIMDocumentUtils lastDocument:docs
                                                  forType:type];
     // compatible for document type
@@ -198,27 +198,27 @@
     return doc;
 }
 
-- (nullable __kindof id<MKMVisa>)visa:(id<MKMID>)ID {
-    NSArray<id<MKMDocument>> *docs = [self documents:ID];
+- (nullable __kindof id<MKMVisa>)visa:(id<MKMID>)did {
+    NSArray<id<MKMDocument>> *docs = [self documents:did];
     return [DIMDocumentUtils lastVisa:docs];
 }
 
-- (nullable __kindof id<MKMBulletin>)bulletin:(id<MKMID>)ID {
-    NSArray<id<MKMDocument>> *docs = [self documents:ID];
+- (nullable __kindof id<MKMBulletin>)bulletin:(id<MKMID>)did {
+    NSArray<id<MKMDocument>> *docs = [self documents:did];
     return [DIMDocumentUtils lastBulletin:docs];
 }
 
-- (nullable NSString *)getName:(id<MKMID>)ID {
+- (nullable NSString *)getName:(id<MKMID>)did {
     NSString *type;
-    if ([ID isUser]) {
+    if ([did isUser]) {
         type = MKMDocumentType_Visa;
-    } else if ([ID isGroup]) {
+    } else if ([did isGroup]) {
         type = MKMDocumentType_Bulletin;
     } else {
         type = @"*";
     }
     // get name from document
-    id<MKMDocument> doc = [self document:ID forType:type];
+    id<MKMDocument> doc = [self document:did forType:type];
     if (doc) {
         NSString *name = [doc name];
         if ([name length] > 0) {
@@ -226,7 +226,7 @@
         }
     }
     // get name from ID
-    return [MKMAnonymous name:ID];
+    return [MKMAnonymous name:did];
 }
 
 - (nullable id<MKPortableNetworkFile>)getAvatar:(id<MKMID>)user {

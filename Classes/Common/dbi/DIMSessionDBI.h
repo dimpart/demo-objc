@@ -53,12 +53,12 @@ id<MKMID> DIMGSP(void);  // "gsp@everywhere"
 
 @interface DIMProviderInfo : NSObject
 
-@property (strong, nonatomic, readonly) id<MKMID> ID;
+@property (strong, nonatomic, readonly) id<MKMID> identifier;
 @property (nonatomic) NSInteger chosen;
 
-- (instancetype)initWithID:(id<MKMID>)PID chosen:(NSInteger)order;
+- (instancetype)initWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order;
 
-+ (instancetype)providerWithID:(id<MKMID>)PID chosen:(NSInteger)order;
++ (instancetype)providerWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order;
 
 + (NSArray<DIMProviderInfo *> *)convert:(NSArray<NSDictionary *> *)array;
 
@@ -68,7 +68,7 @@ id<MKMID> DIMGSP(void);  // "gsp@everywhere"
 
 @interface DIMStationInfo : NSObject
 
-@property (strong, nonatomic) id<MKMID> ID;
+@property (strong, nonatomic) id<MKMID> identifier;
 @property (nonatomic) NSInteger chosen;
 
 @property (strong, nonatomic, readonly) NSString *host;
@@ -76,17 +76,17 @@ id<MKMID> DIMGSP(void);  // "gsp@everywhere"
 
 @property (strong, nonatomic, nullable) id<MKMID> provider;
 
-- (instancetype)initWithID:(nullable id<MKMID>)SID
-                    chosen:(NSInteger)order
-                      host:(NSString *)IP
-                      port:(UInt16)port
-                  provider:(nullable id<MKMID>)PID;
+- (instancetype)initWithIdentifier:(nullable id<MKMID>)sid
+                            chosen:(NSInteger)order
+                              host:(NSString *)IP
+                              port:(UInt16)port
+                          provider:(nullable id<MKMID>)pid;
 
-+ (instancetype)stationWithID:(nullable id<MKMID>)SID
-                       chosen:(NSInteger)order
-                         host:(NSString *)IP
-                         port:(UInt16)port
-                     provider:(nullable id<MKMID>)PID;
++ (instancetype)stationWithIdentifier:(nullable id<MKMID>)sid
+                               chosen:(NSInteger)order
+                                 host:(NSString *)IP
+                                 port:(UInt16)port
+                             provider:(nullable id<MKMID>)pid;
 
 + (NSArray<DIMStationInfo *> *)convert:(NSArray<NSDictionary *> *)array;
 
@@ -100,35 +100,35 @@ id<MKMID> DIMGSP(void);  // "gsp@everywhere"
 
 - (NSArray<DIMProviderInfo *> *)allProviders;
 
-- (BOOL)addProvider:(id<MKMID>)PID chosen:(NSInteger)order;
+- (BOOL)addProvider:(id<MKMID>)pid chosen:(NSInteger)order;
 
-- (BOOL)updateProvider:(id<MKMID>)PID chosen:(NSInteger)order;
+- (BOOL)updateProvider:(id<MKMID>)pid chosen:(NSInteger)order;
 
-- (BOOL)removeProvider:(id<MKMID>)PID;
+- (BOOL)removeProvider:(id<MKMID>)pid;
 
 @end
 
 @protocol DIMStationDBI <NSObject>
 
-- (NSArray<DIMStationInfo *> *)allStations:(id<MKMID>)PID;
+- (NSArray<DIMStationInfo *> *)allStations:(id<MKMID>)pid;
 
-- (BOOL)addStation:(id<MKMID>)SID
+- (BOOL)addStation:(id<MKMID>)sid
             chosen:(NSInteger)order
               host:(NSString *)IP
               port:(UInt16)port
-          provider:(id<MKMID>)PID;
+          provider:(id<MKMID>)pid;
 
-- (BOOL)updateStation:(id<MKMID>)SID
+- (BOOL)updateStation:(id<MKMID>)sid
                chosen:(NSInteger)order
                  host:(NSString *)IP
                  port:(UInt16)port
-             provider:(id<MKMID>)PID;
+             provider:(id<MKMID>)pid;
 
 - (BOOL)removeStationWithHost:(NSString *)IP
                          port:(UInt16)port
-                     provider:(id<MKMID>)PID;
+                     provider:(id<MKMID>)pid;
 
-- (BOOL)removeAllStations:(id<MKMID>)PID;
+- (BOOL)removeAllStations:(id<MKMID>)pid;
 
 @end
 

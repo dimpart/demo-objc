@@ -49,17 +49,17 @@ NS_ASSUME_NONNULL_BEGIN
  *      command  : "login",
  *      time     : 0,
  *      //---- client info ----
- *      ID       : "{UserID}",
+ *      did      : "{UserID}",
  *      device   : "DeviceID",  // (optional)
  *      agent    : "UserAgent", // (optional)
  *      //---- server info ----
  *      station  : {
- *          ID   : "{StationID}",
+ *          did  : "{StationID}",
  *          host : "{IP}",
  *          port : 9394
  *      },
  *      provider : {
- *          ID   : "{SP_ID}"
+ *          did  : "{SP_ID}"
  *      }
  *  }
  */
@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Client Info
 
 // User ID
-@property (readonly, strong, nonatomic) id<MKMID> ID;
+@property (readonly, strong, nonatomic) id<MKMID> identifier;
 // Device ID
 @property (strong, nonatomic, nullable) NSString *device;
 // User-Agent
@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMLoginCommand : DIMCommand <DKDLoginCommand>
 
-- (instancetype)initWithID:(id<MKMID>)ID;
+- (instancetype)initWithIdentifier:(id<MKMID>)did;
 
 - (void)copyStationInfo:(DIMStation *)station;
 - (void)copyProviderInfo:(DIMServiceProvider *)provider;

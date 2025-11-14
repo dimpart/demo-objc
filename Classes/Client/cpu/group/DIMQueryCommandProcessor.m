@@ -78,9 +78,9 @@
     BOOL canQuery = isMember || isBot;
     if (!canQuery) {
         NSDictionary *info = @{
-            @"template": @"Not allowed to query members of group: ${ID}",
+            @"template": @"Not allowed to query members of group: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         return [self respondReceipt:@"Permission denied."
@@ -102,9 +102,9 @@
         } else if (lt <= [queryTime timeIntervalSince1970]) {
             // group history not updated
             NSDictionary *info = @{
-                @"template": @"history not updated: ${ID}, last time: ${time}",
+                @"template": @"history not updated: ${gid}, last time: ${time}",
                 @"replacements": @{
-                    @"ID": group.string,
+                    @"gid": group.string,
                     @"time": @(lt),
                 },
             };

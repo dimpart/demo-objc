@@ -128,10 +128,10 @@
     BOOL expired = [self.helper isCommandExpired:content];
     if (expired) {
         NSDictionary *info = @{
-            @"template": @"Group command expired: ${cmd}, group: ${ID}",
+            @"template": @"Group command expired: ${cmd}, group: ${gid}",
             @"replacements": @{
                 @"cmd": content.cmd,
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         errors = [self respondReceipt:@"Command expired."
@@ -157,9 +157,9 @@
     NSArray<id<MKMID>> *members = [self.helper membersFromCommand:content];
     if ([members count] == 0) {
         NSDictionary *info = @{
-            @"template": @"Group members empty: ${ID}",
+            @"template": @"Group members empty: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         errors = [self respondReceipt:@"Command error."
@@ -186,9 +186,9 @@
     if (!owner || [members count] == 0) {
         // TODO: query group members?
         NSDictionary *info = @{
-            @"template": @"Group empty: ${ID}",
+            @"template": @"Group empty: ${gid}",
             @"replacements": @{
-                @"ID": group.string,
+                @"gid": group.string,
             },
         };
         errors = [self respondReceipt:@"Group empty."

@@ -211,9 +211,9 @@ static id<MKMIDFactory> _idFactory = nil;
 
 - (nullable id<MKMID>)parseIdentifier:(NSString *)identifier {
     // try ANS record
-    id<MKMID> ID = [_ans getID:identifier];
-    if (ID) {
-        return ID;
+    id<MKMID> did = [_ans getID:identifier];
+    if (did) {
+        return did;
     }
     // parse by original factory
     return [_idFactory parseIdentifier:identifier];
