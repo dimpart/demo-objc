@@ -67,13 +67,13 @@ NS_DESIGNATED_INITIALIZER;
  * @param meta - exists meta
  * @return ture on querying
  */
-- (BOOL)checkMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)did;
+- (BOOL)checkMeta:(nullable id<MKMMeta>)meta forIdentifier:(id<MKMID>)did;
 
 /**
  *  check whether need to query meta
  */
 // protected
-- (BOOL)needsQueryMeta:(nullable id<MKMMeta>)meta forID:(id<MKMID>)did;
+- (BOOL)needsQueryMeta:(nullable id<MKMMeta>)meta forIdentifier:(id<MKMID>)did;
 
 /**
  *  Request for meta with entity ID
@@ -82,7 +82,7 @@ NS_DESIGNATED_INITIALIZER;
  * @param did - entity ID
  * @return false on duplicated
  */
-- (BOOL)queryMetaForID:(id<MKMID>)did;
+- (BOOL)queryMetaForIdentifier:(id<MKMID>)did;
 
 @end
 
@@ -101,13 +101,13 @@ NS_DESIGNATED_INITIALIZER;
  * @param docs - exist document
  * @return true on querying
  */
-- (BOOL)checkDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did;
+- (BOOL)checkDocuments:(NSArray<id<MKMDocument>> *)docs forIdentifier:(id<MKMID>)did;
 
 /**
  *  check whether need to query documents
  */
 // protected
-- (BOOL)needsQueryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did;
+- (BOOL)needsQueryDocuments:(NSArray<id<MKMDocument>> *)docs forIdentifier:(id<MKMID>)did;
 
 /**
  *  Request for documents with entity ID
@@ -117,7 +117,7 @@ NS_DESIGNATED_INITIALIZER;
  * @param docs - exist documents
  * @return false on duplicated
  */
-- (BOOL)queryDocuments:(NSArray<id<MKMDocument>> *)docs forID:(id<MKMID>)did;
+- (BOOL)queryDocuments:(NSArray<id<MKMDocument>> *)docs forIdentifier:(id<MKMID>)did;
 
 @end
 
@@ -141,13 +141,13 @@ NS_DESIGNATED_INITIALIZER;
  * @param members - exist members
  * @return true on querying
  */
-- (BOOL)checkMembers:(NSArray<id<MKMID>> *)members forID:(id<MKMID>)group;
+- (BOOL)checkMembers:(NSArray<id<MKMID>> *)members forIdentifier:(id<MKMID>)group;
 
 /**
  *  check whether need to query group members
  */
 // protected
-- (BOOL)needsQueryMembers:(NSArray<id<MKMID>> *)members forID:(id<MKMID>)group;
+- (BOOL)needsQueryMembers:(NSArray<id<MKMID>> *)members forIdentifier:(id<MKMID>)group;
 
 /**
  *  Request for group members with group ID
@@ -157,7 +157,7 @@ NS_DESIGNATED_INITIALIZER;
  * @param members - exist members
  * @return false on duplicated
  */
-- (BOOL)queryMembers:(NSArray<id<MKMID>> *)members forID:(id<MKMID>)group;
+- (BOOL)queryMembers:(NSArray<id<MKMID>> *)members forIdentifier:(id<MKMID>)group;
 
 @end
 
@@ -166,19 +166,19 @@ NS_DESIGNATED_INITIALIZER;
 /**
  *  Update 'SDT' - Sender Document Time
  */
-- (BOOL)setLastDocumentTime:(NSDate *)time forID:(id<MKMID>)did;
+- (BOOL)setLastDocumentTime:(NSDate *)time forIdentifier:(id<MKMID>)did;
 
 // protected
 - (nullable NSDate *)lastTimeOfDocuments:(NSArray<id<MKMDocument>> *)docs
-                                   forID:(id<MKMID>)did;
+                           forIdentifier:(id<MKMID>)did;
 
 /**
  *  Update 'GHT' - Group History Time
  */
-- (BOOL)setLastHistoryTime:(NSDate *)time forID:(id<MKMID>)group;
+- (BOOL)setLastHistoryTime:(NSDate *)time forIdentifier:(id<MKMID>)group;
 
 // protected
-- (nullable NSDate *)lastTimeOfHistoryForID:(id<MKMID>)group;
+- (nullable NSDate *)lastTimeOfHistoryForIdentifier:(id<MKMID>)group;
 
 @end
 

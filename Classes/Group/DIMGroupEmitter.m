@@ -74,7 +74,7 @@
         NSAssert(false, @"document error: %@", doc);
     }
     // attach group history time
-    NSDate *lastHisTime = [self.facebook.archivist lastTimeOfHistoryForID:gid];
+    NSDate *lastHisTime = [self.facebook.archivist lastTimeOfHistoryForIdentifier:gid];
     if (lastHisTime) {
         [iMsg setDate:lastHisTime forKey:@"GHT"];
     } else {

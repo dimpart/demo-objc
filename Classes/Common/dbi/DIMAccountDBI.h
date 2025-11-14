@@ -103,9 +103,9 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 
 @protocol DIMMetaDBI <NSObject>
 
-- (BOOL)saveMeta:(id<MKMMeta>)meta forID:(id<MKMID>)entity;
+- (BOOL)saveMeta:(id<MKMMeta>)meta forIdentifier:(id<MKMID>)entity;
 
-- (nullable id<MKMMeta>)metaForID:(id<MKMID>)entity;
+- (nullable id<MKMMeta>)metaForIdentifier:(id<MKMID>)entity;
 
 @end
 
@@ -113,7 +113,7 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 
 - (BOOL)saveDocument:(id<MKMDocument>)doc;
 
-- (NSArray<id<MKMDocument>> *)documentsForID:(id<MKMID>)entity;
+- (NSArray<id<MKMDocument>> *)documentsForIdentifier:(id<MKMID>)entity;
 
 @end
 

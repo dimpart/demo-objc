@@ -1,7 +1,7 @@
 platform :ios, '12.0'
 
 target 'DIMClient' do
-    pod 'DIMSDK', '~> 1.0.8'
-    pod 'DIMPlugins', '~> 1.0.8'
+    pod 'DIMSDK', '~> 1.0.9'
+    pod 'DIMPlugins', '~> 1.0.9'
     pod 'StarTrek', '~> 0.1.3'
 end

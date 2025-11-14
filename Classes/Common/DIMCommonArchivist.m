@@ -104,7 +104,7 @@
     //
     //  1. check valid
     //
-    if ([self checkMeta:meta forID:did]) {
+    if ([self checkMeta:meta forIdentifier:did]) {
         // meta valid
     } else {
         NSAssert(false, @"meta not valid: %@", did);
@@ -123,7 +123,7 @@
     //  3. save into database
     //
     id<DIMAccountDBI> db = [self database];
-    return [db saveMeta:meta forID:did];
+    return [db saveMeta:meta forIdentifier:did];
 }
 
 // Override
@@ -199,7 +199,7 @@
 
 @implementation DIMCommonArchivist (Checking)
 
-- (BOOL)checkMeta:(nonnull id<MKMMeta>)meta forID:(nonnull id<MKMID>)did {
+- (BOOL)checkMeta:(nonnull id<MKMMeta>)meta forIdentifier:(nonnull id<MKMID>)did {
     return [meta isValid] && [DIMMetaUtils meta:meta matchIdentifier:did];
 }
 

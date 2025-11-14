@@ -77,7 +77,7 @@
             // calibrate the clock
             lastDocTime = now;
         }
-        docUpdated = [checker setLastDocumentTime:lastDocTime forID:group];
+        docUpdated = [checker setLastDocumentTime:lastDocTime forIdentifier:group];
     }
     // check group history time
     NSDate *lastHisTime = [rMsg dateForKey:@"GHT" defaultValue:nil];
@@ -86,11 +86,11 @@
             // calibrate the clock
             lastHisTime = now;
         }
-        docUpdated = [checker setLastHistoryTime:lastHisTime forID:group];
+        docUpdated = [checker setLastHistoryTime:lastHisTime forIdentifier:group];
     }
     // check whether needs update
     if (docUpdated) {
-        [self.facebook documentsForID:group];
+        [self.facebook documentsForIdentifier:group];
     }
     if (memUpdated) {
         [checker setLastActiveMember:rMsg.sender group:group];

@@ -71,7 +71,7 @@ NS_DESIGNATED_INITIALIZER;
 @interface DIMCommonArchivist (Checking)
 
 // protected
-- (BOOL)checkMeta:(id<MKMMeta>)meta forID:(id<MKMID>)did;
+- (BOOL)checkMeta:(id<MKMMeta>)meta forIdentifier:(id<MKMID>)did;
 
 // protected
 - (BOOL)checkDocumentValid:(id<MKMDocument>)doc;

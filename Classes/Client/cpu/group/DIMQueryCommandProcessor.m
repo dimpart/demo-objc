@@ -95,7 +95,7 @@
         // check last group history time
         DIMCommonFacebook *facebook = [self facebook];
         DIMEntityChecker *checker = [facebook entityChecker];
-        NSDate *lastTime = [checker lastTimeOfHistoryForID:group];
+        NSDate *lastTime = [checker lastTimeOfHistoryForIdentifier:group];
         NSTimeInterval lt = [lastTime timeIntervalSince1970];
         if (lt < 1) {
             NSAssert(false, @"group history error: %@", group);

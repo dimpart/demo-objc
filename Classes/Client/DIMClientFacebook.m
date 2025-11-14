@@ -125,7 +125,7 @@
     id<DIMAccountDBI> db = [self database];
     NSArray<id<MKMID>> *members = [db membersOfGroup:group];
     DIMEntityChecker *checker = [self entityChecker];
-    [checker checkMembers:members forID:group];
+    [checker checkMembers:members forIdentifier:group];
     if ([members count] == 0) {
         members = @[owner];
     } else {
