@@ -88,7 +88,7 @@
 }
 
 // Override
-- (nullable __kindof id<MKMUser>)user:(id<MKMID>)did {
+- (nullable __kindof id<MKMUser>)userForID:(id<MKMID>)did {
     return [_userCache objectForKey:did.string];
 }
 
@@ -100,7 +100,7 @@
 #pragma mark Archivist
 
 // Override
-- (BOOL)saveMeta:(id<MKMMeta>)meta withIdentifier:(id<MKMID>)did {
+- (BOOL)saveMeta:(id<MKMMeta>)meta forID:(id<MKMID>)did {
     //
     //  1. check valid
     //
@@ -114,7 +114,7 @@
     //  2. check duplicated
     //
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> old = [facebook meta:did];
+    id<MKMMeta> old = [facebook metaForID:did];
     if (old) {
         // meta duplicated
         return YES;
@@ -152,17 +152,17 @@
 }
 
 // Override
-- (nullable __kindof id<MKVerifyKey>)metaKey:(id<MKMID>)did {
+- (nullable __kindof id<MKVerifyKey>)metaKeyForID:(id<MKMID>)did {
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> meta = [facebook meta:did];
+    id<MKMMeta> meta = [facebook metaForID:did];
     NSAssert(meta, @"failed to get meta for: %@", did);
     return [meta publicKey];
 }
 
 // Override
-- (nullable __kindof id<MKEncryptKey>)visaKey:(id<MKMID>)did {
+- (nullable __kindof id<MKEncryptKey>)visaKeyForID:(id<MKMID>)did {
     DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMDocument>> *docs = [facebook documents:did];
+    NSArray<id<MKMDocument>> *docs = [facebook documentsForID:did];
     if ([docs count] == 0) {
         return nil;
     }
@@ -200,7 +200,7 @@
 @implementation DIMCommonArchivist (Checking)
 
 - (BOOL)checkMeta:(nonnull id<MKMMeta>)meta forIdentifier:(nonnull id<MKMID>)did {
-    return [meta isValid] && [DIMMetaUtils meta:meta matchIdentifier:did];
+    return [meta isValid] && [DIMMetaUtils meta:meta matchID:did];
 }
 
 - (BOOL)checkDocumentValid:(nonnull id<MKMDocument>)doc {
@@ -229,7 +229,7 @@
     }
     id<MKMID> did = [doc identifier];
     DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> meta = [facebook meta:did];
+    id<MKMMeta> meta = [facebook metaForID:did];
     if (!meta) {
         // failed to get meta
         return NO;
@@ -243,7 +243,7 @@
     NSString *type = [DIMDocumentUtils getDocumentType:doc];
     // check old documents with type
     DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMDocument>> *documents = [facebook documents:did];
+    NSArray<id<MKMDocument>> *documents = [facebook documentsForID:did];
     if ([documents count] == 0) {
         return NO;
     }

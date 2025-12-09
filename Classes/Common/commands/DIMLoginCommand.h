@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMLoginCommand : DIMCommand <DKDLoginCommand>
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did;
+- (instancetype)initWithID:(id<MKMID>)did;
 
 - (void)copyStationInfo:(DIMStation *)station;
 - (void)copyProviderInfo:(DIMServiceProvider *)provider;

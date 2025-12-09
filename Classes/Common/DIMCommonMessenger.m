@@ -222,7 +222,7 @@
         return NO;
     }
     DIMCommonFacebook *facebook = [self facebook];
-    id<MKMVisa> doc = [facebook visa:sender];
+    id<MKMVisa> doc = [facebook visaForID:sender];
     if (!doc) {
         NSAssert(false, @"failed to get visa document for sender: %@", sender);
         return NO;

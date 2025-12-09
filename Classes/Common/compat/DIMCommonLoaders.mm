@@ -40,6 +40,8 @@
 #import "DIMAddressC.h"
 #import "DIMMetaC.h"
 
+#import "DIMGroupCommand.h"
+
 #import "DIMAnsCommand.h"
 #import "DIMHandshakeCommand.h"
 #import "DIMLoginCommand.h"
@@ -65,6 +67,11 @@
 - (void)registerCommandFactories {
     [super registerCommandFactories];
     
+    // Group Admin Commands
+    DIMCommandRegisterClass(DKDGroupCommand_Hire, DIMHireGroupCommand);
+    DIMCommandRegisterClass(DKDGroupCommand_Fire, DIMFireGroupCommand);
+    DIMCommandRegisterClass(DKDGroupCommand_Resign, DIMResignGroupCommand);
+    
     // ANS
     DIMCommandRegisterClass(DIMCommand_ANS, DIMAnsCommand);
     
@@ -89,7 +96,7 @@
 
 @end
 
-@implementation DIMCommonPluginLoader
+@implementation DIMCompatiblePluginLoader
 
 // Override
 - (void)registerDigesters {
@@ -159,14 +166,21 @@
 @implementation DIMLibraryLoader
 
 - (instancetype)init {
-    DIMExtensionLoader *extensionLoader = [[DIMCommonExtensionLoader alloc] init];
-    DIMPluginLoader *pluginLoader = [[DIMCommonPluginLoader alloc] init];
+    NSAssert(false, @"DON'T call me");
+    DIMExtensionLoader *extensionLoader = nil;
+    DIMPluginLoader *pluginLoader = nil;
     return [self initWithExtensionLoader:extensionLoader andPluginLoader:pluginLoader];
 }
 
 /* designated initializer */
 - (instancetype)initWithExtensionLoader:(DIMExtensionLoader *)extensionLoader
                         andPluginLoader:(DIMPluginLoader *)pluginLoader {
+    if (!extensionLoader) {
+        extensionLoader = [[DIMCommonExtensionLoader alloc] init];
+    }
+    if (!pluginLoader) {
+        pluginLoader = [[DIMCompatiblePluginLoader alloc] init];
+    }
     if (self = [super init]) {
         self.extensionLoader = extensionLoader;
         self.pluginLoader = pluginLoader;

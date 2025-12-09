@@ -116,7 +116,7 @@
     }
     id<MKMID> sender = [rMsg sender];
     id<MKMID> receiver = [rMsg receiver];
-    id<MKMID> user = [self.facebook selectLocalUser:receiver];
+    id<MKMID> user = [self.facebook selectLocalUserForID:receiver];
     NSAssert(user, @"receiver error: %@", receiver);
     //receiver = [user identifier];
     DIMClientMessenger *messenger = [self messenger];

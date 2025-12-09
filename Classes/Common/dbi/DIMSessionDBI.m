@@ -58,7 +58,7 @@ id<MKMID> DIMGSP(void) {
 
 @implementation DIMProviderInfo
 
-- (instancetype)initWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order {
+- (instancetype)initWithID:(id<MKMID>)pid chosen:(NSInteger)order {
     if (self = [self init]) {
         self.identifier = pid;
         self.chosen = order;
@@ -66,8 +66,8 @@ id<MKMID> DIMGSP(void) {
     return self;
 }
 
-+ (instancetype)providerWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order {
-    return [[DIMProviderInfo alloc] initWithIdentifier:pid chosen:order];
++ (instancetype)providerWithID:(id<MKMID>)pid chosen:(NSInteger)order {
+    return [[DIMProviderInfo alloc] initWithID:pid chosen:order];
 }
 
 + (NSArray<DIMProviderInfo *> *)convert:(NSArray<NSDictionary *> *)array {
@@ -82,7 +82,7 @@ id<MKMID> DIMGSP(void) {
             NSAssert(false, @"provider ID error: %@", info);
             continue;
         }
-        [providers addObject:[DIMProviderInfo providerWithIdentifier:pid chosen:chosen]];
+        [providers addObject:[DIMProviderInfo providerWithID:pid chosen:chosen]];
     }
     return providers;
 }
@@ -109,11 +109,11 @@ id<MKMID> DIMGSP(void) {
 
 @implementation DIMStationInfo
 
-- (instancetype)initWithIdentifier:(nullable id<MKMID>)sid
-                            chosen:(NSInteger)order
-                              host:(NSString *)IP
-                              port:(UInt16)port
-                          provider:(nullable id<MKMID>)pid {
+- (instancetype)initWithID:(nullable id<MKMID>)sid
+                    chosen:(NSInteger)order
+                      host:(NSString *)IP
+                      port:(UInt16)port
+                  provider:(nullable id<MKMID>)pid {
     if (self = [self init]) {
         self.identifier = sid;
         self.chosen = order;
@@ -124,16 +124,16 @@ id<MKMID> DIMGSP(void) {
     return self;
 }
 
-+ (instancetype)stationWithIdentifier:(nullable id<MKMID>)sid
-                               chosen:(NSInteger)order
-                                 host:(NSString *)IP
-                                 port:(UInt16)port
-                             provider:(nullable id<MKMID>)pid {
-    return [[DIMStationInfo alloc] initWithIdentifier:sid
-                                               chosen:order
-                                                 host:IP
-                                                 port:port
-                                             provider:pid];
++ (instancetype)stationWithID:(nullable id<MKMID>)sid
+                       chosen:(NSInteger)order
+                         host:(NSString *)IP
+                         port:(UInt16)port
+                     provider:(nullable id<MKMID>)pid {
+    return [[DIMStationInfo alloc] initWithID:sid
+                                       chosen:order
+                                         host:IP
+                                         port:port
+                                     provider:pid];
 }
 
 + (NSArray<DIMStationInfo *> *)convert:(NSArray<NSDictionary *> *)array {
@@ -155,11 +155,11 @@ id<MKMID> DIMGSP(void) {
             NSAssert(false, @"station info error: %@", item);
             continue;
         }
-        info = [DIMStationInfo stationWithIdentifier:sid
-                                              chosen:chosen
-                                                host:IP
-                                                port:port
-                                            provider:pid];
+        info = [DIMStationInfo stationWithID:sid
+                                      chosen:chosen
+                                        host:IP
+                                        port:port
+                                    provider:pid];
         [stations addObject:info];
     }
     return stations;

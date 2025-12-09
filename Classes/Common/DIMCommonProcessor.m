@@ -86,7 +86,7 @@
         if (docUpdated) {
             NSLog(@"checking for new visa: %@", sender);
             DIMFacebook *facebook = [self facebook];
-            [facebook documents:sender];
+            [facebook documentsForID:sender];
         }
     }
     return docUpdated;

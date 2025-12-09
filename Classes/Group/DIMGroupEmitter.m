@@ -61,7 +61,7 @@
         // no need to attach times for group command
         return;
     }
-    id<MKMBulletin> doc = [self.facebook bulletin:gid];
+    id<MKMBulletin> doc = [self.facebook bulletinForID:gid];
     if (!doc) {
         NSAssert(false, @"failed to get bulletin document for group: %@", gid);
         return;
@@ -118,7 +118,7 @@
     //
     //  2. check group members
     //
-    NSArray<id<MKMID>> *members = [self.delegate members:group];
+    NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:group];
     NSUInteger count = [members count];
     if (count == 0) {
         NSAssert(false, @"failed to get members for group: %@", group);

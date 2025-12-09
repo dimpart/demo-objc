@@ -53,7 +53,7 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did {
+- (instancetype)initWithID:(id<MKMID>)did {
     if (self = [self initWithCmd:DIMCommand_Login]) {
         // ID
         if (did) {

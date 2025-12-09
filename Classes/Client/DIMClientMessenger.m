@@ -146,9 +146,9 @@
     id<MKMMeta> meta = [user meta];
     id<MKMVisa> visa = [user visa];
     id<DKDContent> command;
-    command = [[DIMDocumentCommand alloc] initWithIdentifier:uid
-                                                        meta:meta
-                                                   documents:@[visa]];
+    command = [[DIMDocumentCommand alloc] initWithID:uid
+                                                meta:meta
+                                           documents:@[visa]];
     DIMEntityChecker *checker = [facebook entityChecker];
     //
     //  send to all contacts
@@ -180,7 +180,7 @@
     DIMClientSession *session = [self session];
     DIMStation *station = [session station];
     // create login command
-    DIMLoginCommand *command = [[DIMLoginCommand alloc] initWithIdentifier:sender];
+    DIMLoginCommand *command = [[DIMLoginCommand alloc] initWithID:sender];
     [command setAgent:ua];
     [command copyStationInfo:station];
     // broadcast to 'everyone@everywhere'

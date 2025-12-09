@@ -56,9 +56,9 @@ id<MKMID> DIMGSP(void);  // "gsp@everywhere"
 @property (strong, nonatomic, readonly) id<MKMID> identifier;
 @property (nonatomic) NSInteger chosen;
 
-- (instancetype)initWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order;
+- (instancetype)initWithID:(id<MKMID>)pid chosen:(NSInteger)order;
 
-+ (instancetype)providerWithIdentifier:(id<MKMID>)pid chosen:(NSInteger)order;
++ (instancetype)providerWithID:(id<MKMID>)pid chosen:(NSInteger)order;
 
 + (NSArray<DIMProviderInfo *> *)convert:(NSArray<NSDictionary *> *)array;
 
@@ -76,17 +76,17 @@ id<MKMID> DIMGSP(void);  // "gsp@everywhere"
 
 @property (strong, nonatomic, nullable) id<MKMID> provider;
 
-- (instancetype)initWithIdentifier:(nullable id<MKMID>)sid
-                            chosen:(NSInteger)order
-                              host:(NSString *)IP
-                              port:(UInt16)port
-                          provider:(nullable id<MKMID>)pid;
+- (instancetype)initWithID:(nullable id<MKMID>)sid
+                    chosen:(NSInteger)order
+                      host:(NSString *)IP
+                      port:(UInt16)port
+                  provider:(nullable id<MKMID>)pid;
 
-+ (instancetype)stationWithIdentifier:(nullable id<MKMID>)sid
-                               chosen:(NSInteger)order
-                                 host:(NSString *)IP
-                                 port:(UInt16)port
-                             provider:(nullable id<MKMID>)pid;
++ (instancetype)stationWithID:(nullable id<MKMID>)sid
+                       chosen:(NSInteger)order
+                         host:(NSString *)IP
+                         port:(UInt16)port
+                     provider:(nullable id<MKMID>)pid;
 
 + (NSArray<DIMStationInfo *> *)convert:(NSArray<NSDictionary *> *)array;
 

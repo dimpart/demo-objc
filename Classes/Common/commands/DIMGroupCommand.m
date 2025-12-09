@@ -37,6 +37,145 @@
 
 #import "DIMGroupCommand.h"
 
+@implementation DIMHireGroupCommand
+
+- (instancetype)initWithGroup:(id<MKMID>)gid
+               administrators:(NSArray<id<MKMID>> *)users {
+    if (self = [self initWithCmd:DKDGroupCommand_Hire group:gid]) {
+        self.administrators = users;
+    }
+    return self;
+}
+
+- (instancetype)initWithGroup:(id<MKMID>)gid
+                   assistants:(NSArray<id<MKMID>> *)bots {
+    if (self = [self initWithCmd:DKDGroupCommand_Hire group:gid]) {
+        self.assistants = bots;
+    }
+    return self;
+}
+
+// Override
+- (NSArray<id<MKMID>> *)administrators {
+    NSArray *array = [self objectForKey:@"administrators"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+// Override
+- (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
+    NSArray *array = MKMIDRevert(administrators);
+    [self setObject:array forKey:@"administrators"];
+}
+
+// Override
+- (NSArray<id<MKMID>> *)assistants {
+    NSArray *array = [self objectForKey:@"assistants"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+// Override
+- (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
+    NSArray *array = MKMIDRevert(assistants);
+    [self setObject:array forKey:@"assistants"];
+}
+
+@end
+
+@implementation DIMFireGroupCommand
+
+- (instancetype)initWithGroup:(id<MKMID>)gid
+               administrators:(NSArray<id<MKMID>> *)users {
+    if (self = [self initWithCmd:DKDGroupCommand_Fire group:gid]) {
+        self.administrators = users;
+    }
+    return self;
+}
+
+- (instancetype)initWithGroup:(id<MKMID>)gid
+                   assistants:(NSArray<id<MKMID>> *)bots {
+    if (self = [self initWithCmd:DKDGroupCommand_Fire group:gid]) {
+        self.assistants = bots;
+    }
+    return self;
+}
+
+// Override
+- (NSArray<id<MKMID>> *)administrators {
+    NSArray *array = [self objectForKey:@"administrators"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+// Override
+- (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
+    NSArray *array = MKMIDRevert(administrators);
+    [self setObject:array forKey:@"administrators"];
+}
+
+// Override
+- (NSArray<id<MKMID>> *)assistants {
+    NSArray *array = [self objectForKey:@"assistants"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+// Override
+- (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
+    NSArray *array = MKMIDRevert(assistants);
+    [self setObject:array forKey:@"assistants"];
+}
+
+@end
+
+@implementation DIMResignGroupCommand
+
+- (instancetype)initWithGroup:(id<MKMID>)gid {
+    if (self = [self initWithCmd:DKDGroupCommand_Resign group:gid]) {
+        //
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - Conveniences
+
+DIMHireGroupCommand *DIMGroupCommandHireAdministrators(id<MKMID> group,
+                                                       NSArray<id<MKMID>> *admins) {
+    return [[DIMHireGroupCommand alloc] initWithGroup:group administrators:admins];
+}
+
+DIMHireGroupCommand *DIMGroupCommandHireAssistants(id<MKMID> group,
+                                                   NSArray<id<MKMID>> *bots) {
+    return [[DIMHireGroupCommand alloc] initWithGroup:group assistants:bots];
+}
+
+DIMFireGroupCommand *DIMGroupCommandFireAdministrators(id<MKMID> group,
+                                                       NSArray<id<MKMID>> *admins) {
+    return [[DIMFireGroupCommand alloc] initWithGroup:group administrators:admins];
+}
+
+DIMFireGroupCommand *DIMGroupCommandFireAssistants(id<MKMID> group,
+                                                   NSArray<id<MKMID>> *bots) {
+    return [[DIMFireGroupCommand alloc] initWithGroup:group assistants:bots];
+}
+
+DIMResignGroupCommand *DIMGroupCommandResign(id<MKMID> group) {
+    return [[DIMResignGroupCommand alloc] initWithGroup:group];
+}
+
+#pragma mark -
+
 NSString * const DKDGroupCommand_Query  = @"query"; // Deprecated
 
 @implementation DIMQueryGroupCommand

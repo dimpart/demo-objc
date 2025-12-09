@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMCommonPluginLoader : DIMPluginLoader
+@interface DIMCompatiblePluginLoader : DIMPluginLoader
 
 @end
 

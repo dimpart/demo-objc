@@ -71,8 +71,8 @@ NS_DESIGNATED_INITIALIZER;
 - (nullable __kindof id<MKMDocument>)document:(id<MKMID>)did
                                       forType:(nullable NSString *)type;
 
-- (nullable __kindof id<MKMVisa>)visa:(id<MKMID>)did;
-- (nullable __kindof id<MKMBulletin>)bulletin:(id<MKMID>)did;
+- (nullable __kindof id<MKMVisa>)visaForID:(id<MKMID>)did;
+- (nullable __kindof id<MKMBulletin>)bulletinForID:(id<MKMID>)did;
 
 - (nullable NSString *)getName:(id<MKMID>)did;
 
@@ -82,7 +82,9 @@ NS_DESIGNATED_INITIALIZER;
 
 @interface DIMCommonFacebook (Group)
 
-- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)group;
+- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
+
+- (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group;
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)group;
 

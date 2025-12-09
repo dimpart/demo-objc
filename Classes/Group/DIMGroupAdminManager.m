@@ -67,7 +67,7 @@
     //
     //  2. update document
     //
-    id<MKMBulletin> bulletin = [self.delegate bulletin:gid];
+    id<MKMBulletin> bulletin = [self.delegate bulletinForID:gid];
     if (!bulletin) {
         // TODO: create new one?
         NSAssert(false, @"failed to get group document: %@, owner: %@", gid, me);
@@ -119,14 +119,14 @@
     //  1. create 'document' command, and send to current station
     //
     id<MKMID> group = [doc identifier];
-    id<MKMMeta> meta = [facebook meta:group];
+    id<MKMMeta> meta = [facebook metaForID:group];
     id<DKDCommand> content = DIMDocumentCommandResponse(group, meta, @[doc]);
     [messenger sendContent:content sender:me receiver:MKMAnyStation priority:1];
     
     //
     //  2. check group bots
     //
-    NSArray<id<MKMID>> *bots = [self.delegate assistants:group];
+    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:group];
     if ([bots count] > 0) {
         // group bots exist, let them to deliver to all other members
         for (id<MKMID> item in bots) {
@@ -142,7 +142,7 @@
     //
     //  3. broadcast to all members
     //
-    NSArray<id<MKMID>> *members = [self.delegate members:group];
+    NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:group];
     if ([members count] == 0) {
         NSAssert(false, @"failed to get group members: %@", group);
         return NO;

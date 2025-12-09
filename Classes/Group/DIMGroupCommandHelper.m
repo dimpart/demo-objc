@@ -97,7 +97,7 @@
     }
     if ([content conformsToProtocol:@protocol(DKDResetGroupCommand)]) {
         // administrator command, check with document time
-        id<MKMBulletin> doc = [self.delegate bulletin:group];
+        id<MKMBulletin> doc = [self.delegate bulletinForID:group];
         if (!doc) {
             NSAssert(false, @"group document not exists: %@", group);
             return YES;

@@ -36,6 +36,8 @@
 
 #import <ObjectKey/ObjectKey.h>
 
+#import "DIMGroupCommand.h"
+
 #import "DIMGroupHistoryBuilder.h"
 
 @interface DIMGroupHistoryBuilder ()
@@ -118,14 +120,14 @@
 - (OKPair<id<MKMDocument>, id<DKDReliableMessage>> *)buildDocumentCommandForGroup:(id<MKMID>)gid {
     DIMCommonFacebook *facebook = [self facebook];
     id<MKMUser> user = [facebook currentUser];
-    id<MKMBulletin> doc = [self.delegate bulletin:gid];
+    id<MKMBulletin> doc = [self.delegate bulletinForID:gid];
     if (!user || !doc) {
         NSAssert(user, @"failed to get current user");
         NSLog(@"document not found for group: %@", gid);
         return nil;
     }
     id<MKMID> me = [user identifier];
-    id<MKMMeta> meta = [self.delegate meta:gid];
+    id<MKMMeta> meta = [self.delegate metaForID:gid];
     id<DKDCommand> command = DIMDocumentCommandResponse(gid, meta, @[doc]);
     id<DKDReliableMessage> rMsg = [self packBroadcastMessage:command sender:me];
     return [[OKPair alloc] initWithFirst:doc second:rMsg];
@@ -134,7 +136,7 @@
 - (DIMResetCmdMsg *)buildResetCommandForGroup:(id<MKMID>)gid
                                       members:(NSArray<id<MKMID>> *)members {
     id<MKMUser> user = [self.facebook currentUser];
-    id<MKMID> owner = [self.delegate owner:gid];
+    id<MKMID> owner = [self.delegate ownerOfGroup:gid];
     if (!user || !owner) {
         NSAssert(user, @"failed to get current user");
         NSLog(@"owner not found for group: %@", gid);
@@ -142,14 +144,14 @@
     }
     id<MKMID> me = [user identifier];
     if (![owner isEqual:me]) {
-        NSArray<id<MKMID>> *admins = [self.delegate administrators:gid];
+        NSArray<id<MKMID>> *admins = [self.delegate administratorsOfGroup:gid];
         if (![admins containsObject:me]) {
             NSLog(@"not permit to build 'reset' command for group: %@, %@", gid, me);
             return nil;
         }
     }
     if ([members count] == 0) {
-        members = [self.delegate members:gid];
+        members = [self.delegate membersOfGroup:gid];
         NSAssert([members count] > 0, @"group members not found: %@", gid);
     }
     id<DKDResetGroupCommand> command = DIMGroupCommandReset(gid, members);

@@ -51,7 +51,7 @@
 //  GroupDataSource
 //
 
-- (id<MKMID>)founder:(id<MKMID>)group {
+- (id<MKMID>)founderOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
@@ -59,7 +59,7 @@
         return [DIMBroadcastUtils broadcastFounder:group];
     }
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletin:group];
+    id<MKMBulletin> doc = [self bulletinForID:group];
     if (!doc) {
         // the owner(founder) should be set in the bulletin document of group
         return nil;
@@ -77,7 +77,7 @@
     return user;
 }
 
-- (id<MKMID>)owner:(id<MKMID>)group {
+- (id<MKMID>)ownerOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
@@ -85,7 +85,7 @@
         return [DIMBroadcastUtils broadcastOwner:group];
     }
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletin:group];
+    id<MKMBulletin> doc = [self bulletinForID:group];
     if (!doc) {
         // the owner(founder) should be set in the bulletin document of group
         return nil;
@@ -109,14 +109,14 @@
     return user;
 }
 
-- (NSArray<id<MKMID>> *)members:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if ([group isBroadcast]) {
         // founder of broadcast group
         return [DIMBroadcastUtils broadcastMembers:group];
     }
-    id<MKMID> owner = [self owner:group];
+    id<MKMID> owner = [self ownerOfGroup:group];
     if (!owner) {
         //NSAssert(false, @"group owner not found: %@", group);
         return nil;
@@ -134,10 +134,10 @@
     return members;
 }
 
-- (NSArray<id<MKMID>> *)assistants:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletin:group];
+    id<MKMBulletin> doc = [self bulletinForID:group];
     if (!doc) {
         // the assistants should be set in the bulletin document of group
         return nil;
@@ -149,17 +149,21 @@
         return bots;
     }
     // get from bulletin document
-    return [doc assistants];
+    NSArray *assistants = [doc propertyForKey:@"assistants"];
+    if (assistants) {
+        return MKMIDConvert(assistants);
+    }
+    return nil;
 }
 
 //
 //  Organizational Structure
 //
 
-- (NSArray<id<MKMID>> *)administrators:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check bulletin document
-    id<MKMBulletin> doc = [self bulletin:group];
+    id<MKMBulletin> doc = [self bulletinForID:group];
     if (!doc) {
         // the administrators should be set in the bulletin document of group
         return nil;
@@ -195,28 +199,26 @@ static id<MKMIDFactory> _idFactory = nil;
 
 @implementation IDFactory
 
-- (nonnull id<MKMID>)createIdentifierWithName:(NSString *)name
-                                      address:(id<MKMAddress>)address
-                                     terminal:(NSString *)location {
-    return [_idFactory createIdentifierWithName:name address:address terminal:location];
+- (id<MKMID>)createIDWithAddress:(id<MKMAddress>)address
+                            name:(nullable NSString *)seed
+                        terminal:(nullable NSString *)location {
+    return [_idFactory createIDWithAddress:address name:seed terminal:location];
 }
 
-- (id<MKMID>)generateIdentifier:(MKMEntityType)network
-                       withMeta:(id<MKMMeta>)meta
+- (id<MKMID>)generateIDWithMeta:(id<MKMMeta>)meta
+                           type:(MKMEntityType)network
                        terminal:(nullable NSString *)location {
-    return [_idFactory generateIdentifier:network
-                                 withMeta:meta
-                                 terminal:location];
+    return [_idFactory generateIDWithMeta:meta type:network terminal:location];
 }
 
-- (nullable id<MKMID>)parseIdentifier:(NSString *)identifier {
+- (nullable id<MKMID>)parseID:(NSString *)identifier {
     // try ANS record
     id<MKMID> did = [_ans getID:identifier];
     if (did) {
         return did;
     }
     // parse by original factory
-    return [_idFactory parseIdentifier:identifier];
+    return [_idFactory parseID:identifier];
 }
 
 @end
@@ -238,10 +240,8 @@ static id<MKMIDFactory> _idFactory = nil;
     OKSingletonDispatchOnce(^{
 
         // load plugins
-        DIMExtensionLoader *ext = [[DIMCommonExtensionLoader alloc] init];
-        [ext load];
-        DIMPluginLoader *plugin = [[DIMCommonPluginLoader alloc] init];
-        [plugin load];
+        DIMLibraryLoader *loader = [[DIMLibraryLoader alloc] init];
+        [loader run];
         
         _idFactory = MKMIDGetFactory();
         MKMIDSetFactory([[IDFactory alloc] init]);

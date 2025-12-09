@@ -36,7 +36,6 @@
 //
 
 #import "DIMCache.h"
-#import "DIMNetworkID.h"
 
 #import "DIMAddressC.h"
 

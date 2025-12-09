@@ -130,7 +130,7 @@ static inline DIMRecentTimeChecker *_time_checkers(void) {
         // meta not found, sure to query
         return YES;
     }
-    NSAssert([DIMMetaUtils meta:meta matchIdentifier:did],
+    NSAssert([DIMMetaUtils meta:meta matchID:did],
              @"meta not match: %@, %@", did, meta);
     return NO;
 }
