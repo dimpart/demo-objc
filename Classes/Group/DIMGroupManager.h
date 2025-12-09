@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param members - new member list
  * @return false on error
  */
-- (BOOL)resetMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
+- (BOOL)resetMembers:(NSArray<id<MKMID>> *)members forGroup:(id<MKMID>)gid;
 
 /**
  *  Invite new members to this group
@@ -94,7 +94,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param members - inviting member list
  * @return false on error
  */
-- (BOOL)inviteMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
+- (BOOL)inviteMembers:(NSArray<id<MKMID>> *)members forGroup:(id<MKMID>)gid;
 
 /**
  *  Quit from this group

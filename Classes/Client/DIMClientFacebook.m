@@ -125,7 +125,7 @@
     id<DIMAccountDBI> db = [self database];
     NSArray<id<MKMID>> *members = [db membersOfGroup:group];
     DIMEntityChecker *checker = [self entityChecker];
-    [checker checkMembers:members forIdentifier:group];
+    [checker checkMembers:members forGroup:group];
     if ([members count] == 0) {
         members = @[owner];
     } else {
@@ -154,14 +154,14 @@
     return [db administratorsOfGroup:group];
 }
 
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
+- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)gid {
     id<DIMAccountDBI> db = [self database];
-    return [db saveAdministrators:admins group:gid];
+    return [db saveAdministrators:admins forGroup:gid];
 }
 
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid {
+- (BOOL)saveMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)gid {
     id<DIMAccountDBI> db = [self database];
-    return [db saveMembers:newMembers group:gid];
+    return [db saveMembers:newMembers forGroup:gid];
 }
 
 @end

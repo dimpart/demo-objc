@@ -58,7 +58,7 @@
             NSAssert([group isGroup], @"group ID error: %@", group);
             NSArray<id<MKMID>> *admins = MKMIDConvert(array);
             id<DIMAccountDBI> db = [self database];
-            ok = [db saveAdministrators:admins group:group];
+            ok = [db saveAdministrators:admins forGroup:group];
         }
     }
     return ok;

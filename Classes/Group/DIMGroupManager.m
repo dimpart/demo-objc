@@ -133,7 +133,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  4. create & broadcast 'reset' group command with new members
     //
-    if ([self resetMembers:members group:group]) {
+    if ([self resetMembers:members forGroup:group]) {
         NSLog(@"create group %@ with %lu members", group, members.count);
     } else {
         NSLog(@"failed to create group %@ with %lu members", group, members.count);
@@ -142,7 +142,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     return group;
 }
 
-- (BOOL)resetMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid {
+- (BOOL)resetMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)gid {
     NSAssert([gid isGroup] && [newMembers count] > 0, @"params error: %@, %@", gid, newMembers);
     
     //
@@ -157,7 +157,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     
     // check member list
     id<MKMID> first = [newMembers firstObject];
-    BOOL ok = [self.delegate isOwner:first group:gid];
+    BOOL ok = [self.delegate isOwner:first ofGroup:gid];
     if (!ok) {
         NSAssert(false, @"group owner must be the first member: %@", gid);
         return NO;
@@ -175,7 +175,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //  1. check permission
     //
     BOOL isOwner = [me isEqual:first];
-    BOOL isAdmin = [self.delegate isAdministrator:me group:gid];
+    BOOL isAdmin = [self.delegate isAdministrator:me ofGroup:gid];
     BOOL canReset = isOwner || isAdmin;
     if (!canReset) {
         NSAssert(false, @"cannot reset members of group: %@", gid);
@@ -197,10 +197,10 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  3. save 'reset' command, and update new members
     //
-    if (![self.helper saveGroupHistory:reset message:rMsg group:gid]) {
+    if (![self.helper saveGroupHistory:reset message:rMsg forGroup:gid]) {
         NSAssert(false, @"failed to save 'reset' command for group: %@", gid);
         return NO;
-    } else if (![self.delegate saveMembers:newMembers group:gid]) {
+    } else if (![self.delegate saveMembers:newMembers forGroup:gid]) {
         NSAssert(false, @"failed to update members of group: %@", gid);
         return NO;
     } else {
@@ -220,7 +220,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     return YES;
 }
 
-- (BOOL)inviteMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid {
+- (BOOL)inviteMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)gid {
     NSAssert([gid isGroup] && [newMembers count] > 0, @"params error: %@, %@", gid, newMembers);
     
     //
@@ -235,9 +235,9 @@ typedef NSMutableArray<id<MKMID>> UserList;
     
     NSArray<id<MKMID>> *oldMembers = [self.delegate membersOfGroup:gid];
     
-    BOOL isOwner = [self.delegate isOwner:me group:gid];
-    BOOL isAdmin = [self.delegate isAdministrator:me group:gid];
-    BOOL isMember = [self.delegate isMember:me group:gid];
+    BOOL isOwner = [self.delegate isOwner:me ofGroup:gid];
+    BOOL isAdmin = [self.delegate isAdministrator:me ofGroup:gid];
+    BOOL isMember = [self.delegate isMember:me ofGroup:gid];
     
     //
     //  1. check permission
@@ -257,7 +257,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
                 [mArray addObject:item];
             }
         }
-        return [self resetMembers:mArray group:gid];
+        return [self resetMembers:mArray forGroup:gid];
     } else if (!isMember) {
         NSAssert(false, @"cannot invite member into group: %@", gid);
         return NO;
@@ -272,7 +272,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
     if (!rMsg) {
         NSAssert(false, @"failed to build 'invite' command for group: %@", gid);
         return NO;
-    } else if (![self.helper saveGroupHistory:invite message:rMsg group:gid]) {
+    } else if (![self.helper saveGroupHistory:invite message:rMsg forGroup:gid]) {
         NSAssert(false, @"failed to save 'invite' command for group: %@", gid);
         return NO;
     }
@@ -310,8 +310,8 @@ typedef NSMutableArray<id<MKMID>> UserList;
     NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:gid];
     NSAssert([members count] > 0, @"failed to get members for group: %@", gid);
     
-    BOOL isOwner = [self.delegate isOwner:me group:gid];
-    BOOL isAdmin = [self.delegate isAdministrator:me group:gid];
+    BOOL isOwner = [self.delegate isOwner:me ofGroup:gid];
+    BOOL isAdmin = [self.delegate isAdministrator:me ofGroup:gid];
     BOOL isMember = [members containsObject:me];
     
     //
@@ -332,7 +332,7 @@ typedef NSMutableArray<id<MKMID>> UserList;
         NSLog(@"quitting group: %@, %@", gid, me);
         NSMutableArray<id<MKMID>> *mArray = [members mutableCopy];
         [mArray removeObject:me];
-        BOOL ok = [self.delegate saveMembers:mArray group:gid];
+        BOOL ok = [self.delegate saveMembers:mArray forGroup:gid];
         if (!ok) {
             NSAssert(false, @"failed to save members for group: %@", gid);
         }

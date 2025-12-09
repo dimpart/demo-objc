@@ -131,13 +131,13 @@
                                                              members:members];
     DIMIDList *addList = [memPair first];
     DIMIDList *removeList = [memPair second];
-    if (![self saveHistory:command withMessage:rMsg group:group]) {
+    if (![self saveHistory:command withMessage:rMsg forGroup:group]) {
         // here try to save the 'reset' command to local storage as group history
         // it should not failed unless the command is expired
         NSLog(@"failed to save 'reset' command for group: %@", group);
     } else if ([addList count] == 0 && [removeList count] == 0) {
         // nothing changed
-    } else if ([self saveMembers:newMembers group:group]) {
+    } else if ([self saveMembers:newMembers forGroup:group]) {
         NSLog(@"new members saved in group: %@", group);
         if ([addList count] > 0) {
             [command setObject:MKMIDRevert(addList) forKey:@"added"];

@@ -63,20 +63,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (id<DKDReliableMessage>)sendInstantMessage:(id<DKDInstantMessage>)iMsg
                                     priority:(NSInteger)prior;
 
-- (BOOL)isOwner:(id<MKMID>)user group:(id<MKMID>)gid;
+- (BOOL)isOwner:(id<MKMID>)user ofGroup:(id<MKMID>)gid;
 
 @end
 
 @interface DIMSharedGroupManager (DataSource)
 
-- (id<MKMBulletin>)bulletinForID:(id<MKMID>)group;
+- (id<MKMBulletin>)bulletinForGroup:(id<MKMID>)group;
 
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group;
 
 /**
  *  Update 'administrators' in bulletin document
  */
-- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins group:(id<MKMID>)gid;
+- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins forGroup:(id<MKMID>)gid;
 
 @end
 
@@ -90,17 +90,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Reset group members
  */
-- (BOOL)resetGroupMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid;
+- (BOOL)resetGroupMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)gid;
 
 /**
  *  Expel members from this group
  */
-- (BOOL)expelGroupMembers:(NSArray<id<MKMID>> *)expelMembers group:(id<MKMID>)gid;
+- (BOOL)expelGroupMembers:(NSArray<id<MKMID>> *)expelMembers forGroup:(id<MKMID>)gid;
 
 /**
  *  Invite new members to this group
  */
-- (BOOL)inviteGroupMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid;
+- (BOOL)inviteGroupMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)gid;
 
 /**
  *  Quit from this group

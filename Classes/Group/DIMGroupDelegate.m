@@ -119,7 +119,7 @@
     return text;
 }
 
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid {
+- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members forGroup:(id<MKMID>)gid {
     DIMClientFacebook *facebook = [self facebook];
     return [facebook saveMembers:members forGroup:gid];
 }
@@ -133,7 +133,7 @@
     return [facebook administratorsOfGroup:gid];
 }
 
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
+- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)gid {
     DIMClientFacebook *facebook = [self facebook];
     return [facebook saveAdministrators:admins forGroup:gid];
 }
@@ -142,7 +142,7 @@
 
 @implementation DIMGroupDelegate (Membership)
 
-- (BOOL)isFounder:(id<MKMID>)uid group:(id<MKMID>)gid {
+- (BOOL)isFounder:(id<MKMID>)uid ofGroup:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
     id<MKMID> founder = [self founderOfGroup:gid];
     if (founder) {
@@ -158,7 +158,7 @@
     return [DIMMetaUtils meta:gMeta matchPublicKey:uMeta.publicKey];
 }
 
-- (BOOL)isOwner:(id<MKMID>)uid group:(id<MKMID>)gid {
+- (BOOL)isOwner:(id<MKMID>)uid ofGroup:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
     id<MKMID> owner = [self ownerOfGroup:gid];
     if (owner) {
@@ -166,19 +166,19 @@
     }
     if ([gid type] == MKMEntityType_Group) {
         // this is a polylogue
-        return [self isFounder:uid group:gid];
+        return [self isFounder:uid ofGroup:gid];
     }
     NSAssert(false, @"only polylogue so far");
     return NO;
 }
 
-- (BOOL)isMember:(id<MKMID>)uid group:(id<MKMID>)gid {
+- (BOOL)isMember:(id<MKMID>)uid ofGroup:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
     NSArray<id<MKMID>> *members = [self membersOfGroup:gid];
     return [members containsObject:uid];
 }
 
-- (BOOL)isAdministrator:(id<MKMID>)uid group:(id<MKMID>)gid {
+- (BOOL)isAdministrator:(id<MKMID>)uid ofGroup:(id<MKMID>)gid {
     NSAssert([uid isUser] && [gid isGroup], @"ID error: %@, %@", uid, gid);
     NSArray<id<MKMID>> *admins = [self administratorsOfGroup:gid];
     return [admins containsObject:uid];

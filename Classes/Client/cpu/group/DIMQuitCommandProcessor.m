@@ -102,14 +102,14 @@
     if (!isMember) {
         // the sender is not a member now,
         // shall we notify the sender that the member list was updated?
-    } else if (![self saveHistory:command withMessage:rMsg group:group]) {
+    } else if (![self saveHistory:command withMessage:rMsg forGroup:group]) {
         // here try to append the 'quit' command to local storage as group history
         // it should not failed unless the command is expired
         NSLog(@"failed to save 'quit' command for group: %@", group);
     } else {
         NSMutableArray<id<MKMID>> *mArray = [members mutableCopy];
         [mArray removeObject:sender];
-        if ([self saveMembers:mArray group:group]) {
+        if ([self saveMembers:mArray forGroup:group]) {
             // here try to remove the sender from member list
             [command setObject:sender.string forKey:@"removed"];
         } else {

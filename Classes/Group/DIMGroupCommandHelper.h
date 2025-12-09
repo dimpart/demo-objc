@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)saveGroupHistory:(id<DKDGroupCommand>)content
                  message:(id<DKDReliableMessage>)rMsg
-                   group:(id<MKMID>)gid;
+                forGroup:(id<MKMID>)gid;
 
 - (NSArray<DIMHistoryCmdMsg *> *)historiesOfGroup:(id<MKMID>)gid;
 

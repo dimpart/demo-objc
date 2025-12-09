@@ -38,7 +38,7 @@
 
 @implementation DIMGroupAdminManager
 
-- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins group:(id<MKMID>)gid {
+- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins forGroup:(id<MKMID>)gid {
     NSAssert([gid isGroup], @"group ID error: %@", gid);
     DIMCommonFacebook *facebook = [self facebook];
     NSAssert(facebook, @"facebook not ready");
@@ -58,7 +58,7 @@
     //
     //  1. check permission
     //
-    BOOL isOwner = [self.delegate isOwner:me group:gid];
+    BOOL isOwner = [self.delegate isOwner:me ofGroup:gid];
     if (!isOwner) {
         //NSAssert(false, @"cannot update administrators for group: %@, %@", gid, me);
         return NO;

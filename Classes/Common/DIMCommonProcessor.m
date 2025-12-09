@@ -81,7 +81,7 @@
             lastDocTime = now;
         }
         id<MKMID> sender = [rMsg sender];
-        docUpdated = [checker setLastDocumentTime:lastDocTime forIdentifier:sender];
+        docUpdated = [checker setLastDocumentTime:lastDocTime forID:sender];
         // check whether needs update
         if (docUpdated) {
             NSLog(@"checking for new visa: %@", sender);

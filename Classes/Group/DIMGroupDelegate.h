@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)buildGroupNameWithMembers:(NSArray<id<MKMID>> *)members;
 
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
+- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members forGroup:(id<MKMID>)gid;
 
 @end
 
@@ -62,19 +62,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid;
 
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;
+- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)gid;
 
 @end
 
 @interface DIMGroupDelegate (Membership)
 
-- (BOOL)isFounder:(id<MKMID>)uid group:(id<MKMID>)gid;
+- (BOOL)isFounder:(id<MKMID>)uid ofGroup:(id<MKMID>)gid;
 
-- (BOOL)isOwner:(id<MKMID>)uid group:(id<MKMID>)gid;
+- (BOOL)isOwner:(id<MKMID>)uid ofGroup:(id<MKMID>)gid;
 
-- (BOOL)isMember:(id<MKMID>)uid group:(id<MKMID>)gid;
+- (BOOL)isMember:(id<MKMID>)uid ofGroup:(id<MKMID>)gid;
 
-- (BOOL)isAdministrator:(id<MKMID>)uid group:(id<MKMID>)gid;
+- (BOOL)isAdministrator:(id<MKMID>)uid ofGroup:(id<MKMID>)gid;
 
 @end
 

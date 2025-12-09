@@ -111,19 +111,19 @@
             // the sender cannot reset the group, means it's an ordinary member now,
             // and if I am the owner, then send the group history commands
             // to update the sender's memory.
-            BOOL ok = [self sendHistoriesTo:sender group:group];
+            BOOL ok = [self sendHistoriesTo:sender forGroup:group];
             if (!ok) {
                 NSAssert(false, @"failed to send history for group: %@ => %@", group, sender);
             }
         }
-    } else if (![self saveHistory:command withMessage:rMsg group:group]) {
+    } else if (![self saveHistory:command withMessage:rMsg forGroup:group]) {
         // here try to append the 'invite' command to local storage as group history
         // it should not failed unless the command is expired
         NSLog(@"failed to save 'invite' command for group: %@", group);
     } else if (!canReset) {
         // the sender cannot reset the group, means it's invited by ordinary member,
         // and the 'invite' command was saved, now waiting for review.
-    } else if ([self saveMembers:newMembers group:group]) {
+    } else if ([self saveMembers:newMembers forGroup:group]) {
         // FIXME: this sender has permission to reset the group,
         //        means it must be the owner or an administrator,
         //        usually it should send a 'reset' command instead;

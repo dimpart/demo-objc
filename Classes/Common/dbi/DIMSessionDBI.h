@@ -142,11 +142,11 @@ typedef OKPair<id<DKDLoginCommand>, id<DKDReliableMessage>> DIMLoginCmdMsg;
  * @param user - login user ID
  * @return DKDLoginCommand & DKDReliableMessage
  */
-- (DIMLoginCmdMsg *)loginCommandMessageForIdentifier:(id<MKMID>)user;
+- (DIMLoginCmdMsg *)loginCommandMessageForUser:(id<MKMID>)user;
 
 - (BOOL)saveLoginCommand:(id<DKDLoginCommand>)cmd
              withMessage:(id<DKDReliableMessage>)msg
-           forIdentifier:(id<MKMID>)user;
+                 forUser:(id<MKMID>)user;
 
 @end
 

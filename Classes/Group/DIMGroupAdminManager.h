@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param newAdmins - administrator list
  * @return false on error
  */
-- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins group:(id<MKMID>)gid;
+- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins forGroup:(id<MKMID>)gid;
 
 /**
  *  Broadcast group document

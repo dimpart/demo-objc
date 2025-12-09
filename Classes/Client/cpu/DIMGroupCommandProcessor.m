@@ -66,7 +66,7 @@
                           extra:info];
 }
 
-- (BOOL)sendHistoriesTo:(id<MKMID>)receiver group:(id<MKMID>)gid {
+- (BOOL)sendHistoriesTo:(id<MKMID>)receiver forGroup:(id<MKMID>)gid {
     NSArray<id<DKDReliableMessage>> *messages = [self.builder buildHistoryForGroup:gid];
     if ([messages count] == 0) {
         NSLog(@"failed to build history for group: %@", gid);
@@ -81,8 +81,8 @@
 
 - (BOOL)saveHistory:(id<DKDGroupCommand>)content
         withMessage:(id<DKDReliableMessage>)rMsg
-              group:(id<MKMID>)gid {
-    return [self.helper saveGroupHistory:content message:rMsg group:gid];
+           forGroup:(id<MKMID>)gid {
+    return [self.helper saveGroupHistory:content message:rMsg forGroup:gid];
 }
 
 @end
@@ -97,16 +97,16 @@
     return [self.delegate administratorsOfGroup:gid];
 }
 
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid {
-    return [self.delegate saveAdministrators:admins group:gid];
+- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)gid {
+    return [self.delegate saveAdministrators:admins forGroup:gid];
 }
 
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)gid {
     return [self.delegate membersOfGroup:gid];
 }
 
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid {
-    return [self.delegate saveMembers:members group:gid];
+- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members forGroup:(id<MKMID>)gid {
+    return [self.delegate saveMembers:members forGroup:gid];
 }
 
 @end

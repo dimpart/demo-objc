@@ -142,16 +142,16 @@
 // Override
 - (id<MKMMeta>)metaForID:(id<MKMID>)did {
     id<DIMAccountDBI> adb = [self database];
-    id<MKMMeta> meta = [adb metaForIdentifier:did];
-    [self.entityChecker checkMeta:meta forIdentifier:did];
+    id<MKMMeta> meta = [adb metaForID:did];
+    [self.entityChecker checkMeta:meta forID:did];
     return meta;
 }
 
 // Override
 - (NSArray<id<MKMDocument>> *)documentsForID:(id<MKMID>)did {
     id<DIMAccountDBI> adb = [self database];
-    NSArray<id<MKMDocument>> *docs = [adb documentsForIdentifier:did];
-    [self.entityChecker checkDocuments:docs forIdentifier:did];
+    NSArray<id<MKMDocument>> *docs = [adb documentsForID:did];
+    [self.entityChecker checkDocuments:docs forID:did];
     return docs;
 }
 

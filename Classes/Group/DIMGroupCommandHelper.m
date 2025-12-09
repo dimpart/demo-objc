@@ -40,7 +40,7 @@
 
 - (BOOL)saveGroupHistory:(id<DKDGroupCommand>)content
                  message:(id<DKDReliableMessage>)rMsg
-                   group:(id<MKMID>)gid {
+                forGroup:(id<MKMID>)gid {
     NSAssert([content.group isEqual:gid], @"group ID error: %@, %@", gid, content);
     if ([self isCommandExpired:content]) {
         NSLog(@"drop expired command: %@, %@ => %@", content.cmd, rMsg.sender, gid);
@@ -66,7 +66,7 @@
         NSLog(@"cleaning group history for 'reset' command: %@ => %@", rMsg.sender, gid);
         [db clearMemberHistoriesOfGroup:gid];
     }
-    return [db saveGroupHistory:content withMessage:rMsg group:gid];
+    return [db saveGroupHistory:content withMessage:rMsg forGroup:gid];
 }
 
 - (NSArray<DIMHistoryCmdMsg *> *)historiesOfGroup:(id<MKMID>)gid {

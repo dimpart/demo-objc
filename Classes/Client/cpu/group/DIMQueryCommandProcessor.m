@@ -93,7 +93,7 @@
         // check last group history time
         DIMCommonFacebook *facebook = [self facebook];
         DIMEntityChecker *checker = [facebook entityChecker];
-        NSDate *lastTime = [checker lastTimeOfHistoryForIdentifier:group];
+        NSDate *lastTime = [checker lastTimeOfHistoryForGroup:group];
         NSTimeInterval lt = [lastTime timeIntervalSince1970];
         if (lt < 1) {
             NSAssert(false, @"group history error: %@", group);
@@ -114,7 +114,7 @@
     }
     
     // 3. send newest group history commands
-    BOOL ok = [self sendHistoriesTo:sender group:group];
+    BOOL ok = [self sendHistoriesTo:sender forGroup:group];
     if (!ok) {
         NSAssert(false, @"failed to send history for group: %@ => %@", group, sender);
     }

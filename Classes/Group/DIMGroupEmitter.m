@@ -56,7 +56,7 @@
 }
 
 // private
-- (void)attachGroupTimes:(id<DKDInstantMessage>)iMsg group:(id<MKMID>)gid {
+- (void)attachGroupTimes:(id<DKDInstantMessage>)iMsg forGroup:(id<MKMID>)gid {
     if ([iMsg.content conformsToProtocol:@protocol(DKDGroupCommand)]) {
         // no need to attach times for group command
         return;
@@ -74,7 +74,7 @@
         NSAssert(false, @"document error: %@", doc);
     }
     // attach group history time
-    NSDate *lastHisTime = [self.facebook.archivist lastTimeOfHistoryForIdentifier:gid];
+    NSDate *lastHisTime = [self.facebook.archivist lastTimeOfHistoryForGroup:gid];
     if (lastHisTime) {
         [iMsg setDate:lastHisTime forKey:@"GHT"];
     } else {
@@ -94,7 +94,7 @@
     
     // attach group document & history times
     // for the receiver to check whether group info synchronized
-    [self attachGroupTimes:iMsg group:group];
+    [self attachGroupTimes:iMsg forGroup:group];
     
     // TODO: if it's a file message
     //       please upload the file data first

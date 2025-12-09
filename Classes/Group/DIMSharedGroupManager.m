@@ -157,9 +157,9 @@ static DIMSharedGroupManager *s_grp_man = nil;
     return [emitter sendInstantMessage:iMsg priority:prior];
 }
 
-- (BOOL)isOwner:(id<MKMID>)user group:(id<MKMID>)gid {
+- (BOOL)isOwner:(id<MKMID>)user ofGroup:(id<MKMID>)gid {
     DIMGroupDelegate *delegate = [self delegate];
-    return [delegate isOwner:user group:gid];
+    return [delegate isOwner:user ofGroup:gid];
 }
 
 #pragma mark Entity DataSource
@@ -195,7 +195,7 @@ static DIMSharedGroupManager *s_grp_man = nil;
 
 @implementation DIMSharedGroupManager (DataSource)
 
-- (id<MKMBulletin>)bulletinForID:(id<MKMID>)group {
+- (id<MKMBulletin>)bulletinForGroup:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
     return [delegate bulletinForID:group];
 }
@@ -205,9 +205,9 @@ static DIMSharedGroupManager *s_grp_man = nil;
     return [delegate administratorsOfGroup:group];
 }
 
-- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins group:(id<MKMID>)gid {
+- (BOOL)updateAdministrators:(NSArray<id<MKMID>> *)newAdmins forGroup:(id<MKMID>)gid {
     DIMGroupAdminManager *manager = [self adminManager];
-    return [manager updateAdministrators:newAdmins group:gid];
+    return [manager updateAdministrators:newAdmins forGroup:gid];
 }
 
 @end
@@ -219,12 +219,12 @@ static DIMSharedGroupManager *s_grp_man = nil;
     return [manager createGroupWithMembers:members];
 }
 
-- (BOOL)resetGroupMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid {
+- (BOOL)resetGroupMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)gid {
     DIMGroupManager *manager = [self manager];
-    return [manager resetMembers:newMembers group:gid];
+    return [manager resetMembers:newMembers forGroup:gid];
 }
 
-- (BOOL)expelGroupMembers:(NSArray<id<MKMID>> *)expelMembers group:(id<MKMID>)gid {
+- (BOOL)expelGroupMembers:(NSArray<id<MKMID>> *)expelMembers forGroup:(id<MKMID>)gid {
     NSAssert([gid isGroup] && [expelMembers count] > 0, @"params error: %@, %@", gid, expelMembers);
     DIMCommonFacebook *facebook = [self facebook];
     
@@ -237,8 +237,8 @@ static DIMSharedGroupManager *s_grp_man = nil;
     DIMGroupDelegate *delegate = [self delegate];
     
     NSArray<id<MKMID>> *oldMembers = [delegate membersOfGroup:gid];
-    BOOL isOwner = [delegate isOwner:me group:gid];
-    bool isAdmin = [delegate isAdministrator:me group:gid];
+    BOOL isOwner = [delegate isOwner:me ofGroup:gid];
+    bool isAdmin = [delegate isAdministrator:me ofGroup:gid];
     
     // check permission
     BOOL canReset = isOwner || isAdmin;
@@ -247,16 +247,16 @@ static DIMSharedGroupManager *s_grp_man = nil;
         // remove the members and 'reset' the group
         NSMutableArray<id<MKMID>> *members = [oldMembers mutableCopy];
         [members removeObjectsInArray:expelMembers];
-        return [self resetGroupMembers:members group:gid];
+        return [self resetGroupMembers:members forGroup:gid];
     }
     
     NSAssert(false, @"Cannot expel members from group: %@", gid);
     return NO;
 }
 
-- (BOOL)inviteGroupMembers:(NSArray<id<MKMID>> *)newMembers group:(id<MKMID>)gid {
+- (BOOL)inviteGroupMembers:(NSArray<id<MKMID>> *)newMembers forGroup:(id<MKMID>)gid {
     DIMGroupManager *manager = [self manager];
-    return [manager inviteMembers:newMembers group:gid];
+    return [manager inviteMembers:newMembers forGroup:gid];
 }
 
 - (BOOL)quitGroup:(id<MKMID>)gid {

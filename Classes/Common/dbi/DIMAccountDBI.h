@@ -103,9 +103,9 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 
 @protocol DIMMetaDBI <NSObject>
 
-- (BOOL)saveMeta:(id<MKMMeta>)meta forIdentifier:(id<MKMID>)entity;
+- (BOOL)saveMeta:(id<MKMMeta>)meta forID:(id<MKMID>)entity;
 
-- (nullable id<MKMMeta>)metaForIdentifier:(id<MKMID>)entity;
+- (nullable id<MKMMeta>)metaForID:(id<MKMID>)entity;
 
 @end
 
@@ -113,7 +113,7 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 
 - (BOOL)saveDocument:(id<MKMDocument>)doc;
 
-- (NSArray<id<MKMDocument>> *)documentsForIdentifier:(id<MKMID>)entity;
+- (NSArray<id<MKMDocument>> *)documentsForID:(id<MKMID>)entity;
 
 @end
 
@@ -129,7 +129,7 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 
 - (NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user;
 
-- (BOOL)saveContacts:(NSArray<id<MKMID>> *)contacts user:(id<MKMID>)user;
+- (BOOL)saveContacts:(NSArray<id<MKMID>> *)contacts forUser:(id<MKMID>)user;
 
 @end
 
@@ -140,10 +140,10 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 - (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)gid;
 
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)gid;
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
+- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members forGroup:(id<MKMID>)gid;
 
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid;
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;
+- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)gid;
 
 @end
 
@@ -168,7 +168,7 @@ typedef OKPair<id<DKDResetGroupCommand>, id<DKDReliableMessage>> DIMResetCmdMsg;
  */
 - (BOOL)saveGroupHistory:(id<DKDGroupCommand>)content
              withMessage:(id<DKDReliableMessage>)rMsg
-                   group:(id<MKMID>)gid;
+                forGroup:(id<MKMID>)gid;
 
 /**
  *  Load group commands

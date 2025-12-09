@@ -46,12 +46,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  send a command list with newest members to the receiver
  */
-- (BOOL)sendHistoriesTo:(id<MKMID>)receiver group:(id<MKMID>)gid;
+- (BOOL)sendHistoriesTo:(id<MKMID>)receiver forGroup:(id<MKMID>)gid;
 
 // protected
 - (BOOL)saveHistory:(id<DKDGroupCommand>)content
         withMessage:(id<DKDReliableMessage>)rMsg
-              group:(id<MKMID>)gid;
+           forGroup:(id<MKMID>)gid;
 
 @end
 
@@ -62,11 +62,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid;
 
-- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;
+- (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)gid;
 
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)gid;
 
-- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
+- (BOOL)saveMembers:(NSArray<id<MKMID>> *)members forGroup:(id<MKMID>)gid;
 
 @end
 
