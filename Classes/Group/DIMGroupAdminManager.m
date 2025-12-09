@@ -124,23 +124,7 @@
     [messenger sendContent:content sender:me receiver:MKMAnyStation priority:1];
     
     //
-    //  2. check group bots
-    //
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:group];
-    if ([bots count] > 0) {
-        // group bots exist, let them to deliver to all other members
-        for (id<MKMID> item in bots) {
-            if ([me isEqual:item]) {
-                NSAssert(false, @"should not be a bot here");
-                continue;
-            }
-            [messenger sendContent:content sender:me receiver:item priority:1];
-        }
-        return YES;
-    }
-
-    //
-    //  3. broadcast to all members
+    //  2. broadcast to all members
     //
     NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:group];
     if ([members count] == 0) {

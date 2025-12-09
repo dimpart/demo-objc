@@ -42,7 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DKDHireGroupCommand <DKDGroupCommand>
 
 @property (strong, nonatomic, nullable) NSArray<id<MKMID>> *administrators;
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;  // bots
 
 @end
 
@@ -51,15 +50,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users;
 
-- (instancetype)initWithGroup:(id<MKMID>)gid
-                   assistants:(NSArray<id<MKMID>> *)bots;
-
 @end
 
 @protocol DKDFireGroupCommand <DKDGroupCommand>
 
 @property (strong, nonatomic, nullable) NSArray<id<MKMID>> *administrators;
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;  // bots
 
 @end
 
@@ -67,9 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users;
-
-- (instancetype)initWithGroup:(id<MKMID>)gid
-                   assistants:(NSArray<id<MKMID>> *)bots;
 
 @end
 
@@ -89,13 +81,9 @@ extern "C" {
 
 DIMHireGroupCommand *DIMGroupCommandHireAdministrators(id<MKMID> group,
                                                        NSArray<id<MKMID>> *admins);
-DIMHireGroupCommand *DIMGroupCommandHireAssistants(id<MKMID> group,
-                                                   NSArray<id<MKMID>> *bots);
 
 DIMFireGroupCommand *DIMGroupCommandFireAdministrators(id<MKMID> group,
                                                        NSArray<id<MKMID>> *admins);
-DIMFireGroupCommand *DIMGroupCommandFireAssistants(id<MKMID> group,
-                                                   NSArray<id<MKMID>> *bots);
 
 DIMResignGroupCommand *DIMGroupCommandResign(id<MKMID> group);
 

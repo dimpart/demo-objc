@@ -93,10 +93,6 @@
     return [self.delegate ownerOfGroup:gid];
 }
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)gid {
-    return [self.delegate assistantsOfGroup:gid];
-}
-
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid {
     return [self.delegate administratorsOfGroup:gid];
 }

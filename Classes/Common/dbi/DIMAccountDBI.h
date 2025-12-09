@@ -142,9 +142,6 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)gid;
 - (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)gid;
-- (BOOL)saveAssistants:(NSArray<id<MKMID>> *)bots group:(id<MKMID>)gid;
-
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid;
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;
 

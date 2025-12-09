@@ -176,17 +176,12 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     BOOL isOwner = [me isEqual:first];
     BOOL isAdmin = [self.delegate isAdministrator:me group:gid];
-    BOOL isBot = [self.delegate isAssistant:me group:gid];
     BOOL canReset = isOwner || isAdmin;
     if (!canReset) {
         NSAssert(false, @"cannot reset members of group: %@", gid);
         return NO;
     }
     // only the owner or admin can reset group members
-    if (isBot) {
-        NSAssert(false, @"group bot cannot reset members: %@, %@", gid, me);
-        //return nil;
-    }
     
     //
     //  2. build 'reset' command
@@ -218,18 +213,10 @@ typedef NSMutableArray<id<MKMID>> UserList;
     NSArray<id<DKDReliableMessage>> *messages = [self.builder buildHistoryForGroup:gid];
     id<DKDForwardContent> forward = DIMForwardContentCreate(messages);
     
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:gid];
-    if ([bots count] > 0) {
-        // let the group bots know the newest member ID list,
-        // so they can split group message correctly for us.
-        return [self sendCommand:forward members:bots];         // to all assistants
-    } else {
-        // group bots not exist,
-        // send the command to all members
-        [self sendCommand:forward members:newMembers];          // to new members
-        [self sendCommand:forward members:expelList];           // to removed members
-    }
-    
+    // send the command to all members
+    [self sendCommand:forward members:newMembers];          // to new members
+    [self sendCommand:forward members:expelList];           // to removed members
+
     return YES;
 }
 
@@ -294,12 +281,6 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  3. forward group command(s)
     //
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:gid];
-    if ([bots count] > 0) {
-        // let the group bots know the newest member ID list,
-        // so they can split group message correctly for us.
-        [self sendCommand:forward members:bots];            // to all assistants
-    }
     
     // forward 'invite' to old members
     [self sendCommand:forward members:oldMembers];          // to old members
@@ -331,7 +312,6 @@ typedef NSMutableArray<id<MKMID>> UserList;
     
     BOOL isOwner = [self.delegate isOwner:me group:gid];
     BOOL isAdmin = [self.delegate isAdministrator:me group:gid];
-    BOOL isBot = [self.delegate isAssistant:me group:gid];
     BOOL isMember = [members containsObject:me];
     
     //
@@ -343,9 +323,6 @@ typedef NSMutableArray<id<MKMID>> UserList;
     } else if (isAdmin) {
         NSAssert(false, @"administrator cannot quit from group: %@", gid);
         return NO;
-    }
-    if (isBot) {
-        NSAssert(false, @"group bot cannot quit: %@, %@", gid, me);
     }
     
     //
@@ -377,16 +354,9 @@ typedef NSMutableArray<id<MKMID>> UserList;
     //
     //  4. forward 'quit' command
     //
-    NSArray<id<MKMID>> *bots = [self.delegate assistantsOfGroup:gid];
-    if ([bots count] > 0) {
-        // let the group bots know the newest member ID list,
-        // so they can split group message correctly for us.
-        return [self sendCommand:forward members:bots];     // to group bots
-    } else {
-        // group bots not exist,
-        // send the command to all members directly
-        return [self sendCommand:forward members:members];  // to all members
-    }
+
+    // send the command to all members directly
+    return [self sendCommand:forward members:members];  // to all members
 }
 
 // private

@@ -60,8 +60,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)gid;
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)gid;
-
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)gid;
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins group:(id<MKMID>)gid;

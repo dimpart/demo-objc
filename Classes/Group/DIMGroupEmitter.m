@@ -103,20 +103,7 @@
              ![content objectForKey:@"data"], @"content error: %@", content);
     
     //
-    //  1. check group bots
-    //
-    id<MKMID> prime = [self.delegate fastestAssistant:group];
-    if (prime) {
-        // group bots found, forward this message to any bot to let it split for me;
-        // this can reduce my jobs.
-        return [self _forwardMessage:iMsg
-                           assistant:prime
-                               group:group
-                            priority:prior];
-    }
-    
-    //
-    //  2. check group members
+    //  check group members
     //
     NSArray<id<MKMID>> *members = [self.delegate membersOfGroup:group];
     NSUInteger count = [members count];
@@ -144,53 +131,6 @@
                                 group:group
                              priority:prior];
     }
-}
-
-/**
- *  Encrypt & sign message, then forward to the bot
- */
-- (id<DKDReliableMessage>)_forwardMessage:(id<DKDInstantMessage>)iMsg
-                                assistant:(id<MKMID>)bid
-                                    group:(id<MKMID>)gid
-                                 priority:(NSInteger)prior {
-    NSAssert([bid isUser] && [gid isGroup], @"ID error: %@, %@", bid, gid);
-    // NOTICE: because group assistant (bot) cannot be a member of the group, so
-    //         if you want to send a group command to any assistant, you must
-    //         set the bot ID as 'receiver' and set the group ID in content;
-    //         this means you must send it to the bot directly.
-    DIMCommonMessenger *messenger = [self messenger];
-
-    // group bots designated, let group bot to split the message, so
-    // here must expose the group ID; this will cause the client to
-    // use a "user-to-group" encrypt key to encrypt the message content,
-    // this key will be encrypted by each member's public key, so
-    // all members will received a message split by the group bot,
-    // but the group bots cannot decrypt it.
-    [iMsg setString:gid forKey:@"group"];
-    
-    //
-    //  1. pack message
-    //
-    id<DKDReliableMessage> rMsg = [self.packer encryptAndSignMessage:iMsg];
-    if (!rMsg) {
-        NSAssert(false, @"failed to encrypt & sign message: %@ => %@", iMsg.sender, gid);
-        return nil;
-    }
-    
-    //
-    //  2. forward the group message to any bot
-    //
-    id<DKDContent> content = DIMForwardContentCreate(@[rMsg]);
-    DIMTransmitterResults *pair = [messenger sendContent:content
-                                                  sender:nil
-                                                receiver:bid
-                                                priority:prior];
-    if (!pair.second) {
-        NSAssert(false, @"failed to forward message for group: %@, bot: %@", gid, bid);
-    }
-    
-    // OK, return the forwading message
-    return rMsg;
 }
 
 /**

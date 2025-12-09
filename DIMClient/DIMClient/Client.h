@@ -55,6 +55,7 @@
 #import <DIMClient/DIMLoginCommandProcessor.h>
 #import <DIMClient/DIMReceiptCommandProcessor.h>
 #import <DIMClient/DIMAnsCommandProcessor.h>
+#import <DIMClient/DIMAppCustomizedProcessor.h>
 
 //
 //  Client

@@ -68,6 +68,12 @@
 #import <DIMClient/DIMSessionDBI.h>
 
 //
+//  Contents
+//
+
+#import <DIMClient/DIMApplicationContent.h>
+
+//
 //  Commands
 //
 

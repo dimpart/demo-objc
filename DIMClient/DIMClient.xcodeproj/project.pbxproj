@@ -111,7 +111,7 @@
 		E9A7F50D29CD955B00CDC41E /* DIMClientSession+State.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7F4A029CD955B00CDC41E /* DIMClientSession+State.m */; };
 		E9AA44F52EB11AFD00945599 /* DIMEntityChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = E9AA44F32EB11AFD00945599 /* DIMEntityChecker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9AA44F62EB11AFD00945599 /* DIMEntityChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AA44F42EB11AFD00945599 /* DIMEntityChecker.m */; };
-		E9AA44F92EB11BB500945599 /* DIMCommonProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = E9AA44F72EB11BB500945599 /* DIMCommonProcessor.h */; };
+		E9AA44F92EB11BB500945599 /* DIMCommonProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = E9AA44F72EB11BB500945599 /* DIMCommonProcessor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9AA44FA2EB11BB500945599 /* DIMCommonProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AA44F82EB11BB500945599 /* DIMCommonProcessor.m */; };
 		E9B01B612B32B9C200AF0D21 /* DIMPrivateKeyStore.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B01B5F2B32B9C200AF0D21 /* DIMPrivateKeyStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9B01B622B32B9C200AF0D21 /* DIMPrivateKeyStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B01B602B32B9C200AF0D21 /* DIMPrivateKeyStore.m */; };
@@ -120,7 +120,7 @@
 		E9B1083F2B2B6886009A127D /* DIMClientArchivist.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B1083D2B2B6886009A127D /* DIMClientArchivist.m */; };
 		E9B108402B2B6886009A127D /* DIMClientArchivist.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B1083E2B2B6886009A127D /* DIMClientArchivist.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9B4DBCF2EB7931000FC5F0F /* DIMGroupCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B4DBCE2EB7931000FC5F0F /* DIMGroupCommand.m */; };
-		E9B4DBD02EB7931000FC5F0F /* DIMGroupCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B4DBCD2EB7931000FC5F0F /* DIMGroupCommand.h */; };
+		E9B4DBD02EB7931000FC5F0F /* DIMGroupCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B4DBCD2EB7931000FC5F0F /* DIMGroupCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9B4DBE72EB80C2500FC5F0F /* Client.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B4DBE12EB80C2500FC5F0F /* Client.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9B4DBE82EB80C2500FC5F0F /* Group.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B4DBE52EB80C2500FC5F0F /* Group.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9B4DBE92EB80C2500FC5F0F /* Database.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B4DBE32EB80C2500FC5F0F /* Database.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -132,9 +132,9 @@
 		E9BFA0332EB53A86002EA7FF /* DIMChatroom.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BFA0322EB53A86002EA7FF /* DIMChatroom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BFA0342EB53A86002EA7FF /* DIMBroadcastUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BFA0302EB53A86002EA7FF /* DIMBroadcastUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BFA0352EB53A86002EA7FF /* DIMBroadcastUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BFA0312EB53A86002EA7FF /* DIMBroadcastUtils.m */; };
-		E9DD2FDB2EBE68DD008C6912 /* DIMAppCustomizedProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DD2FD92EBE68DD008C6912 /* DIMAppCustomizedProcessor.h */; };
+		E9DD2FDB2EBE68DD008C6912 /* DIMAppCustomizedProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DD2FD92EBE68DD008C6912 /* DIMAppCustomizedProcessor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9DD2FDC2EBE68DD008C6912 /* DIMAppCustomizedProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DD2FDA2EBE68DD008C6912 /* DIMAppCustomizedProcessor.m */; };
-		E9DD2FE12EBE6A61008C6912 /* DIMApplicationContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DD2FDF2EBE6A61008C6912 /* DIMApplicationContent.h */; };
+		E9DD2FE12EBE6A61008C6912 /* DIMApplicationContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DD2FDF2EBE6A61008C6912 /* DIMApplicationContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9DD2FE22EBE6A61008C6912 /* DIMApplicationContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DD2FE02EBE6A61008C6912 /* DIMApplicationContent.m */; };
 		E9DFAA9F2EB409AC005B9E9F /* DIMDigestX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9DFAA9E2EB409AC005B9E9F /* DIMDigestX.mm */; };
 		E9DFAAA02EB409AC005B9E9F /* DIMDigestX.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DFAA9D2EB409AC005B9E9F /* DIMDigestX.h */; settings = {ATTRIBUTES = (Public, ); }; };

@@ -48,8 +48,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)saveDocument:(id<MKMDocument>)doc;
 
-- (BOOL)updateRespondTime:(id<DKDReceiptCommand>)body envelope:(id<DKDEnvelope>)head;
-
 @end
 
 @interface DIMGroupDelegate (Members)
@@ -57,16 +55,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)buildGroupNameWithMembers:(NSArray<id<MKMID>> *)members;
 
 - (BOOL)saveMembers:(NSArray<id<MKMID>> *)members group:(id<MKMID>)gid;
-
-@end
-
-@interface DIMGroupDelegate (Assistants)
-
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
-
-- (id<MKMID>)fastestAssistant:(id<MKMID>)gid;
-
-- (void)setCommonAssistants:(NSArray<id<MKMID>> *)bots;
 
 @end
 
@@ -87,8 +75,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isMember:(id<MKMID>)uid group:(id<MKMID>)gid;
 
 - (BOOL)isAdministrator:(id<MKMID>)uid group:(id<MKMID>)gid;
-
-- (BOOL)isAssistant:(id<MKMID>)bid group:(id<MKMID>)gid;
 
 @end
 

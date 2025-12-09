@@ -47,14 +47,6 @@
     return self;
 }
 
-- (instancetype)initWithGroup:(id<MKMID>)gid
-                   assistants:(NSArray<id<MKMID>> *)bots {
-    if (self = [self initWithCmd:DKDGroupCommand_Hire group:gid]) {
-        self.assistants = bots;
-    }
-    return self;
-}
-
 // Override
 - (NSArray<id<MKMID>> *)administrators {
     NSArray *array = [self objectForKey:@"administrators"];
@@ -68,21 +60,6 @@
 - (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
     NSArray *array = MKMIDRevert(administrators);
     [self setObject:array forKey:@"administrators"];
-}
-
-// Override
-- (NSArray<id<MKMID>> *)assistants {
-    NSArray *array = [self objectForKey:@"assistants"];
-    if (array.count == 0) {
-        return nil;
-    }
-    return MKMIDConvert(array);
-}
-
-// Override
-- (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
-    NSArray *array = MKMIDRevert(assistants);
-    [self setObject:array forKey:@"assistants"];
 }
 
 @end
@@ -97,14 +74,6 @@
     return self;
 }
 
-- (instancetype)initWithGroup:(id<MKMID>)gid
-                   assistants:(NSArray<id<MKMID>> *)bots {
-    if (self = [self initWithCmd:DKDGroupCommand_Fire group:gid]) {
-        self.assistants = bots;
-    }
-    return self;
-}
-
 // Override
 - (NSArray<id<MKMID>> *)administrators {
     NSArray *array = [self objectForKey:@"administrators"];
@@ -118,21 +87,6 @@
 - (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
     NSArray *array = MKMIDRevert(administrators);
     [self setObject:array forKey:@"administrators"];
-}
-
-// Override
-- (NSArray<id<MKMID>> *)assistants {
-    NSArray *array = [self objectForKey:@"assistants"];
-    if (array.count == 0) {
-        return nil;
-    }
-    return MKMIDConvert(array);
-}
-
-// Override
-- (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
-    NSArray *array = MKMIDRevert(assistants);
-    [self setObject:array forKey:@"assistants"];
 }
 
 @end
@@ -155,19 +109,9 @@ DIMHireGroupCommand *DIMGroupCommandHireAdministrators(id<MKMID> group,
     return [[DIMHireGroupCommand alloc] initWithGroup:group administrators:admins];
 }
 
-DIMHireGroupCommand *DIMGroupCommandHireAssistants(id<MKMID> group,
-                                                   NSArray<id<MKMID>> *bots) {
-    return [[DIMHireGroupCommand alloc] initWithGroup:group assistants:bots];
-}
-
 DIMFireGroupCommand *DIMGroupCommandFireAdministrators(id<MKMID> group,
                                                        NSArray<id<MKMID>> *admins) {
     return [[DIMFireGroupCommand alloc] initWithGroup:group administrators:admins];
-}
-
-DIMFireGroupCommand *DIMGroupCommandFireAssistants(id<MKMID> group,
-                                                   NSArray<id<MKMID>> *bots) {
-    return [[DIMFireGroupCommand alloc] initWithGroup:group assistants:bots];
 }
 
 DIMResignGroupCommand *DIMGroupCommandResign(id<MKMID> group) {

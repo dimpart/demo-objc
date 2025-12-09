@@ -70,12 +70,10 @@
     }
     
     id<MKMID> sender = [rMsg sender];
-    DIMIDList *bots = [self assistantsOfGroup:group];
     BOOL isMember = [members containsObject:sender];
-    BOOL isBot = [bots containsObject:sender];
     
     // 2. check permission
-    BOOL canQuery = isMember || isBot;
+    BOOL canQuery = isMember;
     if (!canQuery) {
         NSDictionary *info = @{
             @"template": @"Not allowed to query members of group: ${gid}",

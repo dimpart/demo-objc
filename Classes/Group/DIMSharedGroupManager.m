@@ -186,11 +186,6 @@ static DIMSharedGroupManager *s_grp_man = nil;
     return [delegate ownerOfGroup:group];
 }
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
-    DIMGroupDelegate *delegate = [self delegate];
-    return [delegate assistantsOfGroup:group];
-}
-
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
     DIMGroupDelegate *delegate = [self delegate];
     return [delegate membersOfGroup:group];

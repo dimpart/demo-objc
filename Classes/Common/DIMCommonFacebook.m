@@ -238,11 +238,6 @@
 
 @implementation DIMCommonFacebook (Group)
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(nonnull id<MKMID>)group {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
-
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group {
     NSAssert(false, @"implement me!");
     return nil;

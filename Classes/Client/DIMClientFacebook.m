@@ -134,28 +134,6 @@
     return members;
 }
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
-    NSAssert([group isGroup], @"group ID error: %@", group);
-    // check bulletin document
-    id<MKMBulletin> doc = [self bulletinForID:group];
-    if (!doc) {
-        // the assistants should be set in the bulletin document of group
-        return nil;
-    }
-    // check local storage
-    id<DIMAccountDBI> db = [self database];
-    NSArray<id<MKMID>> *bots = [db assistantsOfGroup:group];
-    if ([bots count] > 0) {
-        return bots;
-    }
-    // get from bulletin document
-    NSArray *assistants = [doc propertyForKey:@"assistants"];
-    if (assistants) {
-        return MKMIDConvert(assistants);
-    }
-    return nil;
-}
-
 //
 //  Organizational Structure
 //

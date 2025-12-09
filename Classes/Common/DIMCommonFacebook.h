@@ -82,8 +82,6 @@ NS_DESIGNATED_INITIALIZER;
 
 @interface DIMCommonFacebook (Group)
 
-- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
-
 - (NSArray<id<MKMID>> *)administratorsOfGroup:(id<MKMID>)group;
 
 - (BOOL)saveAdministrators:(NSArray<id<MKMID>> *)admins forGroup:(id<MKMID>)group;
