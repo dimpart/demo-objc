@@ -136,9 +136,8 @@
     //
     //  1. check valid
     //
-    if ([self checkMeta:meta forID:did]) {
-        // meta valid
-    } else {
+    BOOL valid = [self checkMeta:meta forID:did];
+    if (!valid) {
         NSAssert(false, @"meta not valid: %@", did);
         return NO;
     }
@@ -163,16 +162,15 @@
     //
     //  1. check valid
     //
-    if ([self checkDocumentValid:doc]) {
-        // document valid
-    } else {
-        //NSAssert(false, @"document not valid: %@", [doc identifier]);
+    BOOL valid = [self checkDocumentValid:doc forID:did];
+    if (!valid) {
+        NSAssert(false, @"document not valid: %@", did);
         return NO;
     }
     //
     //  2. check expired
     //
-    if ([self checkDocumentExpired:doc]) {
+    if ([self checkDocumentExpired:doc forID:did]) {
         // drop expired document
         return NO;
     }
@@ -180,27 +178,7 @@
     //  3. save into database
     //
     id<DIMAccountDBI> db = [self database];
-    return [db saveDocument:doc];
-}
-
-// Override
-- (nullable __kindof id<MKVerifyKey>)metaKeyForID:(id<MKMID>)did {
-    DIMFacebook *facebook = [self facebook];
-    id<MKMMeta> meta = [facebook metaForID:did];
-    NSAssert(meta, @"failed to get meta for: %@", did);
-    return [meta publicKey];
-}
-
-// Override
-- (nullable __kindof id<MKEncryptKey>)visaKeyForID:(id<MKMID>)did {
-    DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMDocument>> *docs = [facebook documentsForID:did];
-    if ([docs count] == 0) {
-        return nil;
-    }
-    id<MKMVisa> visa = [DIMDocumentUtils lastVisa:docs];
-    NSAssert(visa, @"failed to get visa for: %@", did);
-    return [visa publicKey];
+    return [db saveDocument:doc forID:did];
 }
 
 // Override
@@ -235,8 +213,7 @@
     return [meta isValid] && [DIMMetaUtils meta:meta matchID:did];
 }
 
-- (BOOL)checkDocumentValid:(id<MKMDocument>)doc {
-    //id<MKMID> did = [doc identifier];
+- (BOOL)checkDocumentValid:(id<MKMDocument>)doc forID:(id<MKMID>)did {
     NSDate *docTime = [doc time];
     // check document time
     if (!docTime) {
@@ -252,15 +229,27 @@
         }
     }
     // check valid
-    return [self verifyDocument:doc];
+    return [self verifyDocument:doc forID:did];
 }
 
-- (BOOL)verifyDocument:(id<MKMDocument>)doc {
+- (BOOL)verifyDocument:(id<MKMDocument>)doc forID:(id<MKMID>)did {
+    /*/
     if ([doc isValid]) {
         return YES;
     }
-    id<MKMID> did = MKMIDParse([doc objectForKey:@"did"]);
+    // check ID
+    id<MKMID> identifier = MKMIDParse([doc objectForKey:@"did"]);
+    if (!identifier) {
+        NSAssert(false, @"document ID not found: %@", doc);
+        return NO;
+    } else if (![identifier.address isEqual:did.address]) {
+        // ID not matched
+        return NO;
+    }
+    /*/
+    // verify with meta.key
     DIMFacebook *facebook = [self facebook];
+    NSAssert(facebook, @"facebook lost");
     id<MKMMeta> meta = [facebook metaForID:did];
     if (!meta) {
         // failed to get meta
@@ -270,15 +259,15 @@
     return [doc verify:PK];
 }
 
-- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc {
-    id<MKMID> did = MKMIDParse([doc objectForKey:@"did"]);
-    NSString *type = [DIMDocumentUtils getDocumentType:doc];
-    // check old documents with type
+- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc forID:(id<MKMID>)did {
     DIMFacebook *facebook = [self facebook];
-    NSArray<id<MKMDocument>> *documents = [facebook documentsForID:did];
-    if ([documents count] == 0) {
-        return NO;
+    NSAssert(facebook, @"facebook lost");
+    NSString *type = [DIMDocumentUtils getDocumentType:doc];
+    if (!type) {
+        type = @"*";
     }
+    // check old documents with type
+    NSArray<id<MKMDocument>> *documents = [facebook documentsForID:did];
     id<MKMDocument> old = [DIMDocumentUtils lastDocument:documents forType:type];
     return old && [DIMDocumentUtils timeIsExpired:doc compareTo:old];
 }

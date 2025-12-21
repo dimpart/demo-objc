@@ -43,6 +43,11 @@
 
 @implementation DIMCommonPacker
 
+- (nullable id<DIMArchivist>)archivist {
+    DIMFacebook *facebook = [self facebook];
+    return [facebook archivist];
+}
+
 // Override
 - (id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
     // make sure visa.key exists before encrypting message

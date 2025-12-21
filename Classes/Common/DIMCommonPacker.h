@@ -40,6 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMCommonPacker : DIMMessagePacker
 
+// protected
+@property (readonly, strong, nonatomic, nullable) __kindof id<DIMArchivist> archivist;
+
 @end
 
 // protected

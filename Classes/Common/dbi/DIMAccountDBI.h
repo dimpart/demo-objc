@@ -111,7 +111,7 @@ NSInteger DIMFindPrivateKey(id<MKPrivateKey> key, NSArray<id<MKPrivateKey>> *pri
 
 @protocol DIMDocumentDBI <NSObject>
 
-- (BOOL)saveDocument:(id<MKMDocument>)doc;
+- (BOOL)saveDocument:(id<MKMDocument>)doc forID:(id<MKMID>)entity;
 
 - (NSArray<id<MKMDocument>> *)documentsForID:(id<MKMID>)entity;
 

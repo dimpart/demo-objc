@@ -74,13 +74,13 @@ NS_DESIGNATED_INITIALIZER;
 - (BOOL)checkMeta:(id<MKMMeta>)meta forID:(id<MKMID>)did;
 
 // protected
-- (BOOL)checkDocumentValid:(id<MKMDocument>)doc;
+- (BOOL)checkDocumentValid:(id<MKMDocument>)doc forID:(id<MKMID>)did;
 
 // protected
-- (BOOL)verifyDocument:(id<MKMDocument>)doc;
+- (BOOL)verifyDocument:(id<MKMDocument>)doc forID:(id<MKMID>)did;
 
 // protected
-- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc;
+- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc forID:(id<MKMID>)did;
 
 @end
 

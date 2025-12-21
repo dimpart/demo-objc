@@ -142,7 +142,7 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> gid,
     [_database saveMeta:meta forID:uid];
     [_database savePrivateKey:idKey withType:DIMPrivateKeyType_Meta forUser:uid];
     [_database savePrivateKey:msgKey withType:DIMPrivateKeyType_Visa forUser:uid];
-    [_database saveDocument:visa];
+    [_database saveDocument:visa forID:uid];
     // OK
     return uid;
 }
@@ -176,7 +176,7 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> gid,
     //          don't forget to upload then onto the DIM station
     //
     [_database saveMeta:meta forID:gid];
-    [_database saveDocument:doc];
+    [_database saveDocument:doc forID:gid];
     //
     //  Step 6: add founder as first member
     //
