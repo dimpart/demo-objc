@@ -37,6 +37,9 @@
 
 #import <DIMCore/DIMCore.h>
 
+#import "DIMAccountUtils.h"
+#import "DIMMessageUtils.h"
+
 #import "DIMHandshakeCommand.h"
 #import "DIMReportCommand.h"
 #import "DIMGroupManager.h"
@@ -118,7 +121,7 @@
         NSAssert(user, @"current user not found");
         id<MKMID> uid = [user identifier];
         id<MKMMeta> meta = [user meta];
-        id<MKMVisa> visa = [user visa];
+        id<MKMVisa> visa = [DIMDocumentUtils lastVisa:[user documents]];
         id<DKDEnvelope> env = DKDEnvelopeCreate(uid, sid, nil);
         cmd = [[DIMHandshakeCommand alloc] initWithSessionKey:nil];
         // send first handshake command as broadcast message
@@ -144,7 +147,7 @@
     NSAssert(user, @"current user not found");
     id<MKMID> uid = [user identifier];
     id<MKMMeta> meta = [user meta];
-    id<MKMVisa> visa = [user visa];
+    id<MKMVisa> visa = [DIMDocumentUtils lastVisa:[user documents]];
     id<DKDContent> command;
     command = [[DIMDocumentCommand alloc] initWithID:uid
                                                 meta:meta

@@ -34,6 +34,9 @@
 //  Created by Albert Moky on 2023/12/15.
 //
 
+#import "DIMAccountUtils.h"
+#import "DIMMessageUtils.h"
+
 #import "DIMCompatible.h"
 
 #import "DIMCommonPacker.h"
@@ -80,6 +83,12 @@
 
 // Override
 - (id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
+    // make sure sender's meta exists before verifying message
+    if ([self checkAttachments:rMsg]) {
+        // meta/visa ok
+    } else {
+        return nil;
+    }
     // 1. check receiver/group with local user
     // 2. check sender's visa info
     if ([self checkSenderInReliableMessage:rMsg]) {
@@ -121,7 +130,20 @@
 - (nullable id<MKEncryptKey>)messageKey:(id<MKMID>)user {
     NSAssert([user isUser], @"user ID error: %@", user);
     DIMFacebook *facebook = [self facebook];
-    return [facebook publicKeyForEncryption:user];
+    //return [facebook publicKeyForEncryption:user];
+    NSArray<id<MKMDocument>> *docs = [facebook documentsForID:user];
+    id<MKMVisa> visa = [DIMDocumentUtils lastVisa:docs];
+    if (visa) {
+        return [visa publicKey];
+    }
+    id<MKMMeta> meta = [facebook metaForID:user];
+    if (meta) {
+        id<MKVerifyKey> metaKey = [meta publicKey];
+        if ([meta conformsToProtocol:@protocol(MKEncryptKey)]) {
+            return (id<MKEncryptKey>)metaKey;
+        }
+    }
+    return nil;
 }
 
 - (BOOL)checkSenderInReliableMessage:(id<DKDReliableMessage>)rMsg {
@@ -131,8 +153,9 @@
     id<MKMVisa> visa = DIMMessageGetVisa(rMsg);
     if (visa) {
         // first handshake?
-        NSAssert([visa.identifier isEqual:sender], @"visa ID not match: %@", sender);
-        return [visa.identifier isEqual:sender];
+        id<MKMID> vid = MKMIDParse([visa objectForKey:@"did"]);
+        NSAssert([vid isEqual:sender], @"visa ID not match: %@", sender);
+        return [vid isEqual:sender];
     } else if ([self messageKey:sender]) {
         // sender is OK
         return YES;
@@ -204,6 +227,32 @@
     };
     [self suspendInstantMessage:iMsg error:error];  // iMsg.put("error", error);
     return NO;
+}
+
+@end
+
+@implementation DIMMessagePacker (Attachments)
+
+- (BOOL)checkAttachments:(id<DKDReliableMessage>)rMsg {
+    id<DIMArchivist> archivist = [self archivist];
+    NSAssert(archivist, @"archivist not ready");
+    id<MKMID> sender = [rMsg sender];
+    // [Meta Protocol]
+    id<MKMMeta> meta = DIMMessageGetMeta(rMsg);
+    if (meta) {
+        [archivist saveMeta:meta forID:sender];
+    }
+    // [Visa Protocol]
+    id<MKMVisa> visa = DIMMessageGetVisa(rMsg);
+    if (visa) {
+        [archivist saveDocument:visa forID:sender];
+    }
+    //
+    //  TODO: check [Visa Protocol] before calling this
+    //        make sure the sender's meta(visa) exists
+    //        (do it by application)
+    //
+    return YES;
 }
 
 @end

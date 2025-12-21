@@ -87,7 +87,7 @@
     } else if ([_identifier isEqual:user]) {
         return NO;
     }
-    self.identifier = user;
+    _identifier = user;
     return YES;
 }
 

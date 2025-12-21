@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
+//  Dao-Ke-Dao: Universal Message Module
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,60 +28,45 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMCommonArchivist.h
-//  DIMClient
+//  DIMMessageUtils.h
+//  DIMSDK
 //
-//  Created by Albert Moky on 2023/12/12.
+//  Created by Albert Moky on 2025/10/11.
+//  Copyright © 2025 Albert Moky. All rights reserved.
 //
 
-#import <DIMSDK/DIMSDK.h>
-#import <DIMClient/DIMAccountDBI.h>
-#import <DIMClient/DIMCache.h>
+#import <DIMCore/DIMCore.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCommonArchivist : NSObject <DIMArchivist, DIMBarrack>
+/// 1. [Meta Protocol]
+/// 2. [Visa Protocol]
+@interface DIMMessageUtils : NSObject
 
-// protected
-@property (readonly, weak, nonatomic, nullable) __kindof DIMFacebook *facebook;
+///  Sender's Meta
+///  ~~~~~~~~~~~~~
+///  Extends for the first message package of 'Handshake' protocol.
 
-@property (readonly, strong, nonatomic) id<DIMAccountDBI> database;
++ (nullable __kindof id<MKMMeta>)metaInMessage:(id<DKDMessage>)msg;
 
-- (instancetype)initWithFacebook:(DIMFacebook *)facebook
-                        database:(id<DIMAccountDBI>)db
-NS_DESIGNATED_INITIALIZER;
++ (void)message:(id<DKDMessage>)msg setMeta:(id<MKMMeta>)meta;
 
-@end
+///  Sender's Visa
+///  ~~~~~~~~~~~~~
+///  Extends for the first message package of 'Handshake' protocol.
 
-@interface DIMCommonArchivist (Cache)
++ (nullable __kindof id<MKMVisa>)visaInMessage:(id<DKDMessage>)msg;
 
-- (id<DIMMemoryCache>)createUserCache;
-- (id<DIMMemoryCache>)createGroupCache;
-
-/**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
- *
- * @return number of survivors
- */
-- (NSUInteger)reduceMemory;
++ (void)message:(id<DKDMessage>)msg setVisa:(id<MKMVisa>)visa;
 
 @end
 
-@interface DIMCommonArchivist (Checking)
+#pragma mark - Conveniences
 
-// protected
-- (BOOL)checkMeta:(id<MKMMeta>)meta forID:(id<MKMID>)did;
+#define DIMMessageGetMeta(msg)          [DIMMessageUtils metaInMessage:(msg)]
+#define DIMMessageSetMeta(meta, msg)    [DIMMessageUtils message:(msg) setMeta:(meta)]
 
-// protected
-- (BOOL)checkDocumentValid:(id<MKMDocument>)doc;
-
-// protected
-- (BOOL)verifyDocument:(id<MKMDocument>)doc;
-
-// protected
-- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc;
-
-@end
+#define DIMMessageGetVisa(msg)          [DIMMessageUtils visaInMessage:(msg)]
+#define DIMMessageSetVisa(visa, msg)    [DIMMessageUtils message:(msg) setVisa:(visa)]
 
 NS_ASSUME_NONNULL_END

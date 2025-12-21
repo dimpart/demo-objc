@@ -91,4 +91,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+// protected
+@interface DIMMessagePacker (Attachments)
+
+/**
+ *  Check meta & visa
+ *
+ * @param rMsg - received message
+ * @return false on error
+ */
+- (BOOL)checkAttachments:(id<DKDReliableMessage>)rMsg;
+
+@end
+
 NS_ASSUME_NONNULL_END

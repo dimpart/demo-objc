@@ -2,12 +2,12 @@
 //
 //  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2019 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2019 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,60 +28,42 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMCommonArchivist.h
-//  DIMClient
+//  DIMBot.m
+//  DIMCore
 //
-//  Created by Albert Moky on 2023/12/12.
+//  Created by Albert Moky on 2019/9/4.
+//  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import <DIMSDK/DIMSDK.h>
-#import <DIMClient/DIMAccountDBI.h>
-#import <DIMClient/DIMCache.h>
+#import "DIMAccountUtils.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import "DIMBot.h"
 
-@interface DIMCommonArchivist : NSObject <DIMArchivist, DIMBarrack>
+@implementation DIMBot
 
-// protected
-@property (readonly, weak, nonatomic, nullable) __kindof DIMFacebook *facebook;
+/* designated initializer */
+- (instancetype)initWithID:(id<MKMID>)did {
+    NSAssert(did.type == MKMEntityType_Bot, @"bot ID error: %@", did);
+    if (self = [super initWithID:did]) {
+        //
+    }
+    return self;
+}
 
-@property (readonly, strong, nonatomic) id<DIMAccountDBI> database;
+// Override
+- (id<MKMDocument>)profile {
+    NSArray<id<MKMDocument>> *docs = [self documents];
+    return DIMDocumentGetLast(docs, @"*");
+}
 
-- (instancetype)initWithFacebook:(DIMFacebook *)facebook
-                        database:(id<DIMAccountDBI>)db
-NS_DESIGNATED_INITIALIZER;
-
-@end
-
-@interface DIMCommonArchivist (Cache)
-
-- (id<DIMMemoryCache>)createUserCache;
-- (id<DIMMemoryCache>)createGroupCache;
-
-/**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
- *
- * @return number of survivors
- */
-- (NSUInteger)reduceMemory;
-
-@end
-
-@interface DIMCommonArchivist (Checking)
-
-// protected
-- (BOOL)checkMeta:(id<MKMMeta>)meta forID:(id<MKMID>)did;
-
-// protected
-- (BOOL)checkDocumentValid:(id<MKMDocument>)doc;
-
-// protected
-- (BOOL)verifyDocument:(id<MKMDocument>)doc;
-
-// protected
-- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc;
+// Override
+- (id<MKMID>)provider {
+    id<MKMDocument> doc = [self profile];
+    if (doc) {
+        id ICP = [doc propertyForKey:@"provider"];
+        return MKMIDParse(ICP);
+    }
+    return nil;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

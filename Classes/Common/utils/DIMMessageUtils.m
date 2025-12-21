@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  DIM-SDK : Decentralized Instant Messaging Software Development Kit
+//  Dao-Ke-Dao: Universal Message Module
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,40 +28,38 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMClientArchivist.m
-//  DIMClient
+//  DIMMessageUtils.m
+//  DIMSDK
 //
-//  Created by Albert Moky on 2023/12/15.
+//  Created by Albert Moky on 2025/10/11.
+//  Copyright © 2025 Albert Moky. All rights reserved.
 //
 
-#import "DIMSharedGroupManager.h"
+#import "DIMMessageUtils.h"
 
-#import "DIMClientArchivist.h"
+@implementation DIMMessageUtils
 
-@implementation DIMClientArchivist
-
-// Override
-- (void)cacheGroup:(id<MKMGroup>)group {
-    DIMSharedGroupManager *man = [DIMSharedGroupManager sharedInstance];
-    [group setDataSource:man];
-    [super cacheGroup:group];
++ (id<MKMMeta>)metaInMessage:(id<DKDMessage>)msg {
+    id meta = [msg objectForKey:@"meta"];
+    return MKMMetaParse(meta);
 }
 
-// Override
-- (BOOL)saveDocument:(id<MKMDocument>)doc forID:(id<MKMID>)did {
-    BOOL ok = [super saveDocument:doc forID:did];
-    if (ok && [doc conformsToProtocol:@protocol(MKMBulletin)]) {
-        // check administrators
-        id array = [doc propertyForKey:@"administrators"];
-        if ([array isKindOfClass:[NSArray class]]) {
-            id<MKMID> group = MKMIDParse([doc objectForKey:@"did"]);
-            NSAssert([group isGroup], @"group ID error: %@", group);
-            NSArray<id<MKMID>> *admins = MKMIDConvert(array);
-            id<DIMAccountDBI> db = [self database];
-            ok = [db saveAdministrators:admins forGroup:group];
-        }
++ (void)message:(id<DKDMessage>)msg setMeta:(id<MKMMeta>)meta {
+    [msg setDictionary:meta forKey:@"meta"];
+}
+
++ (id<MKMVisa>)visaInMessage:(id<DKDMessage>)msg {
+    id visa = [msg objectForKey:@"visa"];
+    id doc = MKMDocumentParse(visa);
+    if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
+        return doc;
     }
-    return ok;
+    NSAssert(doc == nil, @"visa document error: %@", doc);
+    return nil;
+}
+
++ (void)message:(id<DKDMessage>)msg setVisa:(id<MKMVisa>)visa {
+    [msg setDictionary:visa forKey:@"visa"];
 }
 
 @end

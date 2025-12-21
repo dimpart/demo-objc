@@ -36,6 +36,7 @@
 
 #import <FiniteStateMachine/FiniteStateMachine.h>
 
+#import "DIMAccountUtils.h"
 #import "DIMClientFacebook.h"
 
 #import "DIMGroupDelegate.h"
@@ -52,9 +53,9 @@
     return [facebook bulletinForID:gid];
 }
 
-- (BOOL)saveDocument:(id<MKMDocument>)doc {
+- (BOOL)saveDocument:(id<MKMDocument>)doc forID:(id<MKMID>)did {
     id<DIMArchivist> archivist = [self archivist];
-    return [archivist saveDocument:doc];
+    return [archivist saveDocument:doc forID:did];
 }
 
 //

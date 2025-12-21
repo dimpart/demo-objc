@@ -37,6 +37,7 @@
 
 #import <DIMSDK/DIMSDK.h>
 
+#import "DIMAccountUtils.h"
 #import "DIMCheckers.h"
 
 #import "DIMEntityChecker.h"
@@ -245,8 +246,8 @@ static inline DIMRecentTimeChecker *_time_checkers(void) {
     NSDate *docTime;
     NSTimeInterval dt, lt = 0;
     for (id<MKMDocument> document in docs) {
-        NSAssert([document.identifier isEqual:did],
-                 @"document ID not match: %@, %@", did, document);
+        //NSAssert([document.identifier isEqual:did],
+        //         @"document ID not match: %@, %@", did, document);
         docTime = [document time];
         dt = [docTime timeIntervalSince1970];
         if (dt < 1) {
@@ -272,7 +273,7 @@ static inline DIMRecentTimeChecker *_time_checkers(void) {
 
 @implementation DIMEntityChecker (Responding)
 
-- (BOOL)sendVisa:(nonnull id<MKMVisa>)visa receiver:(nonnull id<MKMID>)to updated:(BOOL)update {
+- (BOOL)sendVisa:(id<MKMVisa>)visa receiver:(id<MKMID>)to updated:(BOOL)update {
     NSAssert(false, @"implement me!");
     return NO;
 }

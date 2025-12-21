@@ -34,6 +34,8 @@
 //  Created by Albert Moky on 2023/12/13.
 //
 
+#import "DIMAccountUtils.h"
+
 #import "DIMGroupCommandHelper.h"
 
 @implementation DIMGroupCommandHelper
@@ -119,7 +121,7 @@
     NSArray<id<MKMID>> *members = [content members];
     if (!members) {
         // get from 'member'
-        id<MKMID> single = [content member];
+        id<MKMID> single = MKMIDParse([content objectForKey:@"member"]);
         if (single) {
             return @[single];
         }

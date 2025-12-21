@@ -35,6 +35,8 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import "DIMAccountUtils.h"
+
 #import "MKMAnonymous.h"
 #import "DIMCommonArchivist.h"
 
@@ -68,7 +70,7 @@
 }
 
 // Override
-- (__kindof DIMBarrack *)barrack {
+- (__kindof id<DIMBarrack>)barrack {
     return _barrack;
 }
 

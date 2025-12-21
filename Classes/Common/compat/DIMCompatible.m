@@ -36,6 +36,7 @@
 
 #import <DIMSDK/DIMSDK.h>
 
+#import "DIMAccountUtils.h"
 #import "DIMMetaVersion.h"
 
 #import "DIMCompatible.h"

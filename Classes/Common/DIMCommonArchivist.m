@@ -34,6 +34,12 @@
 //  Created by Albert Moky on 2023/12/12.
 //
 
+#import "DIMAccountUtils.h"
+
+#import "DIMBot.h"
+#import "DIMStation.h"
+#import "DIMServiceProvider.h"
+
 #import "DIMCommonArchivist.h"
 
 @interface DIMCommonArchivist () {
@@ -97,6 +103,32 @@
     return [_groupCache objectForKey:did.string];
 }
 
+// Override
+- (nullable id<MKMUser>)createUserForID:(id<MKMID>)uid {
+    NSAssert([uid isUser], @"user ID error: %@", uid);
+    MKMEntityType network = [uid type];
+    // check user type
+    if (network == MKMEntityType_Station) {
+        return [[DIMStation alloc] initWithID:uid];
+    } else if (network == MKMEntityType_Bot) {
+        return [[DIMBot alloc] initWithID:uid];
+    }
+    // general user, or 'anyone@anywhere'
+    return [[DIMUser alloc] initWithID:uid];
+}
+
+// Override
+- (nullable id<MKMGroup>)createGroupForID:(id<MKMID>)gid {
+    NSAssert([gid isGroup], @"group ID error: %@", gid);
+    MKMEntityType network = [gid type];
+    // check group type
+    if (network == MKMEntityType_ISP) {
+        return [[DIMServiceProvider alloc] initWithID:gid];
+    }
+    // general group, or 'everyone@everywhere'
+    return [[DIMGroup alloc] initWithID:gid];
+}
+
 #pragma mark Archivist
 
 // Override
@@ -127,14 +159,14 @@
 }
 
 // Override
-- (BOOL)saveDocument:(id<MKMDocument>)doc {
+- (BOOL)saveDocument:(id<MKMDocument>)doc forID:(id<MKMID>)did {
     //
     //  1. check valid
     //
     if ([self checkDocumentValid:doc]) {
         // document valid
     } else {
-        NSAssert(false, @"document not valid: %@", [doc identifier]);
+        //NSAssert(false, @"document not valid: %@", [doc identifier]);
         return NO;
     }
     //
@@ -199,11 +231,11 @@
 
 @implementation DIMCommonArchivist (Checking)
 
-- (BOOL)checkMeta:(nonnull id<MKMMeta>)meta forID:(nonnull id<MKMID>)did {
+- (BOOL)checkMeta:(id<MKMMeta>)meta forID:(id<MKMID>)did {
     return [meta isValid] && [DIMMetaUtils meta:meta matchID:did];
 }
 
-- (BOOL)checkDocumentValid:(nonnull id<MKMDocument>)doc {
+- (BOOL)checkDocumentValid:(id<MKMDocument>)doc {
     //id<MKMID> did = [doc identifier];
     NSDate *docTime = [doc time];
     // check document time
@@ -223,11 +255,11 @@
     return [self verifyDocument:doc];
 }
 
-- (BOOL)verifyDocument:(nonnull id<MKMDocument>)doc {
+- (BOOL)verifyDocument:(id<MKMDocument>)doc {
     if ([doc isValid]) {
         return YES;
     }
-    id<MKMID> did = [doc identifier];
+    id<MKMID> did = MKMIDParse([doc objectForKey:@"did"]);
     DIMFacebook *facebook = [self facebook];
     id<MKMMeta> meta = [facebook metaForID:did];
     if (!meta) {
@@ -238,8 +270,8 @@
     return [doc verify:PK];
 }
 
-- (BOOL)checkDocumentExpired:(nonnull id<MKMDocument>)doc {
-    id<MKMID> did = [doc identifier];
+- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc {
+    id<MKMID> did = MKMIDParse([doc objectForKey:@"did"]);
     NSString *type = [DIMDocumentUtils getDocumentType:doc];
     // check old documents with type
     DIMFacebook *facebook = [self facebook];

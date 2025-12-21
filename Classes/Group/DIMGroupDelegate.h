@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable id<MKMBulletin>)bulletinForID:(id<MKMID>)gid;
 
-- (BOOL)saveDocument:(id<MKMDocument>)doc;
+- (BOOL)saveDocument:(id<MKMDocument>)doc forID:(id<MKMID>)did;
 
 @end
 

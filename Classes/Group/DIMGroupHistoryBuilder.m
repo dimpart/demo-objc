@@ -36,6 +36,7 @@
 
 #import <ObjectKey/ObjectKey.h>
 
+#import "DIMAccountUtils.h"
 #import "DIMGroupCommand.h"
 
 #import "DIMGroupHistoryBuilder.h"

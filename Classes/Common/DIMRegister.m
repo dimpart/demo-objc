@@ -57,7 +57,8 @@ static inline id<MKMVisa> create_visa(id<MKMID> uid,
                                       id<MKEncryptKey> visaKey,
                                       id<MKSignKey> idKey) {
     assert([uid isUser]);
-    id<MKMVisa> visa = [[DIMVisa alloc] initWithID:uid];
+    id<MKMVisa> visa = [[DIMVisa alloc] init];
+    [visa setString:uid forKey:@"did"];
     // App ID
     [visa setProperty:@"chat.dim.tarsier" forKey:@"app_id"];
     // nickname
@@ -79,7 +80,8 @@ static inline id<MKMBulletin> create_bulletin(id<MKMID> gid,
                                               id<MKSignKey> sKey,
                                               id<MKMID> founder) {
     assert([gid isGroup]);
-    id<MKMBulletin> doc = [[DIMBulletin alloc] initWithID:gid];
+    id<MKMBulletin> doc = [[DIMBulletin alloc] init];
+    [doc setString:gid forKey:@"did"];
     // App ID
     [doc setProperty:@"chat.dim.tarsier" forKey:@"app_id"];
     // group founder

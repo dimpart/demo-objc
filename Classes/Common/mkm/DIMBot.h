@@ -2,12 +2,12 @@
 //
 //  DIM-SDK : Decentralized Instant Messaging Software Development Kit
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2019 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2019 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,59 +28,28 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMCommonArchivist.h
-//  DIMClient
+//  DIMBot.h
+//  DIMCore
 //
-//  Created by Albert Moky on 2023/12/12.
+//  Created by Albert Moky on 2019/9/4.
+//  Copyright © 2019 DIM Group. All rights reserved.
 //
 
 #import <DIMSDK/DIMSDK.h>
-#import <DIMClient/DIMAccountDBI.h>
-#import <DIMClient/DIMCache.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCommonArchivist : NSObject <DIMArchivist, DIMBarrack>
+@protocol MKMBot <MKMUser>
 
-// protected
-@property (readonly, weak, nonatomic, nullable) __kindof DIMFacebook *facebook;
+// Bot Document
+@property (readonly, strong, nonatomic, nullable) __kindof id<MKMDocument> profile;
 
-@property (readonly, strong, nonatomic) id<DIMAccountDBI> database;
-
-- (instancetype)initWithFacebook:(DIMFacebook *)facebook
-                        database:(id<DIMAccountDBI>)db
-NS_DESIGNATED_INITIALIZER;
+// Provider: ICP (Bot group)
+@property (nonatomic, readonly) id<MKMID> provider;
 
 @end
 
-@interface DIMCommonArchivist (Cache)
-
-- (id<DIMMemoryCache>)createUserCache;
-- (id<DIMMemoryCache>)createGroupCache;
-
-/**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
- *
- * @return number of survivors
- */
-- (NSUInteger)reduceMemory;
-
-@end
-
-@interface DIMCommonArchivist (Checking)
-
-// protected
-- (BOOL)checkMeta:(id<MKMMeta>)meta forID:(id<MKMID>)did;
-
-// protected
-- (BOOL)checkDocumentValid:(id<MKMDocument>)doc;
-
-// protected
-- (BOOL)verifyDocument:(id<MKMDocument>)doc;
-
-// protected
-- (BOOL)checkDocumentExpired:(id<MKMDocument>)doc;
+@interface DIMBot : DIMUser <MKMBot>
 
 @end
 

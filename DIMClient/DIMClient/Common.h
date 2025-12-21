@@ -39,9 +39,19 @@
 #define __DIM_COMMON__ 1
 
 //
+//  MingKeMing
+//
+
+#import <DIMClient/DIMBot.h>
+#import <DIMClient/DIMStation.h>
+#import <DIMClient/DIMServiceProvider.h>
+
+//
 //  Utils
 //
 
+#import <DIMClient/DIMAccountUtils.h>
+#import <DIMClient/DIMMessageUtils.h>
 #import <DIMClient/DIMCache.h>
 #import <DIMClient/DIMCheckers.h>
 #import <DIMClient/DIMDigestX.h>

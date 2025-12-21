@@ -87,7 +87,7 @@
     if (!signature) {
         NSAssert(false, @"failed to sign document for group: %@, owner: %@", gid, me);
         return NO;
-    } else if ([self.delegate saveDocument:bulletin]) {
+    } else if ([self.delegate saveDocument:bulletin forID:gid]) {
         NSLog(@"gorup document updated: %@", gid);
     } else {
         NSAssert(false, @"failed to save document for group: %@", gid);
@@ -118,7 +118,7 @@
     //
     //  1. create 'document' command, and send to current station
     //
-    id<MKMID> group = [doc identifier];
+    id<MKMID> group = MKMIDParse([doc objectForKey:@"did"]);
     id<MKMMeta> meta = [facebook metaForID:group];
     id<DKDCommand> content = DIMDocumentCommandResponse(group, meta, @[doc]);
     [messenger sendContent:content sender:me receiver:MKMAnyStation priority:1];
