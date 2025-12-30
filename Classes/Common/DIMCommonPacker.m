@@ -236,7 +236,7 @@
 
 @end
 
-@implementation DIMMessagePacker (Attachments)
+@implementation DIMCommonPacker (Attachments)
 
 - (BOOL)checkAttachments:(id<DKDReliableMessage>)rMsg {
     id<DIMArchivist> archivist = [self archivist];

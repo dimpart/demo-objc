@@ -233,8 +233,13 @@ static void autoInitializeStationIdentifiers(void) {
 }
 
 // Override
-- (NSDictionary<NSString *, NSData *> *)encrypt:(NSData *)plaintext {
+- (id<DIMEncryptedData>)encrypt:(NSData *)plaintext {
     return [_user encrypt:plaintext];
+}
+
+// Override
+- (NSSet<NSString *> *)terminals {
+    return [_user terminals];
 }
 
 #pragma mark Local User
@@ -255,7 +260,7 @@ static void autoInitializeStationIdentifiers(void) {
 }
 
 // Override
-- (nullable NSData *)decrypt:(NSData *)ciphertext {
+- (nullable NSData *)decrypt:(id<DIMEncryptedData>)ciphertext {
     return [_user decrypt:ciphertext];
 }
 

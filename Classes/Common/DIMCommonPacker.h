@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 // protected
-@interface DIMMessagePacker (Attachments)
+@interface DIMCommonPacker (Attachments)
 
 /**
  *  Check meta & visa
