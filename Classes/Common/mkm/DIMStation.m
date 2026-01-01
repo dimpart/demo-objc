@@ -233,8 +233,8 @@ static void autoInitializeStationIdentifiers(void) {
 }
 
 // Override
-- (id<DIMEncryptedData>)encrypt:(NSData *)plaintext {
-    return [_user encrypt:plaintext];
+- (id<DIMEncryptedBundle>)encryptBundle:(NSData *)plaintext {
+    return [_user encryptBundle:plaintext];
 }
 
 // Override
@@ -260,8 +260,8 @@ static void autoInitializeStationIdentifiers(void) {
 }
 
 // Override
-- (nullable NSData *)decrypt:(id<DIMEncryptedData>)ciphertext {
-    return [_user decrypt:ciphertext];
+- (nullable NSData *)decryptBundle:(id<DIMEncryptedBundle>)bundle {
+    return [_user decryptBundle:bundle];
 }
 
 @end

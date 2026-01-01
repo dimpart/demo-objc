@@ -147,9 +147,9 @@
 #pragma mark InstantMessageDelegate
 
 // Override
-- (nullable id<DIMEncryptedData>)message:(id<DKDInstantMessage>)iMsg
-                              encryptKey:(NSData *)data
-                             forReceiver:(id<MKMID>)receiver {
+- (nullable id<DIMEncryptedBundle>)message:(id<DKDInstantMessage>)iMsg
+                                encryptKey:(NSData *)data
+                               forReceiver:(id<MKMID>)receiver {
     @try {
         return [super message:iMsg encryptKey:data forReceiver:receiver];
     } @catch (NSException *exception) {
